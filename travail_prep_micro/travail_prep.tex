@@ -1,0 +1,138 @@
+\documentclass[conference]{IEEEtran}
+\usepackage[top=3cm, bottom=2cm, left=2cm, right=2cm, columnsep=20pt]{geometry}
+\usepackage{pdfpages}
+\usepackage{graphicx}
+\usepackage{etoolbox}
+\apptocmd{\sloppy}{\hbadness 10000\relax}{}{}
+% \usepackage[numbers]{natbib}
+\usepackage[T1]{fontenc}
+\usepackage{ragged2e}
+\usepackage[french]{babel}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{soul}
+\usepackage[utf8]{inputenc}
+\usepackage[export]{adjustbox}
+\usepackage{caption}
+\usepackage{mathrsfs, amsmath}
+\usepackage{amssymb}
+\usepackage{float}
+\usepackage{csquotes}
+\usepackage{fancyhdr}
+\usepackage{wallpaper}
+\usepackage{siunitx}
+\usepackage[indent]{parskip}
+\usepackage{textcomp}
+\usepackage{gensymb}
+\usepackage{multirow}
+\usepackage[hidelinks]{hyperref}
+\usepackage{abstract}
+\usepackage{subcaption}
+\usepackage{tabularx}
+\usepackage{biblatex}
+\addbibresource{bibliographie.bib}
+
+% \renewcommand{\abstractnamefont}{\normalfont\bfseries}
+% \renewcommand{\abstracttextfont}{\normalfont\itshape}
+\usepackage{titlesec}
+% \titleformat{\section}{\large\bfseries}{\thesection}{1em}{}
+% \titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{1em}{}
+% \titleformat{\subsubsection}{\normalsize\bfseries}{\thesubsubsection}{1em}{}
+
+\usepackage{xcolor}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+\lstset{style=mystyle}
+
+\usepackage[most]{tcolorbox}
+\newtcolorbox{note}[1][]{
+  enhanced jigsaw,
+  borderline west={2pt}{0pt}{black},
+  sharp corners,
+  boxrule=0pt, 
+  fonttitle={\large\bfseries},
+  coltitle={black},
+  title={Note:\ },
+  attach title to upper,
+  #1
+}
+
+\pagestyle{plain}
+%----------------------------------------------------
+
+\setlength{\parindent}{0pt}
+\DeclareCaptionLabelFormat{mycaptionlabel}{#1 #2}
+\captionsetup[figure]{labelsep=colon}
+\captionsetup{labelformat=mycaptionlabel}
+\captionsetup[figure]{name={Figure }}
+\captionsetup[table]{name=Tableau}
+\newcolumntype{Y}[1]{>{\Centering\hspace{0pt}\hsize=#1\hsize}X}
+\newcommand{\inlinecode}{\normalfont\texttt}
+\usepackage{enumitem}
+\setlist[itemize]{label=\textbullet}
+
+\begin{document}
+
+%----------------------------------------------------
+\title{Microscope\\
+\large Travail préparatoire \\
+PHS3910 -- Techniques expérimentales et instrumentation\\ 
+Équipe L3}
+
+\author{\IEEEauthorblockN{Émile Guertin-Picard}
+\IEEEauthorblockA{2208363}
+\and
+\IEEEauthorblockN{Maxime Rouillon}
+\IEEEauthorblockA{2213291}
+\and
+\IEEEauthorblockN{Marie-Lou Dessureault}
+\IEEEauthorblockA{2211129}
+\and
+\IEEEauthorblockN{Philippine Beaubois}
+\IEEEauthorblockA{2211153}
+}
+
+\maketitle
+
+\textit{\textbf{Résumé} -- }
+
+\section{Introduction}
+
+\section{Méthodes \label{methodes}}
+
+\section{Résultats \label{resultats}}
+
+\section{Discussion}
+
+\printbibliography
+
+\clearpage
+
+\section{Annexes}
+
+\subsection{Preuve de correction par Antidote}
+
+\clearpage
+
+
+\end{document}
