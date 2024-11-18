@@ -11,12 +11,12 @@ diff_coeff = 0
 nb_particules = 1
 na = 1.4
 lamb = 405  # in nm, convert to meters in calculations if needed
-poisson_lambda = 100
+poisson_lambda = 400
 
 # Initialisation de la simulation
 size = 50
-x = np.linspace(-400, 400, size)
-y = np.linspace(-400, 400, size)
+x = np.linspace(-700, 700, size)
+y = np.linspace(-700, 700, size)
 X, Y = np.meshgrid(x, y)
 
 # PSF, singularité traitée en r = 0
@@ -90,7 +90,7 @@ plt.figure(figsize=(10, 5))
 
 # Original intensity grid with a cross at the mean of the Gaussian (from the fit)
 plt.subplot(1, 2, 1)
-plt.imshow(intensity_grid, extent=[x.min(), x.max(), y.min(), y.max()], origin='lower', cmap='viridis')
+plt.imshow(intensity_grid, extent=[x.min(), x.max(), y.min(), y.max()], origin='lower', cmap='gray')
 plt.title('Original Intensity Grid')
 plt.colorbar()
 plt.plot(x0_fit, y0_fit, 'rx', markersize=10)  # Plot cross at the mean of the Gaussian
