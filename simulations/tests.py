@@ -1,92 +1,55 @@
 import numpy as np
-import random
 import matplotlib.pyplot as plt
 from numpy import pi
 from scipy.special import j1  # Bessel function
-import matplotlib.animation as animation
-
-# Variables
-
-num_time_steps = 10
-time_step = 0.1
-diff_coeff = 0
-
-nb_particules = 1
-na = 1.4
-lamb = 405 # en nm, mettre en m?
+import lmfit
 
 
-# Initialisaton de la simulation
+def psf(xx, yy, particle_pos, na=0.4, lamb=0.5, effective_pixel_size=0.1725):
+    """
+    Compute the PSF intensity based on pixel coordinates.
+    
+    Parameters:
+    xx, yy : 2D arrays of pixel coordinates
+    particle_pos : tuple (px, py) of particle's center in pixel coordinates
+    na : Numerical aperture of the objective
+    lamb : Wavelength in micrometers
+    effective_pixel_size : Effective size of one pixel in the sample plane (μm)
+    """
+    # Convert pixel coordinates to real-world distances
+    px, py = particle_pos
+    x_um = (xx - px) * effective_pixel_size
+    y_um = (yy - py) * effective_pixel_size
+    r = np.sqrt(x_um**2 + y_um**2)  # Distance in μm
 
-size = 100
-x = np.linspace(-100, 100, size)
-y = np.linspace(-100, 100, size)
-X, Y = np.meshgrid(x, y)
+    # Wave vector
+    k = 2 * np.pi * na / (lamb * 1e-3)  # Wavelength in μm
 
-# def PSF
-def psf(x,y):
-    r = np.sqrt(x**2+y**2)
-    k = 2 * pi * na / lamb
-    # Safely handle r = 0
+    # Airy disk calculation
     psf = np.zeros_like(r)
     nonzero_indices = r > 0
-    psf[nonzero_indices] = ((2 * j1(k * r[nonzero_indices]) / (k * r[nonzero_indices])) **2)
-    psf[r == 0] = 1  # Define PSF at r = 0 explicitly
+    psf[nonzero_indices] = (2 * np.sinc(k * r[nonzero_indices])) ** 2
+    psf[r == 0] = 1  # Singularity at the center
+
     return psf
 
+# Camera dimensions
+camera_width = 1440
+camera_height = 1080
+x = np.arange(camera_width)
+y = np.arange(camera_height)
+xx, yy = np.meshgrid(x, y)
+effective_pixel_size=0.1725
+# Particle position in pixel coordinates
+particle_position_pixel = (720, 540)  # Center of the grid
 
+# Generate PSF
+airy_disk = psf(xx, yy, particle_position_pixel, na=0.4, lamb=405, effective_pixel_size=effective_pixel_size)
 
-# Distribution de Poisson
-
-
-
-# Compte de photons
-
-
-# Evaluate the PSF on the grid
-psf_values = psf(X, Y)
-
-# Normalize the PSF to make it a probability distribution
-psf_values /= psf_values.sum()
-
-# Flatten the array to make it easier to sample from
-psf_flat = psf_values.flatten()
-
-# Sample a random index from the flattened PSF array based on the distribution
-index = np.random.choice(len(psf_flat), p=psf_flat)
-
-# Convert the index back to 2D coordinates (x, y)
-random_x = X.flatten()[index]
-random_y = Y.flatten()[index]
-
-print(f"Random point: x = {random_x}, y = {random_y}")
-
-# Visualize the PSF distribution
-plt.imshow(psf_values, extent=[x.min(), x.max(), y.min(), y.max()])
-plt.colorbar(label="PSF Value")
-plt.title("Point Spread Function (PSF)")
-plt.scatter(random_x, random_y, color='red', label=f'Random Point: ({random_x:.2f}, {random_y:.2f})')
-plt.legend()
+# Visualize
+plt.imshow(airy_disk, cmap='hot', origin='lower')
+plt.colorbar(label='Intensity')
+plt.title("Airy Disk PSF with Real Dimensions")
+plt.xlabel('X (pixels)')
+plt.ylabel('Y (pixels)')
 plt.show()
-
-
-plt.show()
-
-
-# Fit gaussien
-
-
-
-# Déplacement par mouvement brownien
-
-
-
-# MSD
-
-
-
-# Régression linéaire sur MSD
-
-
-
-# Animation

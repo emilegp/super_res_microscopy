@@ -14,9 +14,8 @@ lamb = 405  # in nm, convert to meters in calculations if needed
 poisson_lambda = 400
 
 # Initialisation de la simulation
-size = 50
-x = np.linspace(-700, 700, size)
-y = np.linspace(-700, 700, size)
+x = np.linspace(0, 1439, 1440)
+y = np.linspace(0, 1079, 1080)
 X, Y = np.meshgrid(x, y)
 
 # PSF, singularité traitée en r = 0
