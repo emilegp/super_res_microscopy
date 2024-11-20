@@ -123,7 +123,7 @@ PHS3910 -- Techniques expérimentales et instrumentation\\
 
 
 \section{Méthodes \label{methodes}}
-Le système optique utlisé pour la conception du microscope est illustré de manière simplifiée
+Le système optique utilisé pour la conception du microscope est illustré de manière simplifiée
 dans la figure \ref{sys} ci-dessous.
 \begin{figure}[H]
   \centering
@@ -171,23 +171,23 @@ la PSF (\textit{Point Spread Function}) de la particule sur le capteur est décr
 \begin{equation}
   PSF(r)=\left(\frac{2J_1(\frac{2\pi \text{NA}r}{\lambda})}{\frac{2\pi \text{NA}r}{\lambda}}\right)^2,
 \end{equation}
-où $NA$ est l'ouverture numérique de l'objectif, $\lambda$ est la longueur d'onde de la lumière passant à travers
+où NA est l'ouverture numérique de l'objectif, $\lambda$ est la longueur d'onde de la lumière passant à travers
 le microscope et r est la distance radiale par rapport à la position de l'émetteur \textcolor{red}{source procédurier}. Ici, $J_1$
-est une fonction de Bessel. L'émission des photons dans le temps s'effectue en suivant une distribution de Poisson:
+est une fonction de Bessel. L'émission des photons dans le temps s'effectue selon une distribution de Poisson:
 \begin{equation}
   P(X=k)=\frac{\lambda^k e^{-\lambda}}{k!},
 \end{equation}
 où $k$ est le nombre d'évènements et $\lambda$ est le nombre moyen d'évènements
 survenus au cours d'un intervalle de temps $\Delta t$ (le temps d'acquisition). Numériquement, ceci correspond à effectuer un nombre de simulations
-d'émission choisi à partir de \textit{np.random.poisson} et d'un $\lambda$ arbitraire. La position de chaque photon
-émis durant la simulation est posée en fonction de la distribution de probabilité imposée par la fonction d'étalement 
+d'émission choisi avec \textit{np.random.poisson} et un $\lambda$ arbitraire. La position de chaque photon
+émis durant la simulation est déterminée à l'aide de la distribution de probabilité imposée par la fonction d'étalement 
 de la particule ($PSF$).
 
 \textcolor{red}{mouvement brownien!!!!}
 
 Après avoir simulé le mouvement d'une particule, l'analyse a pu être effectuée en utilisant une procédure similaire
 à celle qui sera utilisée pour le système réel. Pour chaque image capturée lors de l'acquisition (définie par un temps d'acquisition $\Delta t$), un \textit{fit}
-d'une gaussienne 2D a été effectuée avec la librairie $lmfit$. La fonction gaussienne 2D est définie par:
+d'une gaussienne 2D a été effectuée avec la librairie \textit{lmfit}. La fonction gaussienne 2D est définie par:
 \begin{equation}
   f(x,y)=A\cdot exp\left(-\left[\frac{(x-x_0)^2}{2\sigma_x^2}+\frac{(y-y_0)^2}{2\sigma_y^2}\right]\right)+B.
 \end{equation}
