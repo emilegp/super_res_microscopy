@@ -115,34 +115,34 @@ def blob(particle_loc, f2, na, lamb, M_theo, poisson_lamb, mean_photon_count):
         # Ajouter un photon dans la grille d'intensité
         intensity_grid[grid_y_idx, grid_x_idx] += 1
 
-#     ##### Fit de Gaussienne #####
+    ##### Fit de Gaussienne #####
 
-#     (xdata, ydata), zdata = prepare_data(X, Y, intensity_grid)
+    (xdata, ydata), zdata = prepare_data(X, Y, intensity_grid)
 
-# # Create lmfit model and initial parameters
-#     model = lmfit.Model(gaussian_2d)
+# Create lmfit model and initial parameters
+    model = lmfit.Model(gaussian_2d)
 
-# # Find the indices of the maximum intensity
-#     max_idx = np.unravel_index(np.argmax(intensity_grid), intensity_grid.shape)
+# Find the indices of the maximum intensity
+    max_idx = np.unravel_index(np.argmax(intensity_grid), intensity_grid.shape)
 
-# # Convert the indices to coordinates
-#     initial_x0 = x[max_idx[1]]  # x-coordinate
-#     initial_y0 = y[max_idx[0]]  # y-coordinate
+# Convert the indices to coordinates
+    initial_x0 = x[max_idx[1]]  # x-coordinate
+    initial_y0 = y[max_idx[0]]  # y-coordinate
 
-#     params = model.make_params(
-#         amplitude=np.max(intensity_grid),
-#         x0=initial_x0,
-#         y0=initial_y0,
-#         sigma_x=10,
-#         sigma_y=10,
-#         offset=0
-#     )
+    params = model.make_params(
+        amplitude=np.max(intensity_grid),
+        x0=initial_x0,
+        y0=initial_y0,
+        sigma_x=10,
+        sigma_y=10,
+        offset=0
+    )
 
-# # Perform the fit
-#     result = model.fit(zdata, params, xy=(xdata, ydata))
+# Perform the fit
+    result = model.fit(zdata, params, xy=(xdata, ydata))
 
 
-    return intensity_grid
+    return intensity_grid, result
 
 print(localisations_px)
 
