@@ -114,17 +114,74 @@ PHS3910 -- Techniques expérimentales et instrumentation\\
 
 \maketitle
 
-\textit{\textbf{Résumé} -- }
+\textit{\textbf{Résumé} -- yap yap}
 
 \section{Introduction}
 
+yap yap
+
 \section{Méthodes \label{methodes}}
+
+\textcolor{red}{recréer figure 1 de l'énoncé}
+
+Afin de déterminer quels objectifs de microscope considérer pour le produit final, la définition
+de la résolution est nécessaire pour la vérification du théorème d'échantillonage de Nyquist. Soit $d$,
+la limite de diffraction pour une source ponctuelle au travers d'une ouverture \textcolor{red}{source video}:
+\begin{equation}
+  d = \frac{\lambda}{2 \text{NA}},
+\end{equation}
+
+où $\lambda$ est la longueur d'onde éclairant l'échantillon observé et NA est l'ouverture numérique de
+l'objectif. Cette limite de diffraction est la résolution du système. Ainsi, selon le théorème
+de Nyquist, la taille effective d'un pixel de la caméra $P$ dans le plan de l'objet observé doit respecter :
+
+\begin{equation}\label{nyquist}
+  P \leq \frac{d}{2} = \frac{\lambda}{4 \text{NA} }.
+\end{equation}
+
+Le calcul de cette taille $P$ est obtenue à partir du grossissement $M$ de l'objectif ainsi qu'avec la
+focale de la lentille de tube $f_{tube}$. Le grossissement est défini tel que :
+
+\begin{equation}
+  M = \frac{f_{tube}}{f_{obj}},
+\end{equation}
+
+où $f_{obj}$ est la longueur focale de la lentille objectif. Le grossissement $M$ connu des lentilles suit
+un standard de la \textit{Royal Microscopical Society} (RMS) qui pose $f_{tube}$ à 160 mm
+\textcolor{red}{source A}. Ainsi, pour avoir le grossissement réel $M_{r}$, il faut convertir avec la 
+formule suivante :
+
+% Source A : https://www.microscopyu.com/microscopy-basics/infinity-optical-systems
+
+\begin{equation}
+  f_{1}= \frac{160 \text{ mm} }{M} \Rightarrow M_{r} = \frac{f_{obj}M}{160 \text{ mm} }.
+\end{equation}
+
+La taille réelle d'un pixel de caméra $p_r$, d'une valeur de 3.45 µm pour la caméra Zelux CS165MU
+mise à disposition pour ce contrat \textcolor{red}{source B}, peut être convertie en taille effective
+avec le grossissement réel :
+
+\begin{equation}
+  P = \frac{p_{r}}{M_{r}} = \frac{p_{r}\;160 \text{ mm}}{f_{obj}M}.
+\end{equation}
+
+Ainsi, pour un système avec $f_{obj}$ et $M$ connus, il est possible de déterminer si le théorème 
+(\ref{nyquist}) est respecté pour une longueur d'onde donnée. Cela a permis de déterminer quelles 
+combinaisons de lentille tube, d'objectif de microscope et de source de lumière qui ne sont pas 
+sujettes au phénomène d'\textit{aliasing}, conséquence du non respect de Nyquist où l'information
+réelle sur l'image est perdue.
+
+% source B : https://www.thorlabs.com/thorproduct.cfm?partnumber=CS165MU
 
 \section{Résultats \label{resultats}}
 
+
+
 \section{Discussion}
 
-\printbibliography
+\textcolor{red}{quel combo a la meilleure resolution $d$ avec le moins d'incertitude}
+
+%\printbibliography
 
 \clearpage
 
