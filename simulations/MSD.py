@@ -146,14 +146,31 @@ def blob(particle_loc, f2, na, lamb, M_theo, poisson_lamb, mean_photon_count):
 
 print(localisations_px)
 
-# Afficher un blob pour chaque position obtenue dans localisations_px
-for i, pos in enumerate(localisations_px):
-    # Simuler le blob à cette position
-    intensity_grid = blob(pos, f2, na, lamb, M_theo, poisson_lamb, mean_photon_count)
 
-    # Affichage du blob (carte d'intensité)
-    plt.figure(figsize=(6, 6))
-    plt.imshow(zoom(intensity_grid, localisations_px[0]), cmap='hot', origin='lower', interpolation='none')
-    plt.colorbar(label='Photon count')
-    plt.title(f"Blob à la position {pos} (étape {i * intervalle})")
-    plt.show()
+# Calcul du MSD
+def calculate_msd(localisations_px):
+    n = len(localisations_px)
+    msd = []
+    
+    # On parcourt les positions de la particule
+    for t in range(1, n):
+        dx = localisations_px[t][0] - localisations_px[0][0]
+        dy = localisations_px[t][1] - localisations_px[0][1]
+        msd.append(dx**2 + dy**2)  # Calcul du carré du déplacement
+        
+    return np.array(msd)
+
+# Calcul du MSD pour la simulation donnée
+msd_values = calculate_msd(localisations_px)
+
+# Tracer le MSD en fonction du temps
+plt.plot(np.arange(1, len(msd_values) + 1), msd_values, label="MSD")
+plt.xlabel('Temps (pas)')
+plt.ylabel('MSD (pixels^2)')
+plt.title("Déplacement quadratique moyen (MSD) vs Temps")
+plt.grid(True)
+plt.show()
+
+# Estimation du coefficient de diffusion (D)
+# Si le MSD suit une relation linéaire avec le temps : MSD(t) = 4Dt
+# Vous pouvez ajuster une droite à ces données pour en déduire D.
