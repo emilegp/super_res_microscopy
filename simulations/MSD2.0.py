@@ -38,7 +38,7 @@ def psf(xx, yy, particle_pos, na, lamb, effective_pixel_size):
 
     return psf
 
-def Déplacement_brownien(particule_loc, sigma, n_steps):
+def Deplacement_brownien(particule_loc, sigma, n_steps):
     dx=np.random.normal(0,sigma, n_steps)
     dy=np.random.normal(0,sigma, n_steps)
 
@@ -66,18 +66,27 @@ variance = np.sqrt(2*D*delta_t)*10**(6) # um
 pxl = pixel_size / (f2 * M_theo / 160)  # Pixel size in um
 variance_px = variance / pxl  # Variance in pixels
 
-localisations_px_cumsum = MSD_cumsum(particule_initiale_px, variance_px, nb_steps)
-print(f'nouveau:{len(localisations_px_cumsum)}')
+
+localisations_px_cumsum = Deplacement_brownien(particule_initiale_px, variance_px, nb_steps)
+MSD = MSD_cumsum(localisations_px_cumsum, nb_steps)
 
 # Calcul de pente pour vérifier D rapidement
-pente = (localisations_px_cumsum[50]-localisations_px_cumsum[0])/(delta_t*(50-0))
+pente = (MSD[50]-MSD[0])/(delta_t*(50-0))
 D_estime = pente/4 
 D_px = D*10**12/pxl**2 #en um^2/s dans le plan en pixel^2/s
 
 print(f'D théorique = {D_px} = {D_estime} = D estimé !!! À 10% près...')
 
 # Tracer le MSD en fonction du temps
-plt.plot(np.arange(1, len(localisations_px_cumsum) + 1), localisations_px_cumsum, label="MSD")
+plt.plot(np.arange(1, len(MSD) + 1), MSD, label="MSD")
+plt.xlabel('Temps (pas)')
+plt.ylabel('MSD (pixels^2)')
+plt.title("Déplacement quadratique moyen (MSD) avec cumsum vs Temps")
+plt.grid(True)
+plt.show()
+
+# Tracer le MSD en fonction du temps
+plt.plot(np.arange(1, 50 + 1), MSD[:50], label="MSD")
 plt.xlabel('Temps (pas)')
 plt.ylabel('MSD (pixels^2)')
 plt.title("Déplacement quadratique moyen (MSD) avec cumsum vs Temps")
