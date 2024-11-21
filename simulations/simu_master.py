@@ -73,7 +73,7 @@ def blob(particle_loc, f2, na, lamb, M_theo, poisson_lamb, mean_photon_count):
 
 # Simulate photon count based on Poisson distribution
     num_simulations = np.random.poisson(poisson_lamb)
-    print('début airry')
+    print('début Airy')
     for _ in range(num_simulations):
         index = np.random.choice(len(psf_flat), p=psf_flat)
 
@@ -86,7 +86,7 @@ def blob(particle_loc, f2, na, lamb, M_theo, poisson_lamb, mean_photon_count):
         
         # Count photon emission
         intensity_grid[grid_y_idx, grid_x_idx] += 1
-    print('fin airry')
+    print('fin Airy')
 
     # Plot the original and fitted intensity grids using imshow
     plt.figure(figsize=(10, 5))
@@ -97,6 +97,9 @@ def blob(particle_loc, f2, na, lamb, M_theo, poisson_lamb, mean_photon_count):
     plt.colorbar()
     plt.show()
 
+    return intensity_grid
+
+def localisateur_gaussien(intensity_grid):
 ##### Fit de Gaussienne #####
 
     (xdata, ydata), zdata = prepare_data(X, Y, intensity_grid)
@@ -147,6 +150,24 @@ def MSD_cumsum(positions, n_steps):
         msd.append(np.mean(distances_squared))  # Moyenne des distances au carré
     
     return np.array(msd)
+
+# Function to crop around a specific blob by index (using zero-based index)
+def crop_blob(image, blob_centers, index=0, crop_size=50):
+    # Ensure the index is within bounds
+    if 0 <= index < len(blob_centers):
+        # Get the coordinates of the selected blob
+        x, y = int(blob_centers[index][0]), int(blob_centers[index][1])
+
+        # Define crop boundaries
+        x_start, x_end = max(0, x - crop_size // 2), min(image.shape[0], x + crop_size // 2)
+        y_start, y_end = max(0, y - crop_size // 2), min(image.shape[1], y + crop_size // 2)
+
+        # Crop the image around the blob
+        cropped_image = image[x_start:x_end, y_start:y_end]
+        return [cropped_image, [x_start, y_start]]
+    else:
+        print("Invalid index!")
+        return None
 
 # Simuler les localisations
 #D = (1.38 * 10**-23 * 300 / (6 * np.pi * 10**(-3) * 10**-6))  # Diffusion coefficient
