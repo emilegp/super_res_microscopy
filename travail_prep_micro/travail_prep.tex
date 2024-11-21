@@ -183,7 +183,16 @@ d'émission choisi avec \textit{np.random.poisson} et un $\lambda$ arbitraire. L
 émis durant la simulation est déterminée à l'aide de la distribution de probabilité imposée par la fonction d'étalement 
 de la particule ($PSF$).
 
-\textcolor{red}{mouvement brownien!!!!}
+Pour simuler le mouvement d'une particule, on utilise le principe du mouvement brownien.
+C'est-à-dire que le centre d'une gaussienne est placé à la position exacte de la particule,
+la gaussienne a l'écart-type suivant:
+\begin{equation}
+  \sigma =\sqrt{2\left ( \frac{k_{B}T}{2\pi \eta r} \right )\Delta t}
+\end{equation}
+Avec $k_{B}$ la constante de Blozmann, T la température en Kelvin, $\eta$ la viscosité en $Pa\cdot s$, r le rayon de la particule en mètre et $\Delta t$ le temps entre chaque déplacement en secondes. 
+Cette gaussienne permet de déterminer la probabilité de présence de la particule sur une position x et y, relativement proche de la position initiale, après un certain temps $\Delta t$.  Avec une fonction python, 
+il est possible de placer la particule à sa nouvelle position en tenant compte de ces probabilités. Cette opération est repérée un nombre successif de fois pour observer finalement 
+le déplacement de la particule. 
 
 Après avoir simulé le mouvement d'une particule, l'analyse a pu être effectuée en utilisant une procédure similaire
 à celle qui sera utilisée pour le système réel. Pour chaque image capturée lors de l'acquisition (définie par un temps d'acquisition $\Delta t$), un \textit{fit}
@@ -194,6 +203,21 @@ d'une gaussienne 2D a été effectuée avec la librairie \textit{lmfit}. La fonc
 À partir de la fonction obtenue, les moyennes en $x$ et en $y$ ($x_0,y_0$) de la gaussienne sont obtenus
 pour déterminer la position de la particule à cet instant. En effectuant ce processus pour chaque image de l'acquisition,
 on a pu obtenir le déplacement général de la particule pour un certain lapse de temps.
+\textcolor{red}{MSD a optimisé??(partie philou)}
+
+Une fois chaque position obtenue, il est possible de trouver la valeur du coefficient de diffusion pour la particule. 
+Pour ce faire il est nécessaire d'effectuer le calcul du déplacement quadratique moyen. On réalise ce calcul en faisant la moyenne de déplacement de même intervalle. Par exemple, 
+la première moyenne sera calculée avec toutes les distances séparant deux positions éloignées à intervalle de $\Delta t$. De la même manière, la deuxième moyenne sera calculée avec toutes les distances
+entre deux point placés a $2 \Delta t$ d'intervalle. On peut modéliser ce calcul par la formule suivante: 
+\begin{equation}
+  MSD(d) = \frac{1}{N_d} \sum_{i=0}^{N_d - 1} \left( \mathbf{r}(i+d) - \mathbf{r}(i) \right)^2
+\end{equation}
+Avec $N_d$ qui est le nombre de pairs i disponible pour un intervalle d et d qui varient de 1 jusqu'au nombre de positions-1. 
+Une fois les valeurs des MDS trouvés pour chaque déplacement de même intervalle, il est possible de généré un graphique 
+des MDS en fonction de la valeur de l'intervalle d. Sur ce graphique, seuls les premiers points seront sélectionnés, c'est à dire pour des d faible.
+Cette procédure est nécessaire pour observée le réel comportement du mouvement, car plus d est petit plus il y a de paire de points disponible. 
+Une fois que seuls les premiers points apparaissent sur le graphique, il est possible d'effectuer une régression linéaire sur
+ces points, c'est la pente de cette régression qui nous donnera la valeur du coefficient de diffusion estimé par notre microscope. 
 
 Afin de déterminer quels objectifs de microscope considérer pour le produit final, la définition
 de la résolution est nécessaire pour la vérification du théorème d'échantillonage de Nyquist. Soit $d$,
