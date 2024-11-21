@@ -9,10 +9,10 @@ cam_height = 1080
 particule_initiale_px = (500, 300)
 
 # Paramètres de la simulation
-f2 = 0.4  # Facteur de l'objectif
-na = 1.4  # Numerical aperture
+f2 = 150  # Facteur de l'objectif
+na = 0.4  # Numerical aperture
 lamb = 0.405  # Wavelength in um
-M_theo = 150  # Magnification of the objective
+M_theo = 20  # Magnification of the objective
 poisson_lamb = 400  # Average number of photons
 mean_photon_count = 5  # Mean number of photons emitted
 
@@ -59,7 +59,7 @@ def MSD_cumsum(positions, n_steps):
 # Simuler les localisations
 #D = (1.38 * 10**-23 * 300 / (6 * np.pi * 10**(-3) * 10**-6))  # Diffusion coefficient
 D = 2.196338215 * 10**(-13) # m^2/s
-nb_steps = 10000
+nb_steps = 2000
 duree_totale = 10
 delta_t = duree_totale/nb_steps
 variance = np.sqrt(2*D*delta_t)*10**(6) # um
@@ -71,7 +71,7 @@ localisations_px_cumsum = Deplacement_brownien(particule_initiale_px, variance_p
 MSD = MSD_cumsum(localisations_px_cumsum, nb_steps)
 
 # Calcul de pente pour vérifier D rapidement
-pente = (MSD[50]-MSD[0])/(delta_t*(50-0))
+pente = (MSD[10]-MSD[0])/(delta_t*(10-0))
 D_estime = pente/4 
 D_px = D*10**12/pxl**2 #en um^2/s dans le plan en pixel^2/s
 
@@ -86,7 +86,7 @@ plt.grid(True)
 plt.show()
 
 # Tracer le MSD en fonction du temps
-plt.plot(np.arange(1, 50 + 1), MSD[:50], label="MSD")
+plt.plot(np.arange(1, 20 + 1), MSD[:20], label="MSD")
 plt.xlabel('Temps (pas)')
 plt.ylabel('MSD (pixels^2)')
 plt.title("Déplacement quadratique moyen (MSD) avec cumsum vs Temps")
