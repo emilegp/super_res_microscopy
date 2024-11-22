@@ -203,24 +203,63 @@ d'une gaussienne 2D a été effectuée avec la librairie \textit{lmfit}. La fonc
 À partir de la fonction obtenue, les moyennes en $x$ et en $y$ ($x_0,y_0$) de la gaussienne sont obtenus
 pour déterminer la position de la particule à cet instant. En effectuant ce processus pour chaque image de l'acquisition,
 on a pu obtenir le déplacement général de la particule pour un certain lapse de temps.
-\textcolor{red}{MSD a optimisé??(partie philou)}
 
-Une fois chaque position obtenue, il est possible de trouver la valeur du coefficient de diffusion pour la particule. 
-Pour ce faire il est nécessaire d'effectuer le calcul du déplacement quadratique moyen. On réalise ce calcul en faisant la moyenne de déplacement de même intervalle. Par exemple, 
-la première moyenne sera calculée avec toutes les distances séparant deux positions éloignées à intervalle de $\Delta t$. De la même manière, la deuxième moyenne sera calculée avec toutes les distances
-entre deux point placés a $2 \Delta t$ d'intervalle. On peut modéliser ce calcul par la formule suivante: 
+
+Une fois chaque position obtenue, il est possible de trouver la valeur du coefficient de diffusion de la particule. 
+Pour ce faire il est nécessaire d'effectuer le calcul du déplacement quadratique moyen. On réalise ce calcul en faisant la moyenne des déplacements de même intervalle. Par exemple, 
+la première moyenne sera calculée avec toutes les distances séparant deux positions éloignées à intervalle de $\Delta t=1$. De la même manière, la deuxième moyenne sera calculée avec toutes les distances
+entre deux point placés a $\Delta t=2$ d'intervalle. On peut modéliser ce calcul par la formule suivante: 
 \begin{equation}
-  MSD(d) = \frac{1}{N_d} \sum_{i=0}^{N_d - 1} \left( \mathbf{r}(i+d) - \mathbf{r}(i) \right)^2
+  MSD(d) = \frac{1}{N_{\Delta t}} \sum_{i=0}^{N_{\Delta t} - 1} \left( \mathbf{r}(i+\Delta t) - \mathbf{r}(i) \right)^2
 \end{equation}
-Avec $N_d$ qui est le nombre de pairs i disponible pour un intervalle d et d qui varient de 1 jusqu'au nombre de positions-1. 
+Avec $N_{\Delta t}$ qui est le nombre de pairs i disponible pour un intervalle $\Delta t$ et $\Delta t$ qui varient de 1 jusqu'au nombre de positions-1. 
 Une fois les valeurs des MDS trouvés pour chaque déplacement de même intervalle, il est possible de généré un graphique 
-des MDS en fonction de la valeur de l'intervalle d. Sur ce graphique, seuls les premiers points seront sélectionnés, c'est à dire pour des d faible.
-Cette procédure est nécessaire pour observée le réel comportement du mouvement, car plus d est petit plus il y a de paire de points disponible. 
+des MDS en fonction de la valeur de l'intervalle $\Delta t$. Sur ce graphique, seuls les premiers points seront sélectionnés, c'est à dire pour des $\Delta t$ faible.
+Cette procédure est nécessaire pour observée le réel comportement du mouvement, car plus $\Delta t$ est petit plus il y a de paire de points disponible. 
 Une fois que seuls les premiers points apparaissent sur le graphique, il est possible d'effectuer une régression linéaire sur
-ces points, c'est la pente de cette régression qui nous donnera la valeur du coefficient de diffusion estimé par notre microscope. 
+ces points, c'est la pente de cette régression qui donnera la valeur du coefficient de diffusion D estimé par notre microscope. 
+
+Les valeurs obtenues par cette procédure comportent toutes une incertitude. Pour commencer, l'incertitude sur chaque 
+position x et y de chaque point est donné par l'écart type de ça gaussienne, cette incertitude est donc donnée par 
+\begin{equation}
+  \Delta x=\Delta y=\sigma 
+\end{equation}
+Une fois l'incertitude déterminée pour chaque valeur, on veut pouvoir déterminer l'incertitude sur chaque valeur de la MSD. 
+Pour ce faire, on propage l'incertitude, par la formule suivante, de chaque position sur la valeur de la MSD  correspondante: 
+\begin{equation}
+  \alpha =A+B
+\end{equation}
+\begin{align*}
+  A = \sqrt{
+    \begin{aligned}
+      &\left( 2(x(i+\Delta t) - x(i))\cdot \Delta x(i+\Delta t) \right)^2 \\
+      &+ \left( 2(x(i+\Delta t) - x(i))\cdot \Delta x(i) \right)^2
+    \end{aligned}
+  }
+\end{align*}
+\begin{align*}
+  B = \sqrt{
+    \begin{aligned}
+      &\left( 2(y(i+\Delta t) - y(i))\cdot \Delta y(i+\Delta t) \right)^2 \\
+      &+ \left( 2(y(i+\Delta t) - y(i))\cdot \Delta y(i) \right)^2
+    \end{aligned}
+  }
+\end{align*}
+
+\begin{equation}
+  \Delta MSD=\frac{1}{N_{\Delta t}}\sqrt{\sum_{0}^{N_{\Delta t}-1}\alpha }
+\end{equation}
+En sachant que $\left ( r(i+\Delta t)-r(i) \right )^{2}=\left ( x(i+\Delta t)-x(i) \right )^{2}+\left ( y(i+\Delta t)-y(i) \right )^{2}$.
+Dans le graphique de la MSD en fonction du nombre d'intervalles, chaque point comporte une incertitude en y. On 
+trace donc une régression linéaire et l'incertitude sur la valeur de la pente de cette régression est donnée par l'équation suivante
+qui considère qu'il n'y a des incertitudes que sur les valeurs en y (MSD) et que cette incertitude n'est pas constante pour chaque point, 
+\begin{equation}
+  \Delta D=\sqrt{\frac{\sum_{i=1}^{N}\frac{\Delta MSD_{i}}{(x_{i}-\overline{x})^{2}}}{\sum_{i=1}^{N}\frac{1}{(x_{i}-\overline{x})^{2}}}}
+\end{equation}
+Avec N qui est le nombre d'intervalles considéré. 
 
 Afin de déterminer quels objectifs de microscope considérer pour le produit final, la définition
-de la résolution est nécessaire pour la vérification du théorème d'échantillonage de Nyquist. Soit $d$,
+de la résolution est nécessaire pour la vérification du théorème d'échantillonnage de Nyquist. Soit $d$,
 la limite de diffraction pour une source ponctuelle au travers d'une ouverture \textcolor{red}{source video}:
 \begin{equation}
   d = \frac{\lambda}{2 \text{NA}},
