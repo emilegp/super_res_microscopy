@@ -18,7 +18,7 @@ f2 = 150  # Facteur de l'objectif
 na = 0.4  # Numerical aperture
 lamb = 0.405  # Wavelength in um
 M_theo = 20  # Magnification of the objective
-poisson_lamb = 200  # Average number of photons
+poisson_lamb = 400  # Average number of photons
 mean_photon_count = 1  # Mean number of photons emitted
 
 x = np.arange(cam_width)
@@ -204,7 +204,7 @@ def positionneur(vecteur_dimages):
 # Simuler les localisations
 #D = (1.38 * 10**-23 * 300 / (6 * np.pi * 10**(-3) * 10**-6))  # Diffusion coefficient
 D = 2.196338215 * 10**(-13) # m^2/s
-nb_steps = 5
+nb_steps = 50
 duree_totale = 1
 delta_t = duree_totale/nb_steps
 variance = np.sqrt(2*D*delta_t)*10**(6) # um
@@ -212,111 +212,23 @@ pxl = pixel_size / (f2 * M_theo / 160)  # Pixel size in um
 variance_px = variance / pxl  # Variance in pixels
 
 ##### Partie God #####
-# localisations_px = Deplacement_brownien(particule_initiale_px, variance_px, nb_steps)
-# grille = cameraman_god((500,300), f2, na, lamb, M_theo, poisson_lamb, mean_photon_count)
-# MSDs_god = MSD_cumsum(localisations_px, nb_steps)
+localisations_px = Deplacement_brownien(particule_initiale_px, variance_px, nb_steps)
+grille = cameraman_god((500,300), f2, na, lamb, M_theo, poisson_lamb, mean_photon_count)
+MSDs_god = MSD_cumsum(localisations_px, nb_steps)
 
-# images_progression=[]
-# for position_au_temps_t in localisations_px:
-#     images_progression.append(cameraman_god((position_au_temps_t[1], position_au_temps_t[0]), f2, na, lamb, M_theo, poisson_lamb, mean_photon_count))
-#     print('image obtenue')
+images_progression=[]
+for position_au_temps_t in localisations_px:
+    images_progression.append(cameraman_god((position_au_temps_t[1], position_au_temps_t[0]), f2, na, lamb, M_theo, poisson_lamb, mean_photon_count))
+    print('image obtenue')
 
-# # Dossier de sauvegarde
-# output_dir = 'output_images_csv'
-# os.makedirs(output_dir, exist_ok=True)
+# Dossier de sauvegarde
+output_dir = 'runs/output_images_csv'
+os.makedirs(output_dir, exist_ok=True)
 
-# # Sauvegarder chaque image sous forme de fichier CSV
-# for idx, image in enumerate(images_progression):
-#     filename = os.path.join(output_dir, f'image_{idx+1}.csv')
-#     np.savetxt(filename, image, delimiter=',', fmt='%d')  # Sauvegarde en format entier
-#     print(f'Saved image_{idx+1}.csv')
-
-
-##### Partie Nous #####
-# Recharger les images depuis les fichiers CSV
-output_dir = 'output_images_csv'
-loaded_images = []
-for idx in range(nb_steps):
+# Sauvegarder chaque image sous forme de fichier CSV
+for idx, image in enumerate(images_progression):
     filename = os.path.join(output_dir, f'image_{idx+1}.csv')
-    image = np.loadtxt(filename, delimiter=',', dtype=int)
-    loaded_images.append(image)
-    print(f'Loaded image_{idx+1}.csv')
-
-positions_estimée=positionneur(loaded_images)
-MSDs = MSD_cumsum(positions_estimée, nb_steps)
-
-## Débogage
-# print(f'Pos_god: {localisations_px}')
-print(f'Pos_nous: {positions_estimée}')
-
-# Créer le graphique
-plt.figure(figsize=(8, 6))
-
-plt.scatter(range(len(MSDs)), MSDs, color='blue')
-#plt.scatter(x2, y2, color='red', label='Vecteur 2', marker='x')
-plt.xlabel('X')
-plt.ylabel('Y')
-plt.title('Affichage de deux vecteurs de positions')
-
-plt.show()
-
-# Fonction Effectuer la régression linéaire pondérée
-y_errors = np.sqrt(MSDs[:7])  
-x_data = np.arange(7)  
-y_data = MSDs[:7] 
-
-# Define the linear model (linear regression function)
-def linear_model(x, m, b):
-    return m * x + b
-
-# Perform weighted linear regression
-params, covariance = curve_fit(linear_model, x_data, y_data, sigma=y_errors)
-
-# Extract the fitted parameters (slope and intercept)
-m_fit, b_fit = params
-
-# Extract the uncertainties (standard deviations) on the fitted parameters
-m_uncertainty, b_uncertainty = np.sqrt(np.diag(covariance))
-
-# Output the fitted parameters and their uncertainties
-print(f"Fitted slope: {m_fit:.2f} ± {m_uncertainty:.2f}")
-print(f"Fitted intercept: {b_fit:.2f} ± {b_uncertainty:.2f}")
-
-# Generate the fitted line for plotting
-y_fit = linear_model(x_data, *params)
-
-# Plot the data and the fitted line
-plt.errorbar(x_data, y_data, yerr=y_errors, fmt='o', label='Data', capsize=5)
-plt.plot(x_data, y_fit, label=f'Fit: y = {m_fit:.2f}x + {b_fit:.2f}', color='red')
-plt.xlabel('x')
-plt.ylabel('y')
-plt.legend()
-plt.show()
-
-##### RUN #####
-
-#for positions in localisations_px:
-#    print(positions)
-
-# # Affichage des résultats ajustés et originaux
-# plt.figure(figsize=(10, 5))
-
-# # Affichage de la grille zoomée
-# plt.subplot(1, 2, 1)
-# plt.imshow(grille_zoom, origin='lower', cmap='gray')
-# plt.title('Grille Zoomée')
-# plt.colorbar()
-
-# # Affichage de l'ajustement gaussien
-# plt.subplot(1, 2, 2)
-# plt.imshow(Z_fit, origin='lower', cmap='gray')
-# plt.title('Ajustement Gaussien')
-# plt.colorbar()
-
-# plt.show()
-
-# # Affichage de la position dans la grille initiale
-# print(f"Position du blob dans la grille initiale : ({x_blob_initial:.2f}, {y_blob_initial:.2f}) pixels")
-
+    np.savetxt(filename, image, delimiter=',', fmt='%d')  # Sauvegarde en format entier
+    print(f'Saved image_{idx+1}.csv')
 
 
