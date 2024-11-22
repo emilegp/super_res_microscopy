@@ -1,10 +1,11 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from numpy import pi
 from scipy.special import j1  # Bessel function
 from scipy.ndimage import label, center_of_mass
+from scipy.optimize import curve_fit
 import lmfit
 import cv2
+import csv
 
 pixel_size = 3.45 # en um, x et y
 cam_width = 1440
@@ -16,8 +17,8 @@ f2 = 150  # Facteur de l'objectif
 na = 0.4  # Numerical aperture
 lamb = 0.405  # Wavelength in um
 M_theo = 20  # Magnification of the objective
-poisson_lamb = 400  # Average number of photons
-mean_photon_count = 5  # Mean number of photons emitted
+poisson_lamb = 200  # Average number of photons
+mean_photon_count = 1  # Mean number of photons emitted
 
 x = np.arange(cam_width)
 y = np.arange(cam_height)
@@ -75,7 +76,6 @@ def cameraman_god(particle_loc, f2, na, lamb, M_theo, poisson_lamb, mean_photon_
 
 # Simulate photon count based on Poisson distribution
     num_simulations = np.random.poisson(poisson_lamb)
-    print('début Airy')
     for _ in range(num_simulations):
         index = np.random.choice(len(psf_flat), p=psf_flat)
 
@@ -88,7 +88,6 @@ def cameraman_god(particle_loc, f2, na, lamb, M_theo, poisson_lamb, mean_photon_
         
         # Count photon emission
         intensity_grid[grid_y_idx, grid_x_idx] += 1
-    print('fin Airy')
 
     # # Plot the original and fitted intensity grids using imshow
     # plt.figure(figsize=(10, 5))
@@ -119,8 +118,8 @@ def localisateur_gaussien(intensity_grid):
     max_idx = np.unravel_index(np.argmax(intensity_grid), intensity_grid.shape)
 
     # Convertir les indices en coordonnées
-    initial_x0 = x[max_idx[1]]  # coordonnée x
-    initial_y0 = y[max_idx[0]]  # coordonnée y
+    initial_x0 = x[max_idx[0]]  # coordonnée x
+    initial_y0 = y[max_idx[1]]  # coordonnée y
 
     # Définir les paramètres du modèle
     params = model.make_params(
@@ -142,7 +141,6 @@ def Deplacement_brownien(particule_loc, sigma, n_steps):
     dy=np.random.normal(0,sigma, n_steps)
 
     positions = np.cumsum(np.array([dx, dy]), axis=1).T + np.array(particule_loc)  
-    print(positions)
     return positions
 
 def MSD_cumsum(positions, n_steps):
@@ -156,12 +154,11 @@ def MSD_cumsum(positions, n_steps):
     
     return np.array(msd)
 
-# Function to crop around a specific blob by index (using zero-based index)
 def crop_blob(image, index=0, crop_size=50):
     grille = np.uint8((image/np.max(image))*255)
 
     # Threshold to create a binary image
-    _, binary = cv2.threshold(grille, 127, 255, cv2.THRESH_BINARY)
+    _, binary = cv2.threshold(grille, 175, 255, cv2.THRESH_BINARY)
 
     # Detect blobs using connected-component analysis
     structure = np.ones((3, 3), dtype=int)  # Define connectivity
@@ -217,19 +214,22 @@ localisations_px = Deplacement_brownien(particule_initiale_px, variance_px, nb_s
 grille = cameraman_god((500,300), f2, na, lamb, M_theo, poisson_lamb, mean_photon_count)
 MSDs_god = MSD_cumsum(localisations_px, nb_steps)
 
-##### Partie Nous #####
 images_progression=[]
 for position_au_temps_t in localisations_px:
-    images_progression.append(cameraman_god((position_au_temps_t[0], position_au_temps_t[1]), f2, na, lamb, M_theo, poisson_lamb, mean_photon_count))
+    images_progression.append(cameraman_god((position_au_temps_t[1], position_au_temps_t[0]), f2, na, lamb, M_theo, poisson_lamb, mean_photon_count))
+    print('image obtenue')
 
-positions_estimée=positionneur(images_progression)
+np.savetxt('grilles_intensite.csv', images_progression.reshape(-1, images_progression.shape[-1]), delimiter=',')
+
+
+##### Partie Nous #####
+test_csv = np.loadtxt('grille_intensite.csv', delimiter=',')
+positions_estimée=positionneur(test_csv)
 MSDs = MSD_cumsum(positions_estimée, nb_steps)
 
 ## Débogage
 print(f'Pos_god: {localisations_px}')
 print(f'Pos_nous: {positions_estimée}')
-print(f'Msd_god est = {MSDs_god}')
-print(f'Msd_nous est ={MSDs}')
 
 # Créer le graphique
 plt.figure(figsize=(8, 6))
@@ -240,6 +240,39 @@ plt.xlabel('X')
 plt.ylabel('Y')
 plt.title('Affichage de deux vecteurs de positions')
 
+plt.show()
+
+# Fonction Effectuer la régression linéaire pondérée
+y_errors = np.sqrt(MSDs[:7])  
+x_data = np.arange(7)  
+y_data = MSDs[:7] 
+
+# Define the linear model (linear regression function)
+def linear_model(x, m, b):
+    return m * x + b
+
+# Perform weighted linear regression
+params, covariance = curve_fit(linear_model, x_data, y_data, sigma=y_errors)
+
+# Extract the fitted parameters (slope and intercept)
+m_fit, b_fit = params
+
+# Extract the uncertainties (standard deviations) on the fitted parameters
+m_uncertainty, b_uncertainty = np.sqrt(np.diag(covariance))
+
+# Output the fitted parameters and their uncertainties
+print(f"Fitted slope: {m_fit:.2f} ± {m_uncertainty:.2f}")
+print(f"Fitted intercept: {b_fit:.2f} ± {b_uncertainty:.2f}")
+
+# Generate the fitted line for plotting
+y_fit = linear_model(x_data, *params)
+
+# Plot the data and the fitted line
+plt.errorbar(x_data, y_data, yerr=y_errors, fmt='o', label='Data', capsize=5)
+plt.plot(x_data, y_fit, label=f'Fit: y = {m_fit:.2f}x + {b_fit:.2f}', color='red')
+plt.xlabel('x')
+plt.ylabel('y')
+plt.legend()
 plt.show()
 
 ##### RUN #####
