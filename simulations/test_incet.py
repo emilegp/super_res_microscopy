@@ -6,7 +6,6 @@ from scipy.optimize import curve_fit
 import lmfit
 import cv2
 import csv
-import os
 
 pixel_size = 3.45 # en um, x et y
 cam_width = 1440
@@ -155,9 +154,31 @@ def MSD_cumsum(positions, n_steps):
     
     return np.array(msd)
 
+def calculate_msd_with_uncertainty(positions, delta_x, delta_y, n_steps):
+    """
+    Calcule les MSD avec propagation des incertitudes analytiques.
+    """
+    msd = []
+    uncertainties = []
+    for d in range(1, n_steps):
+        # Différences des paires de positions séparées par d
+        diff_pairs = positions[d:] - positions[:-d]
+        distances_squared = np.sum(diff_pairs**2, axis=1)
+        msd.append(np.mean(distances_squared))  # Moyenne des distances au carré
+        
+        # Propagation des incertitudes
+        dx = delta_x[d:] + delta_x[:-d]
+        dy = delta_y[d:] + delta_y[:-d]
+        term_x = 2 * (diff_pairs[:, 0]**2) * (dx**2)
+        term_y = 2 * (diff_pairs[:, 1]**2) * (dy**2)
+        total_uncertainty = np.mean(term_x + term_y)
+        uncertainties.append(np.sqrt(total_uncertainty))
+    
+    return np.array(msd), np.array(uncertainties)
+
+
 def crop_blob(image, index=0, crop_size=50):
     grille = np.uint8((image/np.max(image))*255)
-    print(grille.shape)  # Affiche la forme de l'image
 
     # Threshold to create a binary image
     _, binary = cv2.threshold(grille, 175, 255, cv2.THRESH_BINARY)
@@ -204,7 +225,7 @@ def positionneur(vecteur_dimages):
 # Simuler les localisations
 #D = (1.38 * 10**-23 * 300 / (6 * np.pi * 10**(-3) * 10**-6))  # Diffusion coefficient
 D = 2.196338215 * 10**(-13) # m^2/s
-nb_steps = 5
+nb_steps = 10
 duree_totale = 1
 delta_t = duree_totale/nb_steps
 variance = np.sqrt(2*D*delta_t)*10**(6) # um
@@ -212,41 +233,32 @@ pxl = pixel_size / (f2 * M_theo / 160)  # Pixel size in um
 variance_px = variance / pxl  # Variance in pixels
 
 ##### Partie God #####
-# localisations_px = Deplacement_brownien(particule_initiale_px, variance_px, nb_steps)
-# grille = cameraman_god((500,300), f2, na, lamb, M_theo, poisson_lamb, mean_photon_count)
-# MSDs_god = MSD_cumsum(localisations_px, nb_steps)
+localisations_px = Deplacement_brownien(particule_initiale_px, variance_px, nb_steps)
+grille = cameraman_god((500,300), f2, na, lamb, M_theo, poisson_lamb, mean_photon_count)
+MSDs_god = MSD_cumsum(localisations_px, nb_steps)
 
-# images_progression=[]
-# for position_au_temps_t in localisations_px:
-#     images_progression.append(cameraman_god((position_au_temps_t[1], position_au_temps_t[0]), f2, na, lamb, M_theo, poisson_lamb, mean_photon_count))
-#     print('image obtenue')
+images_progression=[]
+for position_au_temps_t in localisations_px:
+    images_progression.append(cameraman_god((position_au_temps_t[1], position_au_temps_t[0]), f2, na, lamb, M_theo, poisson_lamb, mean_photon_count))
+    print('image obtenue')
 
-# # Dossier de sauvegarde
-# output_dir = 'output_images_csv'
-# os.makedirs(output_dir, exist_ok=True)
-
-# # Sauvegarder chaque image sous forme de fichier CSV
-# for idx, image in enumerate(images_progression):
-#     filename = os.path.join(output_dir, f'image_{idx+1}.csv')
-#     np.savetxt(filename, image, delimiter=',', fmt='%d')  # Sauvegarde en format entier
-#     print(f'Saved image_{idx+1}.csv')
+# np.savetxt('grilles_intensite.csv', images_progression.reshape(-1, images_progression.shape[-1]), delimiter=',')
 
 
-##### Partie Nous #####
-# Recharger les images depuis les fichiers CSV
-output_dir = 'output_images_csv'
-loaded_images = []
-for idx in range(nb_steps):
-    filename = os.path.join(output_dir, f'image_{idx+1}.csv')
-    image = np.loadtxt(filename, delimiter=',', dtype=int)
-    loaded_images.append(image)
-    print(f'Loaded image_{idx+1}.csv')
+# ##### Partie Nous #####
+# test_csv = np.loadtxt('grille_intensite.csv', delimiter=',')
+positions_estimée=positionneur(images_progression)
+# MSDs = MSD_cumsum(positions_estimée, nb_steps)
+# Remplacer cet appel
+# MSDs = MSD_cumsum(positions_estimée, nb_steps)
 
-positions_estimée=positionneur(loaded_images)
-MSDs = MSD_cumsum(positions_estimée, nb_steps)
+# Par ceci :
+delta_x = np.full(positions_estimée.shape[0], 0.05)  # Exemple d'incertitude sur x
+delta_y = np.full(positions_estimée.shape[0], 0.05)  # Exemple d'incertitude sur y
+MSDs, msd_uncertainties = calculate_msd_with_uncertainty(positions_estimée, delta_x, delta_y, nb_steps)
 
 ## Débogage
-# print(f'Pos_god: {localisations_px}')
+print(f'Pos_god: {localisations_px}')
 print(f'Pos_nous: {positions_estimée}')
 
 # Créer le graphique
@@ -254,20 +266,21 @@ plt.figure(figsize=(8, 6))
 
 plt.scatter(range(len(MSDs)), MSDs, color='blue')
 #plt.scatter(x2, y2, color='red', label='Vecteur 2', marker='x')
-plt.xlabel('X')
-plt.ylabel('Y')
-plt.title('Affichage de deux vecteurs de positions')
+plt.xlabel('delta t')
+plt.ylabel('MSD')
+plt.title('MSD en fonction du temps')
 
 plt.show()
 
 # Fonction Effectuer la régression linéaire pondérée
 y_errors = np.sqrt(MSDs[:7])  
-x_data = np.arange(7)  
+x_data = np.arange(len(y_errors))  
 y_data = MSDs[:7] 
 
 # Define the linear model (linear regression function)
 def linear_model(x, m, b):
     return m * x + b
+
 
 # Perform weighted linear regression
 params, covariance = curve_fit(linear_model, x_data, y_data, sigma=y_errors)
@@ -285,12 +298,36 @@ print(f"Fitted intercept: {b_fit:.2f} ± {b_uncertainty:.2f}")
 # Generate the fitted line for plotting
 y_fit = linear_model(x_data, *params)
 
-# Plot the data and the fitted line
-plt.errorbar(x_data, y_data, yerr=y_errors, fmt='o', label='Data', capsize=5)
-plt.plot(x_data, y_fit, label=f'Fit: y = {m_fit:.2f}x + {b_fit:.2f}', color='red')
-plt.xlabel('x')
-plt.ylabel('y')
+# # Plot the data and the fitted line
+# plt.errorbar(x_data, y_data, yerr=y_errors, fmt='o', label='Data', capsize=5)
+# plt.plot(x_data, y_fit, label=f'Fit: y = {m_fit:.2f}x + {b_fit:.2f}', color='red')
+# plt.xlabel('x')
+# plt.ylabel('y')
+# plt.legend()
+# plt.show()
+
+# Utiliser les incertitudes calculées pour pondérer la régression linéaire
+y_errors = msd_uncertainties[:7]  # Incertitudes propagées
+x_data = np.arange(len(y_data))  
+y_data = MSDs[:7] 
+
+# Régression linéaire pondérée avec incertitudes calculées
+params, covariance = curve_fit(linear_model, x_data, y_data, sigma=y_errors)
+
+# Extraire la pente ajustée et son incertitude
+m_fit, b_fit = params
+m_uncertainty, b_uncertainty = np.sqrt(np.diag(covariance))
+
+# Affichage des résultats
+print(f"Pente ajustée : {m_fit:.2f} ± {m_uncertainty:.2f}")
+print(f"Ordonnée à l'origine : {b_fit:.2f} ± {b_uncertainty:.2f}")
+# Tracer le graphique avec les incertitudes
+plt.errorbar(x_data, y_data, yerr=y_errors, fmt='o', label='Données avec incertitudes', capsize=5)
+plt.plot(x_data, linear_model(x_data, *params), label=f'Fit: y = {m_fit:.2f}x + {b_fit:.2f}', color='red')
+plt.xlabel('Nombre dintervalles (x)')
+plt.ylabel('MSD (y)')
 plt.legend()
+plt.title("Régression linéaire avec incertitudes propagées")
 plt.show()
 
 ##### RUN #####
