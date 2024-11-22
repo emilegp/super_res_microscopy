@@ -57,18 +57,18 @@ def MSD_cumsum(positions, n_steps):
     return np.array(msd)
 
 # Simuler les localisations
-#D = (1.38 * 10**-23 * 300 / (6 * np.pi * 10**(-3) * 10**-6))  # Diffusion coefficient
+#D = (1.38 * 10**-23 * 300 / (6 * np.pi * 10**(-3) * 10**-6))  # Diffusion coefficient pour largeur particule 1nm
 D = 2.196338215 * 10**(-13) # m^2/s
-nb_steps = 2000
-duree_totale = 10
-delta_t = duree_totale/nb_steps
+nb_frame = 50
+duree_totale = 1
+delta_t = duree_totale/nb_frame
 variance = np.sqrt(2*D*delta_t)*10**(6) # um
 pxl = pixel_size / (f2 * M_theo / 160)  # Pixel size in um
 variance_px = variance / pxl  # Variance in pixels
 
 
-localisations_px_cumsum = Deplacement_brownien(particule_initiale_px, variance_px, nb_steps)
-MSD = MSD_cumsum(localisations_px_cumsum, nb_steps)
+localisations_px_cumsum = Deplacement_brownien(particule_initiale_px, variance_px, nb_frame)
+MSD = MSD_cumsum(localisations_px_cumsum, nb_frame)
 
 # Calcul de pente pour vérifier D rapidement
 pente = (MSD[10]-MSD[0])/(delta_t*(10-0))
