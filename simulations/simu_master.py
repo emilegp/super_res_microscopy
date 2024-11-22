@@ -90,14 +90,14 @@ def cameraman_god(particle_loc, f2, na, lamb, M_theo, poisson_lamb, mean_photon_
         intensity_grid[grid_y_idx, grid_x_idx] += 1
     print('fin Airy')
 
-    # Plot the original and fitted intensity grids using imshow
-    plt.figure(figsize=(10, 5))
+    # # Plot the original and fitted intensity grids using imshow
+    # plt.figure(figsize=(10, 5))
 
-    # Original intensity grid with a cross at the mean of the Gaussian (from the fit)
-    plt.imshow(intensity_grid, origin='lower', cmap='gray')
-    plt.title('Original Intensity Grid')
-    plt.colorbar()
-    plt.show()
+    # # Original intensity grid with a cross at the mean of the Gaussian (from the fit)
+    # plt.imshow(intensity_grid, origin='lower', cmap='gray')
+    # plt.title('Original Intensity Grid')
+    # plt.colorbar()
+    # plt.show()
 
     return intensity_grid
 
@@ -121,7 +121,6 @@ def localisateur_gaussien(intensity_grid):
     # Convertir les indices en coordonnées
     initial_x0 = x[max_idx[1]]  # coordonnée x
     initial_y0 = y[max_idx[0]]  # coordonnée y
-    print('après coordonnées')
 
     # Définir les paramètres du modèle
     params = model.make_params(
@@ -132,11 +131,9 @@ def localisateur_gaussien(intensity_grid):
         sigma_y=10,
         offset=0
     )
-    print('après paramètres')
 
     # Effectuer l'ajustement
     result = model.fit(zdata, params, xy=(xdata, ydata))
-    print('après fit')
 
     return result
 
@@ -145,6 +142,7 @@ def Deplacement_brownien(particule_loc, sigma, n_steps):
     dy=np.random.normal(0,sigma, n_steps)
 
     positions = np.cumsum(np.array([dx, dy]), axis=1).T + np.array(particule_loc)  
+    print(positions)
     return positions
 
 def MSD_cumsum(positions, n_steps):
@@ -188,67 +186,86 @@ def crop_blob(image, index=0, crop_size=50):
         print("Invalid index!")
         return None
 
+def positionneur(vecteur_dimages):
+    trajectoire=[]
+    for image in vecteur_dimages:
+        grille_zoom, point_de_reference  = crop_blob(image)[0], crop_blob(image)[1]
+        result = localisateur_gaussien(grille_zoom)
+
+        #Redimensionner le meilleur ajustement à la forme correcte de grille_zoom
+        Z_fit = result.best_fit.reshape(grille_zoom.shape)  # Utiliser la forme de grille_zoom
+
+        # Extraire les paramètres ajustés pour la moyenne de la gaussienne
+        x_position = result.params['x0'].value + point_de_reference[0]
+        y_position = result.params['y0'].value + point_de_reference[1]
+        trajectoire.append([x_position, y_position])
+
+    return np.array(trajectoire)
+
 # Simuler les localisations
 #D = (1.38 * 10**-23 * 300 / (6 * np.pi * 10**(-3) * 10**-6))  # Diffusion coefficient
 D = 2.196338215 * 10**(-13) # m^2/s
-nb_steps = 10000
-duree_totale = 10
+nb_steps = 50
+duree_totale = 1
 delta_t = duree_totale/nb_steps
 variance = np.sqrt(2*D*delta_t)*10**(6) # um
 pxl = pixel_size / (f2 * M_theo / 160)  # Pixel size in um
 variance_px = variance / pxl  # Variance in pixels
 
+##### Partie God #####
 localisations_px = Deplacement_brownien(particule_initiale_px, variance_px, nb_steps)
-MSDs = MSD_cumsum(localisations_px, nb_steps)
+grille = cameraman_god((500,300), f2, na, lamb, M_theo, poisson_lamb, mean_photon_count)
+MSDs_god = MSD_cumsum(localisations_px, nb_steps)
 
+##### Partie Nous #####
+images_progression=[]
+for position_au_temps_t in localisations_px:
+    images_progression.append(cameraman_god((position_au_temps_t[0], position_au_temps_t[1]), f2, na, lamb, M_theo, poisson_lamb, mean_photon_count))
+
+positions_estimée=positionneur(images_progression)
+MSDs = MSD_cumsum(positions_estimée, nb_steps)
+
+## Débogage
+print(f'Pos_god: {localisations_px}')
+print(f'Pos_nous: {positions_estimée}')
+print(f'Msd_god est = {MSDs_god}')
+print(f'Msd_nous est ={MSDs}')
+
+# Créer le graphique
+plt.figure(figsize=(8, 6))
+
+plt.scatter(range(len(MSDs)), MSDs, color='blue')
+#plt.scatter(x2, y2, color='red', label='Vecteur 2', marker='x')
+plt.xlabel('X')
+plt.ylabel('Y')
+plt.title('Affichage de deux vecteurs de positions')
+
+plt.show()
 
 ##### RUN #####
 
 #for positions in localisations_px:
 #    print(positions)
 
-grille = cameraman_god((500,300), f2, na, lamb, M_theo, poisson_lamb, mean_photon_count)
-grille_zoom, point_de_reference  = crop_blob(grille)[0], crop_blob(grille)[1]
-result = localisateur_gaussien(grille_zoom)
+# # Affichage des résultats ajustés et originaux
+# plt.figure(figsize=(10, 5))
 
-print('après result')
+# # Affichage de la grille zoomée
+# plt.subplot(1, 2, 1)
+# plt.imshow(grille_zoom, origin='lower', cmap='gray')
+# plt.title('Grille Zoomée')
+# plt.colorbar()
 
-#Redimensionner le meilleur ajustement à la forme correcte de grille_zoom
-Z_fit = result.best_fit.reshape(grille_zoom.shape)  # Utiliser la forme de grille_zoom
+# # Affichage de l'ajustement gaussien
+# plt.subplot(1, 2, 2)
+# plt.imshow(Z_fit, origin='lower', cmap='gray')
+# plt.title('Ajustement Gaussien')
+# plt.colorbar()
 
-# Extraire les paramètres ajustés pour la moyenne de la gaussienne
-x0_fit = result.params['x0'].value
-y0_fit = result.params['y0'].value
+# plt.show()
 
-print(f"Point moyen = ({x0_fit:.2f}, {y0_fit:.2f}) pixels")
-
-# Affichage des résultats ajustés et originaux
-plt.figure(figsize=(10, 5))
-
-# Affichage de la grille zoomée
-plt.subplot(1, 2, 1)
-plt.imshow(grille_zoom, origin='lower', cmap='gray')
-plt.title('Grille Zoomée')
-plt.colorbar()
-
-# Affichage de l'ajustement gaussien
-plt.subplot(1, 2, 2)
-plt.imshow(Z_fit, origin='lower', cmap='gray')
-plt.title('Ajustement Gaussien')
-plt.colorbar()
-
-plt.show()
-
-# Extraire les paramètres ajustés pour la moyenne de la gaussienne
-x0_fit = result.params['x0'].value
-y0_fit = result.params['y0'].value
-
-# Calcul de la position du blob dans la grille initiale
-x_blob_initial = x0_fit + point_de_reference[0]
-y_blob_initial = y0_fit + point_de_reference[1]
-
-# Affichage de la position dans la grille initiale
-print(f"Position du blob dans la grille initiale : ({x_blob_initial:.2f}, {y_blob_initial:.2f}) pixels")
+# # Affichage de la position dans la grille initiale
+# print(f"Position du blob dans la grille initiale : ({x_blob_initial:.2f}, {y_blob_initial:.2f}) pixels")
 
 
 
