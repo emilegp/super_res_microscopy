@@ -254,7 +254,7 @@ Dans le graphique de la MSD en fonction du nombre d'intervalles, chaque point co
 trace donc une régression linéaire et l'incertitude sur la valeur de la pente de cette régression est donnée par l'équation suivante
 qui considère qu'il n'y a des incertitudes que sur les valeurs en y (MSD) et que cette incertitude n'est pas constante pour chaque point, 
 \begin{equation}
-  \Delta D=\sqrt{\frac{\sum_{i=1}^{N}\frac{\Delta MSD_{i}}{(x_{i}-\overline{x})^{2}}}{\sum_{i=1}^{N}\frac{1}{(x_{i}-\overline{x})^{2}}}}
+  \Delta D=\sqrt{\frac{\sum_{i=1}^{N}(\Delta MSD_{i})^{2}}{\sum_{i=1}^{N}{(x_{i}-\overline{x})^{2}}}}
 \end{equation}
 Avec N qui est le nombre d'intervalles considéré. 
 
