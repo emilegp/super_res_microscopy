@@ -6,6 +6,7 @@ from scipy.optimize import curve_fit
 import lmfit
 import cv2
 import csv
+import os
 
 pixel_size = 3.45 # en um, x et y
 cam_width = 1440
@@ -232,34 +233,20 @@ variance = np.sqrt(2*D*delta_t)*10**(6) # um
 pxl = pixel_size / (f2 * M_theo / 160)  # Pixel size in um
 variance_px = variance / pxl  # Variance in pixels
 
-##### Partie God #####
-localisations_px = Deplacement_brownien(particule_initiale_px, variance_px, nb_steps)
-grille = cameraman_god((500,300), f2, na, lamb, M_theo, poisson_lamb, mean_photon_count)
-MSDs_god = MSD_cumsum(localisations_px, nb_steps)
+output_dir = 'output_images_csv'
+loaded_images = []
+for idx in range(nb_steps):
+    filename = os.path.join(output_dir, f'image_{idx+1}.csv')
+    image = np.loadtxt(filename, delimiter=',', dtype=int)
+    loaded_images.append(image)
+    print(f'Loaded image_{idx+1}.csv')
 
-images_progression=[]
-for position_au_temps_t in localisations_px:
-    images_progression.append(cameraman_god((position_au_temps_t[1], position_au_temps_t[0]), f2, na, lamb, M_theo, poisson_lamb, mean_photon_count))
-    print('image obtenue')
+positions_estimée=positionneur(loaded_images)
+MSDs = MSD_cumsum(positions_estimée, nb_steps)
 
-# np.savetxt('grilles_intensite.csv', images_progression.reshape(-1, images_progression.shape[-1]), delimiter=',')
-
-
-# ##### Partie Nous #####
-# test_csv = np.loadtxt('grille_intensite.csv', delimiter=',')
-positions_estimée=positionneur(images_progression)
-# MSDs = MSD_cumsum(positions_estimée, nb_steps)
-# Remplacer cet appel
-# MSDs = MSD_cumsum(positions_estimée, nb_steps)
-
-# Par ceci :
 delta_x = np.full(positions_estimée.shape[0], 0.05)  # Exemple d'incertitude sur x
 delta_y = np.full(positions_estimée.shape[0], 0.05)  # Exemple d'incertitude sur y
 MSDs, msd_uncertainties = calculate_msd_with_uncertainty(positions_estimée, delta_x, delta_y, nb_steps)
-
-## Débogage
-print(f'Pos_god: {localisations_px}')
-print(f'Pos_nous: {positions_estimée}')
 
 # Créer le graphique
 plt.figure(figsize=(8, 6))
