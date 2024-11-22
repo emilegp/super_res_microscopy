@@ -135,7 +135,7 @@ def localisateur_gaussien(intensity_grid):
     # Effectuer l'ajustement
     result = model.fit(zdata, params, xy=(xdata, ydata))
 
-    return result
+    return result, result.params['sigma_x'].value, result.params['sigma_y'].value
 
 def Deplacement_brownien(particule_loc, sigma, n_steps):
     dx=np.random.normal(0,sigma, n_steps)
