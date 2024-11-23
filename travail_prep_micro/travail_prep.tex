@@ -171,7 +171,7 @@ avec le grossissement réel :
   P = \frac{p_{r}}{M_{r}} = \frac{p_{r}\;160 \text{ mm}}{f_{obj}M}.
 \end{equation}
 
-\textcolor{red}{on a $f_{obj} = 150$ for sure car seule pièce dispo} Pour créer un environnement plus fidèle à la réalité, un fond de bruit
+Pour créer un environnement plus fidèle à la réalité, un fond de bruit
 a été rajouté, où les photons émis suivent une distribution de Poisson avec \textit{np.random.poisson}. En raison de la diffraction 
 causée par le système optique, la particule a due être simulée
 telle qu'elle serait perçue par la caméra dans le montage réel. En fonction des composantes optiques utilisées,
@@ -195,12 +195,13 @@ Pour simuler le mouvement d'une particule, on utilise le principe du mouvement b
 C'est-à-dire que le centre d'une gaussienne est placé à la position exacte de la particule,
 la gaussienne a l'écart-type suivant:
 \begin{equation}
-  \sigma =\sqrt{2\left ( \frac{k_{B}T}{2\pi \eta r} \right )\Delta t}
+  \sigma = \sqrt{2D\Delta t} = \sqrt{2\left ( \frac{k_{B}T}{2\pi \eta r} \right )\Delta t},
 \end{equation}
-Avec $k_{B}$ la constante de Blozmann, T la température en Kelvin, $\eta$ la viscosité en $Pa\cdot s$, r le rayon de la particule en mètre et $\Delta t$ le temps entre chaque déplacement en secondes. 
+où $D$ est le coefficient de diffusion, $k_{B}$ la constante de Blozmann, T la température en Kelvin, $\eta$ la viscosité en $Pa\cdot s$, r le rayon de la particule en mètre et $\Delta t$ le temps entre chaque déplacement en secondes. 
 Cette gaussienne permet de déterminer la probabilité de présence de la particule sur une position x et y, relativement proche de la position initiale, après un certain temps $\Delta t$.  Avec une fonction python, 
 il est possible de placer la particule à sa nouvelle position en tenant compte de ces probabilités. Cette opération est repérée successivement pour observer finalement 
-le déplacement de la particule. 
+le déplacement de la particule, et est testé pour des particules de diamètre de 1 et 10 µm.
+
 
 Après avoir simulé le mouvement d'une particule, l'analyse a pu être effectuée en utilisant une procédure similaire
 à celle qui sera utilisée pour le système réel. Pour chaque image capturée lors de l'acquisition (définie par un temps d'acquisition $\Delta t$), un \textit{fit}
@@ -225,10 +226,14 @@ Une fois les valeurs des MDS trouvés pour chaque déplacement de même interval
 des MDS en fonction de la valeur de l'intervalle $\Delta t$. Sur ce graphique, seuls les premiers points seront sélectionnés, c'est à dire pour des $\Delta t$ faible.
 Cette procédure est nécessaire pour observée le réel comportement du mouvement, car plus $\Delta t$ est petit, plus il y a de paire de points disponible. 
 Une fois que seuls les premiers points apparaissent sur le graphique, il est possible d'effectuer une régression linéaire sur
-ces points, c'est la pente de cette régression qui donnera la valeur du coefficient de diffusion D estimé par notre microscope. 
+ces points, c'est la pente de cette régression qui donnera la valeur du coefficient de diffusion $D$ et la taille de la particule $r$ estimée par notre microscope :
+
+\begin{equation}
+  \langle MSD(t) \rangle = 4Dt + 4\sigma^{2}
+\end{equation}
 
 Les valeurs obtenues par cette procédure comportent toutes une incertitude. Pour commencer, l'incertitude sur chaque 
-position x et y de chaque point est donné par l'écart type de ça gaussienne, cette incertitude est donc donnée par 
+position x et y de chaque point est donné par l'écart type de sa gaussienne, cette incertitude est donc donnée par 
 \begin{equation}
   \Delta x=\Delta y=\sigma 
 \end{equation}
@@ -266,10 +271,6 @@ qui considère qu'il n'y a des incertitudes que sur les valeurs en y (MSD) et qu
 \end{equation}
 Avec N qui est le nombre d'intervalles considéré. 
 
-\textcolor{red}{Formule de la droite de régression linéaire}
-
-\textcolor{red}{Formule de D en fonction des params (taille particule)}
-
 Afin de déterminer quels objectifs de microscope considérer pour le produit final, la définition
 de la résolution est nécessaire pour la vérification du théorème d'échantillonnage de Nyquist. Soit $d$,
 la limite de diffraction pour une source ponctuelle au travers d'une ouverture \textcolor{red}{source video}:
@@ -294,12 +295,17 @@ réelle sur l'image est perdue.
 
 % source B : https://www.thorlabs.com/thorproduct.cfm?partnumber=CS165MU
 
+Le tableau \ref{tableau_nyq} présente les calculs de chaque côté de l'inégalité (\ref{nyquist}) pour
+chaque combinaison de paramètres possibles avec le matériel mis à disposition par le gouvernement local.
+Quatres objetifs, tous ayant une paire de $M$ et NA, ainsi que deux sources de lumière pour faire émettre
+des photons par les fluorophores dans les échantillons sont disponibles. La seule lentille $f_{obj}$ disponible a 150 mm de longueur focale.
+
 \begin{table}[!ht]
     \centering
     \caption{Test}
     \begin{tabular}{|c|cc||c|c|}
     \hline
-        $\lambda$ (nm) & M & NA & P (µm) & d/2 (µm) \\ \hline\hline
+        $\lambda$ (nm) & $M$ & NA & $P$ (µm) & $d/2$ (µm) \\ \hline\hline
         \multirow{4}{*}{405} & 10 & 0.25 & 0.368 & 0.810 \\ \cline{2-5}
                              & 20 & 0.4  & 0.184 & 0.506 \\ \cline{2-5}
                              & 40 & 0.65 & 0.092 & 0.312 \\ \cline{2-5}
@@ -309,18 +315,15 @@ réelle sur l'image est perdue.
                              & 40 & 0.65 & 0.092 & 0.288 \\ \cline{2-5}
                              & 60 & 0.85 & 0.061 & 0.221 \\ \hline
     \end{tabular}
-
+\label{tableau_nyq}
 \end{table}
 
+Selon les deux dernières colonnes, les paramètres choisis respectaient tous le critère de Nyquist.
+De plus, l'impact des paramètres sur la résolution semblait indiquer qu'un plus grand $M$ (et NA)
+ainsi qu'une plus petite longueur d'onde étaient à préconiser pour minimiser $d$. La simulation suivant
+le modèle mathématique a vérifié cela. Enfin, les variations des paramètres ainsi que les équations
+développés ont permis de poser l'hypothèse que les paramètres ne s'infuencent pas entre eux.
 
-
-
-
-\textcolor{red}{liste des paramètres (il manque taille des part.)}
-
-\textcolor{red}{resultat nyquist}
-
-\textcolor{red}{param choisis et interdependance}
 
 \section{Résultats \label{resultats}}
 
@@ -328,13 +331,17 @@ réelle sur l'image est perdue.
 
 \textcolor{red}{fig regressions linéaires (pour 4 objectifs)}
 
-\textcolor{red}{tableau des résultats : valeur de D, err rel de D, valeur de taille de particule, err rel sur taille de particule}
+\textcolor{red}{tableau des résultats : valeur de D, valeur de taille de particule, err rel sur taille de particule et D}
 
 
 
 \section{Discussion}
 
-\textcolor{red}{quel combo a la meilleure resolution $d$ avec le moins d'incertitude}
+\textcolor{red}{resultat avec meilleure precision, solution retenue}
+
+\textcolor{red}{tendances (si on avait le choix de n'importe quel pièce on voudrait quoi)}
+
+\textcolor{red}{considérations pratiques (ex : trop grande magnification baisse le field of view)}
 
 %\printbibliography
 
