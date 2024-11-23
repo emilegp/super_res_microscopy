@@ -1,11 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.special import j1  # Bessel function
-from scipy.ndimage import label, center_of_mass
-from scipy.optimize import curve_fit
-import lmfit
-import cv2
-import csv
 import os
 
 pixel_size = 3.45 # en um, x et y
@@ -19,7 +14,17 @@ na = 0.4  # Numerical aperture
 lamb = 0.405  # Wavelength in um
 M_theo = 20  # Magnification of the objective
 poisson_lamb = 400  # Average number of photons
-mean_photon_count = 1  # Mean number of photons emitted
+mean_photon_count = 2  # Mean number of photons emitted
+
+# Simuler les localisations
+#D = (1.38 * 10**-23 * 300 / (6 * np.pi * 10**(-3) * 0.5*10**-6))  # Diffusion coefficient
+D = 1.0981691 * 10**(-13) # m^2/s
+nb_steps = 50
+duree_totale = 1
+delta_t = duree_totale/nb_steps
+variance = np.sqrt(2*D*delta_t)*10**(6) # um
+pxl = pixel_size / (f2 * M_theo / 160)  # Pixel size in um
+variance_px = variance / pxl  # Variance in pixels
 
 x = np.arange(cam_width)
 y = np.arange(cam_height)
@@ -43,18 +48,6 @@ def psf(xx, yy, particle_pos, na, lamb, effective_pixel_size):
     psf[r == 0] = 1  # traitement de la singularite
 
     return psf
-
-def gaussian_2d(xy, amplitude, x0, y0, sigma_x, sigma_y, offset):
-    x, y = xy
-    a = 1 / (2 * sigma_x**2)
-    b = 1 / (2 * sigma_y**2)
-    return offset + amplitude * np.exp(- (a * (x - x0)**2 + b * (y - y0)**2))
-
-def zoom(grid, loc):
-    return grid[int(loc[1])-10 : int(loc[1])+11, int(loc[0])-10 : int(loc[0])+11]
-
-def prepare_data(x, y, z):
-    return (x.flatten(), y.flatten()), z.flatten()
 
 def cameraman_god(particle_loc, f2, na, lamb, M_theo, poisson_lamb, mean_photon_count):
     # Magnification réelle
@@ -101,42 +94,6 @@ def cameraman_god(particle_loc, f2, na, lamb, M_theo, poisson_lamb, mean_photon_
 
     return intensity_grid
 
-def localisateur_gaussien(intensity_grid):
-    ##### Fit de Gaussienne #####
-
-    # Générer les coordonnées x et y pour chaque pixel de l'image
-    x = np.arange(intensity_grid.shape[1])  # Coordonnées x de chaque pixel
-    y = np.arange(intensity_grid.shape[0])  # Coordonnées y de chaque pixel
-    X, Y = np.meshgrid(x, y)  # Crée un maillage de coordonnées (X, Y)
-
-    # Préparer les données pour le fit
-    (xdata, ydata), zdata = prepare_data(X, Y, intensity_grid)
-
-    # Créer le modèle Gaussien et définir les paramètres initiaux
-    model = lmfit.Model(gaussian_2d)
-
-    # Trouver les indices de l'intensité maximale
-    max_idx = np.unravel_index(np.argmax(intensity_grid), intensity_grid.shape)
-
-    # Convertir les indices en coordonnées
-    initial_x0 = x[max_idx[0]]  # coordonnée x
-    initial_y0 = y[max_idx[1]]  # coordonnée y
-
-    # Définir les paramètres du modèle
-    params = model.make_params(
-        amplitude=np.max(intensity_grid),
-        x0=initial_x0,
-        y0=initial_y0,
-        sigma_x=10,
-        sigma_y=10,
-        offset=0
-    )
-
-    # Effectuer l'ajustement
-    result = model.fit(zdata, params, xy=(xdata, ydata))
-
-    return result
-
 def Deplacement_brownien(particule_loc, sigma, n_steps):
     dx=np.random.normal(0,sigma, n_steps)
     dy=np.random.normal(0,sigma, n_steps)
@@ -155,62 +112,6 @@ def MSD_cumsum(positions, n_steps):
     
     return np.array(msd)
 
-def crop_blob(image, index=0, crop_size=50):
-    grille = np.uint8((image/np.max(image))*255)
-    print(grille.shape)  # Affiche la forme de l'image
-
-    # Threshold to create a binary image
-    _, binary = cv2.threshold(grille, 175, 255, cv2.THRESH_BINARY)
-
-    # Detect blobs using connected-component analysis
-    structure = np.ones((3, 3), dtype=int)  # Define connectivity
-    labeled, num_features = label(binary, structure=structure)
-
-    # Get blob centers
-    blob_centers = center_of_mass(binary, labeled, range(1, num_features + 1))
-
-    # Ensure the index is within bounds
-    if 0 <= index < len(blob_centers):
-        # Get the coordinates of the selected blob
-        x, y = int(blob_centers[index][0]), int(blob_centers[index][1])
-
-        # Define crop boundaries
-        x_start, x_end = max(0, x - crop_size // 2), min(grille.shape[0], x + crop_size // 2)
-        y_start, y_end = max(0, y - crop_size // 2), min(grille.shape[1], y + crop_size // 2)
-
-        # Crop the image around the blob
-        cropped_image = grille[x_start:x_end, y_start:y_end]
-        return [cropped_image, [x_start, y_start]] #OU position centrale possiblement
-    else:
-        print("Invalid index!")
-        return None
-
-def positionneur(vecteur_dimages):
-    trajectoire=[]
-    for image in vecteur_dimages:
-        grille_zoom, point_de_reference  = crop_blob(image)[0], crop_blob(image)[1]
-        result = localisateur_gaussien(grille_zoom)
-
-        #Redimensionner le meilleur ajustement à la forme correcte de grille_zoom
-        Z_fit = result.best_fit.reshape(grille_zoom.shape)  # Utiliser la forme de grille_zoom
-
-        # Extraire les paramètres ajustés pour la moyenne de la gaussienne
-        x_position = result.params['x0'].value + point_de_reference[0]
-        y_position = result.params['y0'].value + point_de_reference[1]
-        trajectoire.append([x_position, y_position])
-
-    return np.array(trajectoire)
-
-# Simuler les localisations
-#D = (1.38 * 10**-23 * 300 / (6 * np.pi * 10**(-3) * 10**-6))  # Diffusion coefficient
-D = 2.196338215 * 10**(-13) # m^2/s
-nb_steps = 50
-duree_totale = 1
-delta_t = duree_totale/nb_steps
-variance = np.sqrt(2*D*delta_t)*10**(6) # um
-pxl = pixel_size / (f2 * M_theo / 160)  # Pixel size in um
-variance_px = variance / pxl  # Variance in pixels
-
 ##### Partie God #####
 localisations_px = Deplacement_brownien(particule_initiale_px, variance_px, nb_steps)
 grille = cameraman_god((500,300), f2, na, lamb, M_theo, poisson_lamb, mean_photon_count)
@@ -222,7 +123,7 @@ for position_au_temps_t in localisations_px:
     print('image obtenue')
 
 # Dossier de sauvegarde
-output_dir = 'runs/f2=100_lamb=405_na=0,4_Mtheo=20_Size=1um'
+output_dir = 'runs/test'
 os.makedirs(output_dir, exist_ok=True)
 
 # Sauvegarder chaque image sous forme de fichier CSV
