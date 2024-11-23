@@ -222,7 +222,7 @@ for position_au_temps_t in localisations_px:
     print('image obtenue')
 
 # Dossier de sauvegarde
-output_dir = 'runs/f2=150_lamb=375_na=0,4_Mtheo=20'
+output_dir = 'runs/f2=150_lamb=375_na=0,4_Mtheo=20_Size=1um'
 os.makedirs(output_dir, exist_ok=True)
 
 # Sauvegarder chaque image sous forme de fichier CSV
