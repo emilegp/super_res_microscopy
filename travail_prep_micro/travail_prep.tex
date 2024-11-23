@@ -199,7 +199,7 @@ la gaussienne a l'écart-type suivant:
 \end{equation}
 Avec $k_{B}$ la constante de Blozmann, T la température en Kelvin, $\eta$ la viscosité en $Pa\cdot s$, r le rayon de la particule en mètre et $\Delta t$ le temps entre chaque déplacement en secondes. 
 Cette gaussienne permet de déterminer la probabilité de présence de la particule sur une position x et y, relativement proche de la position initiale, après un certain temps $\Delta t$.  Avec une fonction python, 
-il est possible de placer la particule à sa nouvelle position en tenant compte de ces probabilités. Cette opération est repérée un nombre successif de fois pour observer finalement 
+il est possible de placer la particule à sa nouvelle position en tenant compte de ces probabilités. Cette opération est repérée successivement pour observer finalement 
 le déplacement de la particule. 
 
 Après avoir simulé le mouvement d'une particule, l'analyse a pu être effectuée en utilisant une procédure similaire
@@ -223,7 +223,7 @@ entre deux point placés a $\Delta t=2$ d'intervalle. On peut modéliser ce calc
 Avec $N_{\Delta t}$ qui est le nombre de pairs i disponible pour un intervalle $\Delta t$ et $\Delta t$ qui varient de 1 jusqu'au nombre de positions-1. 
 Une fois les valeurs des MDS trouvés pour chaque déplacement de même intervalle, il est possible de généré un graphique 
 des MDS en fonction de la valeur de l'intervalle $\Delta t$. Sur ce graphique, seuls les premiers points seront sélectionnés, c'est à dire pour des $\Delta t$ faible.
-Cette procédure est nécessaire pour observée le réel comportement du mouvement, car plus $\Delta t$ est petit plus il y a de paire de points disponible. 
+Cette procédure est nécessaire pour observée le réel comportement du mouvement, car plus $\Delta t$ est petit, plus il y a de paire de points disponible. 
 Une fois que seuls les premiers points apparaissent sur le graphique, il est possible d'effectuer une régression linéaire sur
 ces points, c'est la pente de cette régression qui donnera la valeur du coefficient de diffusion D estimé par notre microscope. 
 

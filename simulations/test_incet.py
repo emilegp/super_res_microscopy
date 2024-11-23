@@ -236,7 +236,7 @@ variance = np.sqrt(2*D*delta_t)*10**(6) # um
 pxl = pixel_size / (f2 * M_theo / 160)  # Pixel size in um
 variance_px = variance / pxl  # Variance in pixels
 
-output_dir = 'runs/output_images_csv'
+output_dir = 'runs/f2=150_lamb=405_na=0,4_Mtheo=20_Size=1um'
 loaded_images = []
 for idx in range(nb_steps):
     filename = os.path.join(output_dir, f'image_{idx+1}.csv')
