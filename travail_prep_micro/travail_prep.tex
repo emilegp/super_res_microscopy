@@ -144,7 +144,7 @@ dans la figure \ref{sys} ci-dessous.
 Afin de simuler les observations et les analyses qui seront faites avec le microscope,
 une modélisation du mouvement d'une particule a premièrement été effectué sur un scripte Python.
 Pour les fins du projet, il a été décidé que de simuler une seule particule serait suffisant pour
-évaluer les paramètres à optimiser. En guise d'équivalence de la magnification réelle du microscope, 
+évaluer les paramètres à optimiser \textcolor{red}{pk?}. En guise d'équivalence de la magnification réelle du microscope, 
 une taille de pixel effective $P$ a eu besoin d'être posée. Le calcul de cette taille $P$ est obtenue à partir du grossissement $M$ de l'objectif ainsi qu'avec la
 focale de la lentille de tube $f_{tube}$. Le grossissement est défini tel que :
 
@@ -171,9 +171,7 @@ avec le grossissement réel :
   P = \frac{p_{r}}{M_{r}} = \frac{p_{r}\;160 \text{ mm}}{f_{obj}M}.
 \end{equation}
 
-
-
-Pour créer un environnement plus fidèle à la réalité, un fond de bruit
+\textcolor{red}{on a $f_{obj} = 150$ for sure car seule pièce dispo} Pour créer un environnement plus fidèle à la réalité, un fond de bruit
 a été rajouté, où les photons émis suivent une distribution de Poisson avec \textit{np.random.poisson}. En raison de la diffraction 
 causée par le système optique, la particule a due être simulée
 telle qu'elle serait perçue par la caméra dans le montage réel. En fonction des composantes optiques utilisées,
@@ -189,7 +187,7 @@ est une fonction de Bessel. L'émission des photons dans le temps s'effectue sel
 \end{equation}
 où $k$ est le nombre d'évènements et $\lambda$ est le nombre moyen d'évènements
 survenus au cours d'un intervalle de temps $\Delta t$ (le temps d'acquisition). Numériquement, ceci correspond à effectuer un nombre de simulations
-d'émission choisi avec \textit{np.random.poisson} et un $\lambda$ arbitraire. La position de chaque photon
+d'émission choisi avec \textit{np.random.poisson} et un $\lambda$ arbitraire \textcolor{red}{setté à cbn?}. La position de chaque photon
 émis durant la simulation est déterminée à l'aide de la distribution de probabilité imposée par la fonction d'étalement 
 de la particule ($PSF$).
 
@@ -210,7 +208,7 @@ d'une gaussienne 2D a été effectuée avec la librairie \textit{lmfit}. La fonc
 \begin{equation}
   f(x,y)=A\cdot exp\left(-\left[\frac{(x-x_0)^2}{2\sigma_x^2}+\frac{(y-y_0)^2}{2\sigma_y^2}\right]\right)+B.
 \end{equation}
-À partir de la fonction obtenue, les moyennes en $x$ et en $y$ ($x_0,y_0$) de la gaussienne sont obtenus
+\textcolor{red}{où $A$ est... }À partir de la fonction obtenue, les moyennes en $x$ et en $y$ ($x_0,y_0$) de la gaussienne sont obtenus
 pour déterminer la position de la particule à cet instant. En effectuant ce processus pour chaque image de l'acquisition,
 on a pu obtenir le déplacement général de la particule pour un certain lapse de temps.
 
@@ -268,6 +266,10 @@ qui considère qu'il n'y a des incertitudes que sur les valeurs en y (MSD) et qu
 \end{equation}
 Avec N qui est le nombre d'intervalles considéré. 
 
+\textcolor{red}{Formule de la droite de régression linéaire}
+
+\textcolor{red}{Formule de D en fonction des params (taille particule)}
+
 Afin de déterminer quels objectifs de microscope considérer pour le produit final, la définition
 de la résolution est nécessaire pour la vérification du théorème d'échantillonnage de Nyquist. Soit $d$,
 la limite de diffraction pour une source ponctuelle au travers d'une ouverture \textcolor{red}{source video}:
@@ -292,7 +294,41 @@ réelle sur l'image est perdue.
 
 % source B : https://www.thorlabs.com/thorproduct.cfm?partnumber=CS165MU
 
+\begin{table}[!ht]
+    \centering
+    \caption{Test}
+    \begin{tabular}{|c|cc||c|c|}
+    \hline
+        $\lambda$ (nm) & M & NA & P (µm) & d/2 (µm) \\ \hline\hline
+        \multirow{4}{*}{405} & 10 & 0.25 & 0.368 & 0.810 \\ \cline{2-5}
+                             & 20 & 0.4  & 0.184 & 0.506 \\ \cline{2-5}
+                             & 40 & 0.65 & 0.092 & 0.312 \\ \cline{2-5}
+                             & 60 & 0.85 & 0.061 & 0.238 \\ \hline
+        \multirow{4}{*}{375} & 10 & 0.25 & 0.368 & 0.750 \\ \cline{2-5}
+                             & 20 & 0.4  & 0.184 & 0.469 \\ \cline{2-5}
+                             & 40 & 0.65 & 0.092 & 0.288 \\ \cline{2-5}
+                             & 60 & 0.85 & 0.061 & 0.221 \\ \hline
+    \end{tabular}
+
+\end{table}
+
+
+
+
+
+\textcolor{red}{liste des paramètres (il manque taille des part.)}
+
+\textcolor{red}{resultat nyquist}
+
+\textcolor{red}{param choisis et interdependance}
+
 \section{Résultats \label{resultats}}
+
+\textcolor{red}{fig déplacement particule dans l'espace}
+
+\textcolor{red}{fig regressions linéaires (pour 4 objectifs)}
+
+\textcolor{red}{tableau des résultats : valeur de D, err rel de D, valeur de taille de particule, err rel sur taille de particule}
 
 
 
