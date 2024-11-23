@@ -14,9 +14,9 @@ cam_height = 1080
 particule_initiale_px = (500, 300)
 
 # Paramètres de la simulation
-f2 = 150  # Facteur de l'objectif
+f2 = 100  # Facteur de l'objectif
 na = 0.4  # Numerical aperture
-lamb = 0.375  # Wavelength in um
+lamb = 0.405  # Wavelength in um
 M_theo = 20  # Magnification of the objective
 poisson_lamb = 400  # Average number of photons
 mean_photon_count = 1  # Mean number of photons emitted
@@ -222,7 +222,7 @@ for position_au_temps_t in localisations_px:
     print('image obtenue')
 
 # Dossier de sauvegarde
-output_dir = 'runs/f2=150_lamb=375_na=0,4_Mtheo=20_Size=1um'
+output_dir = 'runs/f2=100_lamb=405_na=0,4_Mtheo=20_Size=1um'
 os.makedirs(output_dir, exist_ok=True)
 
 # Sauvegarder chaque image sous forme de fichier CSV
