@@ -9,12 +9,13 @@ cam_height = 1080
 particule_initiale_px = (500, 300)
 
 # Paramètres de la simulation
-f2 = 100  # Facteur de l'objectif
+f2 = 150  # Facteur de l'objectif
 na = 0.4  # Numerical aperture
-lamb = 0.405  # Wavelength in um
+lamb = 0.375  # Wavelength in um
 M_theo = 20  # Magnification of the objective
 poisson_lamb = 400  # Average number of photons
 mean_photon_count = 2  # Mean number of photons emitted
+output_dir = 'runs/f2=150_lamb=375_na=0,4_Mtheo=20_Size=1um'
 
 # Simuler les localisations
 #D = (1.38 * 10**-23 * 300 / (6 * np.pi * 10**(-3) * 0.5*10**-6))  # Diffusion coefficient
@@ -117,13 +118,22 @@ localisations_px = Deplacement_brownien(particule_initiale_px, variance_px, nb_s
 grille = cameraman_god((500,300), f2, na, lamb, M_theo, poisson_lamb, mean_photon_count)
 MSDs_god = MSD_cumsum(localisations_px, nb_steps)
 
+def visionneur(video_camera, index):
+    plt.figure(figsize=(10, 5))
+    frame_zoom = video_camera[index]  # Utilisation de slice (x_min:x_max, y_min:y_max)
+    plt.clf()  # Effacer la figure précédente pour éviter l'empilement des images
+    plt.imshow(frame_zoom, origin='lower', cmap='gray')
+    plt.title('Grille Zoomée avec Position')
+    plt.colorbar()  # Ajouter la colorbar
+    plt.show()
+
 images_progression=[]
 for position_au_temps_t in localisations_px:
-    images_progression.append(cameraman_god((position_au_temps_t[1], position_au_temps_t[0]), f2, na, lamb, M_theo, poisson_lamb, mean_photon_count))
+    frame=cameraman_god((position_au_temps_t[0], position_au_temps_t[1]), f2, na, lamb, M_theo, poisson_lamb, mean_photon_count)
+    images_progression.append(frame)
     print('image obtenue')
 
 # Dossier de sauvegarde
-output_dir = 'runs/test'
 os.makedirs(output_dir, exist_ok=True)
 
 # Sauvegarder chaque image sous forme de fichier CSV
