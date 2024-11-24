@@ -20,6 +20,8 @@ M_theo = 20  # Magnification of the objective
 poisson_lamb = 400  # Average number of photons
 mean_photon_count = 2  # Mean number of photons emitted
 
+output_dir = 'runs/f2=150_lamb=375_na=0,4_Mtheo=20_Size=1um'
+
 # D théorique, taille pxiel et variance théorique
 #D = (1.38 * 10**-23 * 300 / (6 * np.pi * 10**(-3) * 0.5*10**-6))  # Diffusion coefficient
 D = 1.0981691 * 10**(-13) # m^2/s
@@ -150,7 +152,6 @@ def positionneur(vecteur_dimages):
 
     return np.array(trajectoire), video, np.array(sigma_x), np.array(sigma_y)
 
-output_dir = 'runs/f2=150_lamb=405_na=0,4_Mtheo=20_Size=1um'
 loaded_images = []
 for idx in range(nb_steps):
     filename = os.path.join(output_dir, f'image_{idx+1}.csv')
@@ -197,10 +198,12 @@ plt.show()
 # Calcul de D et de la taille de la particule
 Taille = 1 # um 
 D_estime = (m_fit/4 )*(pxl**2) # um^2/s
+D_inc_estime = (m_uncertainty/4)*(pxl**2) # um^2/s
 Taille_estime = Taille * D_estime/(D*(10**12)) # um
+Taille_inc_estime = Taille * D_inc_estime/(D*(10**12)) # um
 
-print(f'D estimé = {D_estime} um^2/s et vrai D = {D*(10**12)} um^2/s')
-print(f'Taille estimé = {Taille_estime} um et vrai Taille = {1} um')
+print(f'D estimé = {D_estime} ± {D_inc_estime:.2f} um^2/s et vrai D = {D*(10**12)} um^2/s')
+print(f'Taille estimé = {Taille_estime} ± {Taille_inc_estime:.2f} um et vrai Taille = {1} um')
 
 
 # Définir la durée de la pause entre chaque image (en secondes)

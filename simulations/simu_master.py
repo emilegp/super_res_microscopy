@@ -15,6 +15,7 @@ lamb = 0.375  # Wavelength in um
 M_theo = 20  # Magnification of the objective
 poisson_lamb = 400  # Average number of photons
 mean_photon_count = 2  # Mean number of photons emitted
+
 output_dir = 'runs/f2=150_lamb=375_na=0,4_Mtheo=20_Size=1um'
 
 # Simuler les localisations
