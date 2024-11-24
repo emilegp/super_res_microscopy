@@ -10,13 +10,13 @@ particule_initiale_px = (500, 300)
 
 # Paramètres de la simulation
 f2 = 150  # Facteur de l'objectif
-na = 0.4  # Numerical aperture
-lamb = 0.375  # Wavelength in um
-M_theo = 20  # Magnification of the objective
+na = 0.85  # Numerical aperture
+lamb = 0.405  # Wavelength in um
+M_theo = 60  # Magnification of the objective
 poisson_lamb = 400  # Average number of photons
 mean_photon_count = 2  # Mean number of photons emitted
 
-output_dir = 'runs/f2=150_lamb=375_na=0,4_Mtheo=20_Size=1um'
+output_dir = 'runs/f2=150_lamb=405_na=0,85_Mtheo=60_Size=1um'
 
 # Simuler les localisations
 #D = (1.38 * 10**-23 * 300 / (6 * np.pi * 10**(-3) * 0.5*10**-6))  # Diffusion coefficient
@@ -31,6 +31,15 @@ variance_px = variance / pxl  # Variance in pixels
 x = np.arange(cam_width)
 y = np.arange(cam_height)
 X, Y = np.meshgrid(x, y)
+
+def visionneur(video_camera, index):
+    plt.figure(figsize=(10, 5))
+    frame_zoom = video_camera[index]  # Utilisation de slice (x_min:x_max, y_min:y_max)
+    plt.clf()  # Effacer la figure précédente pour éviter l'empilement des images
+    plt.imshow(frame_zoom, origin='lower', cmap='gray')
+    plt.title('Grille Zoomée avec Position')
+    plt.colorbar()  # Ajouter la colorbar
+    plt.show()
 
 def psf(xx, yy, particle_pos, na, lamb, effective_pixel_size):
     
@@ -118,15 +127,6 @@ def MSD_cumsum(positions, n_steps):
 localisations_px = Deplacement_brownien(particule_initiale_px, variance_px, nb_steps)
 grille = cameraman_god((500,300), f2, na, lamb, M_theo, poisson_lamb, mean_photon_count)
 MSDs_god = MSD_cumsum(localisations_px, nb_steps)
-
-def visionneur(video_camera, index):
-    plt.figure(figsize=(10, 5))
-    frame_zoom = video_camera[index]  # Utilisation de slice (x_min:x_max, y_min:y_max)
-    plt.clf()  # Effacer la figure précédente pour éviter l'empilement des images
-    plt.imshow(frame_zoom, origin='lower', cmap='gray')
-    plt.title('Grille Zoomée avec Position')
-    plt.colorbar()  # Ajouter la colorbar
-    plt.show()
 
 images_progression=[]
 for position_au_temps_t in localisations_px:

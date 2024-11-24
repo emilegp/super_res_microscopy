@@ -14,13 +14,13 @@ particule_initiale_px = (500, 300)
 
 # Paramètres de la simulation
 f2 = 150  # Facteur de l'objectif
-na = 0.4  # Numerical aperture
+na = 0.85  # Numerical aperture
 lamb = 0.405  # Wavelength in um
-M_theo = 20  # Magnification of the objective
+M_theo = 60  # Magnification of the objective
 poisson_lamb = 400  # Average number of photons
 mean_photon_count = 2  # Mean number of photons emitted
 
-output_dir = 'runs/f2=150_lamb=375_na=0,4_Mtheo=20_Size=1um'
+output_dir = 'runs/f2=150_lamb=405_na=0,85_Mtheo=60_Size=1um'
 
 # D théorique, taille pxiel et variance théorique
 #D = (1.38 * 10**-23 * 300 / (6 * np.pi * 10**(-3) * 0.5*10**-6))  # Diffusion coefficient
@@ -31,10 +31,6 @@ delta_t = duree_totale/nb_steps
 variance = np.sqrt(2*D*delta_t)*10**(6) # um
 pxl = pixel_size / (f2 * M_theo / 160)  # Pixel size in um
 variance_px = variance / pxl  # Variance in pixels
-
-# x = np.arange(cam_width)
-# y = np.arange(cam_height)
-# X, Y = np.meshgrid(x, y)
 
 def visionneur(frame):
     plt.figure(figsize=(10, 5))
@@ -202,8 +198,8 @@ D_inc_estime = (m_uncertainty/4)*(pxl**2) # um^2/s
 Taille_estime = Taille * D_estime/(D*(10**12)) # um
 Taille_inc_estime = Taille * D_inc_estime/(D*(10**12)) # um
 
-print(f'D estimé = {D_estime} ± {D_inc_estime:.2f} um^2/s et vrai D = {D*(10**12)} um^2/s')
-print(f'Taille estimé = {Taille_estime} ± {Taille_inc_estime:.2f} um et vrai Taille = {1} um')
+print(f'D estimé = {D_estime} ± {D_inc_estime} um^2/s et vrai D = {D*(10**12)} um^2/s')
+print(f'Taille estimé = {Taille_estime} ± {Taille_inc_estime} um et vrai Taille = {1} um')
 
 
 # Définir la durée de la pause entre chaque image (en secondes)
