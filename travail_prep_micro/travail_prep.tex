@@ -118,7 +118,7 @@ PHS3910 -- Techniques expérimentales et instrumentation\\
 \textit{\textbf{Résumé} -- Modélisation préliminaire d'un microscope capable de déterminer la taille de 
 particules. La magnification et la PSF d'une particule sont simulés. Son déplacement est simulé à l'aide du
 mouvement brownien, et le coefficient de diffusion est extrait de la courbe du MSD de la particule. Le microscope choisi 
-possède un objectif ayant une magnification de 60 et une ouverture numérique de 0.85, utilise un faisceau laser entrant de 405 nm et une lentille objectif \textcolor{red}{obj ou tube?}
+possède un objectif ayant une magnification de 60 et une ouverture numérique de 0.85, utilise un faisceau laser entrant de 405 nm et une lentille tube
 de longueur focale de 150 mm.}
 \section{Introduction}
 Ayant reçu un contrat d'un gouvernement local nécessitant d'examiner les microparticules contaminantes proches d'une
@@ -127,11 +127,11 @@ du produit final, une simulation du mouvement d'une particule, tel qu'elle serai
 analyse de son déplacement est développée. En simulant la magnification et la fonction d'étalement de la particule (\textit{PSF}), ainsi qu'en soumettant
 celle-ci à un mouvement brownien, il est possible
 de retrouver le coefficient de diffusion à partir de la pente de la courbe de son déplacement moyen au carré (\textit{MSD}).
-La taille de la particule peut directement être extraite de ce résultat. Cette démarche préliminaire permettra
+La taille de la particule peut directement être extraite de ce résultat, caractérisant ainsi les contaminants. Cette démarche préliminaire permettra
 d'estimer l'erreur sur la taille en fonction de la longueur d'onde de la lumière passant à travers le système, de l'objectif utilisé et de la 
 taille de la particule observée.
 
-Les résultats de l'analyse ont entrainés les choix suivants: une magnification de 60, une ouverture numérique de 0.85, une longueur focale pour la lentille objectif \textcolor{red}{obj ou tube?}
+Les résultats de l'analyse ont entrainés les choix suivants: une magnification de 60, une ouverture numérique de 0.85, une longueur focale pour la lentille tube
 de 150 mm et un faisceau laser de 405 nm. Le rapport ci-contre expliquera en détail les méthodes de simulation utilisées pour obtenir 
 les résultats souhaités, présentera les tailles et les erreurs respectives pour chaque ensemble de paramètres et développera les raisonnements
 justifiants les choix de l'équipe.
@@ -158,15 +158,15 @@ focale de la lentille de tube $f_{tube}$. Le grossissement est défini tel que :
   M = \frac{f_{tube}}{f_{obj}},
 \end{equation}
 
-où $f_{obj}$ est la longueur focale de la lentille objectif. Le grossissement $M$ connu des lentilles suit
-un standard de la \textit{Royal Microscopical Society} (RMS) qui pose $f_{tube}$ à 160 mm
-\cite{RMS}. Ainsi, pour avoir le grossissement réel $M_{r}$, il faut convertir avec la 
+où $f_{obj}$ est la longueur focale de la lentille dans l'objectif. Le grossissement $M$ connu des lentilles suit
+un standard de la \textit{Royal Microscopical Society} (RMS) où $f_{tube}$ à 160 mm
+\cite{RMS}. Ce n'est pas le cas ici. Ainsi, pour avoir le grossissement réel $M_{r}$, il faut convertir avec la 
 formule suivante :
 
 % Source A : https://www.microscopyu.com/microscopy-basics/infinity-optical-systems
 
 \begin{equation}\label{m_2}
-  f_{1}= \frac{160 \text{ mm} }{M} \Rightarrow M_{r} = \frac{f_{obj}M}{160 \text{ mm} }.
+  f_{1}= \frac{160 \text{ mm} }{M} \Rightarrow M_{r} = \frac{f_{tube}M}{160 \text{ mm} }.
 \end{equation}
 
 La taille réelle d'un pixel de caméra $p_r$, d'une valeur de 3.45 µm pour la caméra Zelux CS165MU
@@ -174,7 +174,7 @@ mise à disposition pour ce contrat \cite{thorlabs}, peut être convertie en tai
 avec le grossissement réel :
 
 \begin{equation}\label{pixel}
-  P = \frac{p_{r}}{M_{r}} = \frac{p_{r}\;160 \text{ mm}}{f_{obj}M}.
+  P = \frac{p_{r}}{M_{r}} = \frac{p_{r}\;160 \text{ mm}}{f_{tube}M}.
 \end{equation}
 
 Pour créer un environnement plus fidèle à la réalité, un fond de bruit
@@ -194,8 +194,7 @@ est une fonction de Bessel. L'émission des photons dans le temps s'effectue sel
 où $k$ est le nombre d'évènements et $\lambda$ est le nombre moyen d'évènements
 survenus au cours d'un intervalle de temps défini (le temps d'acquisition). Numériquement, ceci correspond à effectuer un nombre de simulations
 d'émission choisi avec \textit{np.random.poisson} et une valeur $\lambda=400$ arbitraire. La position de chaque photon
-émis durant la simulation est déterminée à l'aide de la distribution de probabilité imposée par la fonction d'étalement 
-de la particule ($PSF$).
+émis durant la simulation est déterminée à l'aide de la distribution de probabilité imposée par la $PSF$.
 
 Pour simuler le mouvement d'une particule, on utilise le principe du mouvement brownien.
 Le centre d'une gaussienne est placé à la position exacte de la particule, et son écart-type correspond à la probabilité de présence de la particule sur une position x et y, 
@@ -203,9 +202,9 @@ relativement proche de la position initiale, après un certain intervalle de tem
 \begin{equation}
   \sigma_{diffusion} = \sqrt{2D\Delta t} = \sqrt{2\left ( \frac{k_{B}T}{2\pi \eta r} \right )\Delta t},
 \end{equation}
-où $D$ est le coefficient de diffusion, $k_{B}$ la constante de Boltzmann, T la température en Kelvin, $\eta$ la viscosité en $Pa\cdot s$, r le rayon de la particule en mètre et $\Delta t$ le temps entre chaque déplacement en secondes. 
-Avec une fonction python, il est possible de placer la particule à sa nouvelle position en tenant compte de ces probabilités. Cette opération est répétée successivement pour observer 
-le déplacement de la particule, et est testé pour des particules de diamètre de 1 et 10 µm. Un exemple d'une simulation complétée est présenté dans la figure \ref{simu}.
+où $D$ est le coefficient de diffusion, $k_{B}$ la constante de Boltzmann, T la température en Kelvin, $\eta$ la viscosité en Pa$\cdot$s, r le rayon de la particule en mètre et $\Delta t$ le temps entre chaque déplacement en secondes. 
+Avec une fonction Python, il est possible de placer la particule à sa nouvelle position en tenant compte de ces probabilités. Cette opération est répétée successivement pour observer 
+le déplacement de la particule, et est testée pour des particules de diamètre de 1 et 10 µm. Un exemple d'une simulation complétée est présenté dans la figure \ref{simu}.
 \begin{figure}
   \centering
   \includegraphics[scale=0.5]{Blob-lamb=405nm-Mtheo=60-NA=0,85-Taille=1um.png}
@@ -228,26 +227,28 @@ Une fois les positions obtenues, il est possible de trouver la valeur du coeffic
 Pour ce faire, il est nécessaire d'effectuer le calcul du déplacement quadratique moyen. On réalise ce calcul en faisant la moyenne des déplacements de même intervalle. Par exemple, 
 la première moyenne sera calculée avec toutes les distances séparant deux positions éloignées d'un intervalle de $\Delta t=1$. De la même manière, la deuxième moyenne sera calculée avec toutes les distances
 entre deux points placés à $\Delta t=2$ d'intervalle. On peut modéliser ce calcul par la formule suivante: 
-\begin{equation}
-  MSD = \frac{1}{N_{\Delta t}} \sum_{i=0}^{N_{\Delta t} - 1} \left( \mathbf{r}(i+\Delta t) - \mathbf{r}(i) \right)^2
-\end{equation}
-Avec $N_{\Delta t}$ qui est le nombre de paires $i$ disponibles pour un intervalle $\Delta t$ et $\Delta t$ qui varient de 1 jusqu'au nombre de positions (nombre d'images) moins une. 
-Une fois les valeurs des MDS trouvés pour chaque déplacement de même intervalle, il est possible de générer un graphique 
-des MDS en fonction de la valeur de l'intervalle $\Delta t$. Sur ce graphique, seuls les premiers points seront sélectionnés, c'est-à-dire pour des $\Delta t$ faibles.
+\begin{align}
+  MSD &= \frac{1}{N_{\Delta t}} \sum_{i=0}^{N_{\Delta t} - 1} \left( \mathbf{r}(i+\Delta t) - \mathbf{r}(i) \right)^2,\\ 
+  \mathbf{r}(i) &= x(i)\hat{x}+ y(i)\hat{y}
+\end{align}
+où $N_{\Delta t}$ est le nombre de paires $i$ disponibles pour un intervalle $\Delta t$ et $\Delta t$ qui varie de 1 jusqu'au nombre de positions (nombre d'images) moins une. 
+Une fois les valeurs des MSD
+trouvés pour chaque déplacement de même intervalle, il est possible de générer un graphique 
+des MSD en fonction de la valeur de l'intervalle $\Delta t$. Sur ce graphique, seuls les premiers points seront sélectionnés, c'est-à-dire pour des $\Delta t$ faibles.
 Cette procédure est nécessaire pour observer le comportement réel du mouvement, car plus $\Delta t$ est petit, plus il existe de paires disponibles. 
 Une régression linéaire est effectuée sur
 ces points; c'est la pente de cette régression qui donnera la valeur du coefficient de diffusion $D$ et ainsi la taille de la particule $r$ estimée par notre microscope :
 
 \begin{equation}
-  \langle MSD(t) \rangle = 4Dt + 4\sigma_{diffusion}^{2}
+  \langle MSD(t) \rangle = 4Dt + 4\sigma_{\text{diffusion}}^{2}
 \end{equation}
 où $D=k_{B}T/2\pi \eta r$.
 Les valeurs obtenues par cette procédure comportent toutes une incertitude. L'incertitude sur chaque 
 position $x$ et $y$ est donnée par l'écart-type de sa gaussienne:
 \begin{equation}
-  \Delta x=\Delta y=\sigma_{position}
+  \Delta x=\Delta y=\sigma_{\text{position}}
 \end{equation}
-Une fois l'incertitude déterminée pour chaque valeur, on veut pouvoir déterminer l'incertitude sur chaque valeur de la MSD. 
+Une fois l'incertitude déterminée pour chaque valeur, il faut pouvoir déterminer l'incertitude sur chaque valeur de la MSD. 
 Pour ce faire, on propage l'incertitude, par la formule suivante, de chaque position sur la valeur de la MSD  correspondante: 
 \begin{equation}
   \alpha =A+B
@@ -272,15 +273,12 @@ Pour ce faire, on propage l'incertitude, par la formule suivante, de chaque posi
 \begin{equation}
   \Delta MSD=\frac{1}{N_{\Delta t}}\sqrt{\sum_{0}^{N_{\Delta t}-1}\alpha, }
 \end{equation}
-en sachant que $\left ( r(i+\Delta t)-r(i) \right )^{2}=\left ( x(i+\Delta t)-x(i) \right )^{2}+\left ( y(i+\Delta t)-y(i) \right )^{2}$.
-On peut tracer une régression linéaire, où l'incertitude sur la valeur de la pente de cette régression est donnée par l'équation \ref{deltad}.
+Il est possidle de tracer une régression linéaire, où l'incertitude sur la valeur de la pente est donnée par l'équation (\ref{deltad}).
 Celle-ci considère qu'il n'y a des incertitudes que sur les valeurs en $y$ (MSD) et que cette incertitude n'est pas constante pour chaque point.
 \begin{equation}\label{deltad}
   \Delta D=\sqrt{\frac{\sum_{i=1}^{N}(\Delta MSD_{i})^{2}}{\sum_{i=1}^{N}{(x_{i}-\overline{x})^{2}}}}
 \end{equation}
-Où $N$ est le nombre d'intervalles considéré. 
-
-Afin de déterminer quels objectifs de microscope considérer pour le produit final, la définition
+Où $N$ est le nombre d'intervalles considéré. Afin de déterminer quels objectifs de microscope considérer pour le produit final, la définition
 de la résolution est nécessaire pour la vérification du théorème d'échantillonnage de Nyquist. Soit $d$,
 la limite de diffraction pour une source ponctuelle au travers d'une ouverture \cite{video}:
 \begin{equation}
@@ -296,14 +294,14 @@ de Nyquist, la taille effective d'un pixel de la caméra $P$ dans le plan de l'o
 \end{equation}
 
 
-Ainsi, pour un système avec $f_{obj}$ \textcolor{red}{ou tube?} et $M$ connus (voir équation \ref{pixel}), il est possible de déterminer si le théorème 
+Ainsi, pour un système avec $f_{tube}$ et $M$ connus (voir équation \ref{pixel}), il est possible de déterminer si le théorème 
 (\ref{nyquist}) est respecté pour une longueur d'onde donnée. Cela a permis de déterminer quelles 
 combinaisons de lentille tube, d'objectif de microscope et de source de lumière qui ne sont pas 
 sujettes au phénomène d'\textit{aliasing}, conséquence du non respect de Nyquist où l'information
 réelle sur l'image est perdue.
 
 Les paramètres déterminants qui seront pris en compte pour la simulation se résument à la longueur d'onde du faisceau d'entrée,
-la magnification et l'ouverture numérique de l'objectif, la longueur focale la lentille objectif \textcolor{red}{obj ou tube?}, la taille de la particule ainsi que le 
+la magnification et l'ouverture numérique de l'objectif, la longueur focale la lentille tube, la taille de la particule ainsi que le 
 coefficient de diffusion. Les variations des paramètres ainsi que les équations
 développées ont permis de poser l'hypothèse que les paramètres ne s'infuencent pas entre eux et qu'ils peuvent être traités indépendamment.
 
@@ -314,7 +312,7 @@ développées ont permis de poser l'hypothèse que les paramètres ne s'infuence
 \textcolor{red}{rajouter viscosité} Le tableau \ref{tableau_nyq} présente les calculs de chaque côté de l'inégalité (\ref{nyquist}) pour
 chaque combinaison de paramètres possibles avec le matériel mis à disposition par le gouvernement local.
 Quatres objectifs, tous ayant une paire de $M$ et NA, ainsi que deux sources de lumière pour faire émettre
-des photons par les fluorophores dans les échantillons sont disponibles. La valeur de $f_{obj}$ \textcolor{red}{ou tube?} est fixée à 150 mm, sachant que les lentilles offertes sont limitées à cette longueur focale.
+des photons par les fluorophores dans les échantillons sont disponibles. La valeur de $f_{tube}$ est fixée à 150 mm, sachant que les lentilles offertes sont limitées à cette longueur focale.
 
 \begin{table}[H]
     \centering
@@ -335,7 +333,7 @@ des photons par les fluorophores dans les échantillons sont disponibles. La val
 \end{table}
 
 Les résultats obtenus avec la simulation pour certains paramètres sont présentés dans le tableau \ref{results} ci-dessous. Les valeurs des paramètres $\lambda$,
-$M$ et NA sont les mêmes que ceux présentés dans le tableau \ref{tableau_nyq}. Encore une fois, $f_{obj}$ \textcolor{red}{ou tube?} est fixée à 150 mm pour les simulations. La taille correspond au diamètre
+$M$ et NA sont les mêmes que ceux présentés dans le tableau \ref{tableau_nyq}. Encore une fois, $f_{tube}$ est fixée à 150 mm pour les simulations. La taille correspond au diamètre
 de la particule.
 \begin{table}[H]
   \centering
@@ -343,7 +341,7 @@ de la particule.
   \begin{tabular}{|C{0.5cm}|cc|C{0.6cm}|C{1.3cm}||C{1.1cm}|C{1.1cm}|}
   \hline
       \multicolumn{5}{|c||}{Paramètres} & \multicolumn{2}{c|}{Résultats} \\ \hline
-      $\lambda$ (nm) & $M$ & NA & Taille réelle ($\mu m$) & $D_{vrai}$ ($\mu m^2/s$)  & $D_{est}$ ($\mu m^2/s$)  & Taille estimée ($\mu m$)\\ \hline\hline
+      $\lambda$ (nm) & $M$ & NA & Taille réelle ($\mu m$) & $D_{\text{vrai}}$ ($\mu m^2/s$)  & $D_{\text{est}}$ ($\mu m^2/s$)  & Taille estimée ($\mu m$)\\ \hline\hline
       405 & 10 & 0.25 & 1 & 0.10981691 & 0.065 $\pm$ 0.004 & 0.60 $\pm$ 0.04 \\     
       405 & 20 & 0.4 & 1 & 0.10981691 & 0.087 $\pm$ 0.002 & 0.79 $\pm$ 0.02 \\
       405 & 40 & 0.65 & 1 & 0.10981691 & 0.066 $\pm$ 0.002 & 0.60 $\pm$ 0.02 \\
@@ -367,7 +365,7 @@ Les simulations effectuées pour la deuxième et la cinquième rangées du table
 ont menées à une incertitude relative sur la taille de la particule de 21 $\pm$ 2 \% et 22 $\pm$ 3 \%, respectivement. Ceci correspond à une différence extrêmement minime, surtout en 
 considérant l'ordre de grandeur des erreurs. Leurs incertitudes sont proportionnelles à celles obtenues pour la taille de la particule et sont aussi très similaires. Les valeurs de $d/2$ obtenues dans le
 tableau \ref{tableau_nyq} soutiennent le fait qu'une longueur d'onde plus petite améliore la résolution, mais cette corrélation n'est pas évidente dans les résultats
-obtenus avec la simulation. Par conséquent, la complication de l'alignement associée à l'usage d'un laser dans le domaine ultraviolet, beaucoup plus importante, renforce plutôt le choix d'utiliser un faisceau de $\lambda=405$.
+obtenus avec la simulation. Par conséquent, la complication de l'alignement associée à l'usage d'une LED dans le domaine ultraviolet, beaucoup plus importante, renforce plutôt le choix d'utiliser un faisceau de $\lambda=405$.
 
 Les quatres premières rangées du tableau \ref{results} permettent de comparer l'effet de la magnification et de l'ouverture numérique sur la taille estimée et son incertitude associée. Pour les paires de [$M$, NA] 
 suivantes: [10, 0.25], [20, 0.4], [40, 0.65] et [60, 0.85], les erreurs relatives obtenues pour la taille de la particule sont respectivement: 40 $\pm$ 4 \%, 21 $\pm$ 2 \%, 
