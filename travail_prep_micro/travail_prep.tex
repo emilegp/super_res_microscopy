@@ -116,13 +116,13 @@ PHS3910 -- Techniques expérimentales et instrumentation\\
 \maketitle
 
 \textit{\textbf{Résumé} -- Modélisation préliminaire d'un microscope capable de déterminer la taille de 
-particules. La magnification et la PSF d'une particule sont simulés. Son déplacement est simulé à l'aide du
+particules. La magnification et la PSF d'une particule sont simulées. Son déplacement est simulé à l'aide du
 mouvement brownien, et le coefficient de diffusion est extrait de la courbe du MSD de la particule. Le microscope choisi 
 possède un objectif ayant une magnification de 60 et une ouverture numérique de 0.85, utilise un faisceau laser entrant de 405 nm et une lentille tube
 de longueur focale de 150 mm.}
 \section{Introduction}
 Ayant reçu un contrat d'un gouvernement local nécessitant d'examiner les microparticules contaminantes proches d'une
-usine, l'équipe est mandaté de concevoir un microscope capable de déterminer la taille de particules. En préparation à la conception
+usine, l'équipe est mandatée de concevoir un microscope capable de déterminer la taille de particules. En préparation à la conception
 du produit final, une simulation du mouvement d'une particule, tel qu'elle serait perçue à travers le microscope, ainsi qu'une
 analyse de son déplacement est développée. En simulant la magnification et la fonction d'étalement de la particule (\textit{PSF}), ainsi qu'en soumettant
 celle-ci à un mouvement brownien, il est possible
@@ -131,10 +131,10 @@ La taille de la particule peut directement être extraite de ce résultat, carac
 d'estimer l'erreur sur la taille en fonction de la longueur d'onde de la lumière passant à travers le système, de l'objectif utilisé et de la 
 taille de la particule observée.
 
-Les résultats de l'analyse ont entrainés les choix suivants: une magnification de 60, une ouverture numérique de 0.85, une longueur focale pour la lentille tube
+Les résultats de l'analyse ont entrainé les choix suivants: une magnification de 60, une ouverture numérique de 0.85, une longueur focale pour la lentille tube
 de 150 mm et un faisceau laser de 405 nm. Le rapport ci-contre expliquera en détail les méthodes de simulation utilisées pour obtenir 
 les résultats souhaités, présentera les tailles et les erreurs respectives pour chaque ensemble de paramètres et développera les raisonnements
-justifiants les choix de l'équipe.
+justifiant les choix de l'équipe.
 
 
 \section{Méthodes \label{methodes}}
@@ -147,11 +147,11 @@ dans la figure \ref{sys} ci-dessous.
   \label{sys}
 \end{figure}
 Afin de simuler les observations et les analyses qui seront faites avec le microscope,
-une modélisation du mouvement d'une particule a premièrement été effectué sur un scripte Python.
+une modélisation du mouvement d'une particule a premièrement été effectuée sur un scripte Python.
 Pour les fins du projet, une seule particule a été suffisante pour
 évaluer les paramètres à optimiser, puisque l'objectif est d'estimer une caractéristique propre 
 à une particule, sa taille, et non à un regroupement de particules. En guise d'équivalence à la magnification réelle du microscope, 
-une taille de pixel effective $P$ a eu besoin d'être posée. Le calcul de cette taille $P$ est obtenue à partir du grossissement $M$ de l'objectif ainsi qu'avec la
+une taille de pixel effective $P$ a eu besoin d'être posée. Le calcul de cette taille $P$ est obtenu à partir du grossissement $M$ de l'objectif ainsi qu'avec la
 focale de la lentille de tube $f_{tube}$. Le grossissement est défini tel que :
 
 \begin{equation}\label{m_1}
@@ -179,8 +179,8 @@ avec le grossissement réel :
 
 Pour créer un environnement plus fidèle à la réalité, un fond de bruit
 a été rajouté, où les photons émis suivent une distribution de Poisson avec \textit{np.random.poisson}. En raison de la diffraction 
-causée par le système optique, la particule a due être simulée
-telle qu'elle serait perçue par la caméra dans le montage réel. En fonction des composantes optiques utilisées,
+causée par le système optique, la particule a dû être simulée
+tel qu'elle serait perçue par la caméra dans le montage réel. En fonction des composantes optiques utilisées,
 la PSF (\textit{Point Spread Function}) de la particule sur le capteur est décrite par:
 \begin{equation}
   PSF(r)=\left(\frac{2J_1(\frac{2\pi \text{NA}r}{\lambda})}{\frac{2\pi \text{NA}r}{\lambda}}\right)^2,
@@ -193,7 +193,7 @@ est une fonction de Bessel. L'émission des photons dans le temps s'effectue sel
 \end{equation}
 où $k$ est le nombre d'évènements et $\lambda$ est le nombre moyen d'évènements
 survenus au cours d'un intervalle de temps défini (le temps d'acquisition). Numériquement, ceci correspond à effectuer un nombre de simulations
-d'émission choisi avec \textit{np.random.poisson} et une valeur $\lambda=400$ arbitraire. La position de chaque photon
+d'émission choisie avec \textit{np.random.poisson} et une valeur $\lambda=400$ arbitraire. La position de chaque photon
 émis durant la simulation est déterminée à l'aide de la distribution de probabilité imposée par la $PSF$.
 
 Pour simuler le mouvement d'une particule, on utilise le principe du mouvement brownien.
@@ -218,9 +218,9 @@ d'une gaussienne 2D a été effectué avec la librairie \textit{lmfit}. La fonct
 \begin{equation}
   f(x,y)=A\cdot exp\left(-\left[\frac{(x-x_0)^2}{2\sigma_x^2}+\frac{(y-y_0)^2}{2\sigma_y^2}\right]\right)+B,
 \end{equation}
-où $A$ est l'amplitude et $B$ est le décalage de la gaussienne. À partir de la fonction obtenue, les moyennes en $x$ et en $y$ ($x_0,y_0$) de la gaussienne sont obtenus
+où $A$ est l'amplitude et $B$ est le décalage de la gaussienne. À partir de la fonction obtenue, les moyennes en $x$ et en $y$ ($x_0,y_0$) de la gaussienne sont obtenues
 pour estimer la position de la particule à cet instant. En effectuant ce processus pour chaque image de l'acquisition,
-on a pu obtenir le déplacement général de la particule pour un certain lapse de temps.
+on a pu obtenir le déplacement général de la particule pour un certain laps de temps.
 
 
 Une fois les positions obtenues, il est possible de trouver la valeur du coefficient de diffusion de la particule. 
@@ -273,7 +273,7 @@ Pour ce faire, on propage l'incertitude, par la formule suivante, de chaque posi
 \begin{equation}
   \Delta MSD=\frac{1}{N_{\Delta t}}\sqrt{\sum_{0}^{N_{\Delta t}-1}\alpha, }
 \end{equation}
-Il est possidle de tracer une régression linéaire, où l'incertitude sur la valeur de la pente est donnée par l'équation (\ref{deltad}).
+Il est possible de tracer une régression linéaire, où l'incertitude sur la valeur de la pente est donnée par l'équation (\ref{deltad}).
 Celle-ci considère qu'il n'y a des incertitudes que sur les valeurs en $y$ (MSD) et que cette incertitude n'est pas constante pour chaque point.
 \begin{equation}\label{deltad}
   \Delta D=\sqrt{\frac{\sum_{i=1}^{N}(\Delta MSD_{i})^{2}}{\sum_{i=1}^{N}{(x_{i}-\overline{x})^{2}}}}
@@ -297,13 +297,13 @@ de Nyquist, la taille effective d'un pixel de la caméra $P$ dans le plan de l'o
 Ainsi, pour un système avec $f_{tube}$ et $M$ connus (voir équation \ref{pixel}), il est possible de déterminer si le théorème 
 (\ref{nyquist}) est respecté pour une longueur d'onde donnée. Cela a permis de déterminer quelles 
 combinaisons de lentille tube, d'objectif de microscope et de source de lumière qui ne sont pas 
-sujettes au phénomène d'\textit{aliasing}, conséquence du non respect de Nyquist où l'information
+sujettes au phénomène d'\textit{aliasing}, conséquence du non-respect de Nyquist où l'information
 réelle sur l'image est perdue.
 
 Les paramètres déterminants qui seront pris en compte pour la simulation se résument à la longueur d'onde du faisceau d'entrée,
-la magnification et l'ouverture numérique de l'objectif, la longueur focale la lentille tube, la taille de la particule ainsi que le 
+la magnification et l'ouverture numérique de l'objectif, la longueur focale de la lentille tube, la taille de la particule ainsi que le 
 coefficient de diffusion. Les variations des paramètres ainsi que les équations
-développées ont permis de poser l'hypothèse que les paramètres ne s'infuencent pas entre eux et qu'ils peuvent être traités indépendamment.
+développées ont permis de poser l'hypothèse que les paramètres ne s'influencent pas entre eux et qu'ils peuvent être traités indépendamment.
 
 
 
@@ -311,7 +311,7 @@ développées ont permis de poser l'hypothèse que les paramètres ne s'infuence
 \section{Résultats \label{resultats}}
 \textcolor{red}{rajouter viscosité} Le tableau \ref{tableau_nyq} présente les calculs de chaque côté de l'inégalité (\ref{nyquist}) pour
 chaque combinaison de paramètres possibles avec le matériel mis à disposition par le gouvernement local.
-Quatres objectifs, tous ayant une paire de $M$ et NA, ainsi que deux sources de lumière pour faire émettre
+Quatre objectifs, tous ayant une paire de $M$ et NA, ainsi que deux sources de lumière pour faire émettre
 des photons par les fluorophores dans les échantillons sont disponibles. La valeur de $f_{tube}$ est fixée à 150 mm, sachant que les lentilles offertes sont limitées à cette longueur focale.
 
 \begin{table}[H]
@@ -362,23 +362,23 @@ le modèle mathématique a vérifié cela. Cette conclusion n'élimine donc aucu
 être considérés pour les prochaines analyses.
 
 Les simulations effectuées pour la deuxième et la cinquième rangées du tableau \ref{results}, soit pour un faisceau entrant ayant une longueur d'onde de 405 nm ou de 375 nm,
-ont menées à une incertitude relative sur la taille de la particule de 21 $\pm$ 2 \% et 22 $\pm$ 3 \%, respectivement. Ceci correspond à une différence extrêmement minime, surtout en 
+ont mené à une incertitude relative sur la taille de la particule de 21 $\pm$ 2 \% et 22 $\pm$ 3 \%, respectivement. Ceci correspond à une différence extrêmement minime, surtout en 
 considérant l'ordre de grandeur des erreurs. Leurs incertitudes sont proportionnelles à celles obtenues pour la taille de la particule et sont aussi très similaires. Les valeurs de $d/2$ obtenues dans le
 tableau \ref{tableau_nyq} soutiennent le fait qu'une longueur d'onde plus petite améliore la résolution, mais cette corrélation n'est pas évidente dans les résultats
 obtenus avec la simulation. Par conséquent, la complication de l'alignement associée à l'usage d'une LED dans le domaine ultraviolet, beaucoup plus importante, renforce plutôt le choix d'utiliser un faisceau de $\lambda=405$.
 
-Les quatres premières rangées du tableau \ref{results} permettent de comparer l'effet de la magnification et de l'ouverture numérique sur la taille estimée et son incertitude associée. Pour les paires de [$M$, NA] 
+Les quatre premières rangées du tableau \ref{results} permettent de comparer l'effet de la magnification et de l'ouverture numérique sur la taille estimée et son incertitude associée. Pour les paires de [$M$, NA] 
 suivantes: [10, 0.25], [20, 0.4], [40, 0.65] et [60, 0.85], les erreurs relatives obtenues pour la taille de la particule sont respectivement: 40 $\pm$ 4 \%, 21 $\pm$ 2 \%, 
-40 $\pm$ 2 \% et 4 $\pm$ 2 \%. L'erreur relative presque négligeable sur la taille obtenue avec une objectif ayant [60, 0.85] semble prédire qu'une augmentation de la magnification et de l'ouverture numérique
+40 $\pm$ 2 \% et 4 $\pm$ 2 \%. L'erreur relative presque négligeable sur la taille obtenue avec un objectif ayant [60, 0.85] semble prédire qu'une augmentation de la magnification et de l'ouverture numérique
 améliore fortement la performance du microscope. Il est aussi important de noter qu'une magnification trop grande pourrait porter problème et affecter la justesse des résultats si le champ
 de vision résultant est réduit au même ordre de grandeur que les particules observées. Le cas échéant, la particule pourrait facilement se déplacer hors du cadre de l'image, ce qui rendrait l'analyse de
 son déplacement beaucoup plus difficile. Cependant, pour l'objectif [60, 0.85], la magnification est encore beaucoup trop petite pour considérer cet enjeu. L'objectif choisi est donc [60, 0.85].
 
-Il est aussi important de s'assurer que l'analyse du déplacement soit aussi performant pour des tailles de particules variées, d'où l'utilité du test 
+Il est aussi important de s'assurer que l'analyse du déplacement soit aussi performante pour des tailles de particules variées, d'où l'utilité du test 
 effectué pour une particule de 10 $\mu m$. L'erreur relative pour cette simulation est de 85 $\pm$ 7 \%. En comparant cette erreur à celle obtenue pour le test ayant les mêmes paramètres mis à part la taille (deuxième
 rangée du tableau \ref{results}), on voit que l'erreur est beaucoup plus importante pour la particule ayant un plus grand diamètre. Cette différence peut être due à des variations dans le \textit{fit} gaussien utilisé pour localiser
 la particule à chaque image. Puisque la particule est plus large, la fonction gaussienne s'étale, ce qui augmente la possibilité que le centre de celle-ci ne s'aligne pas
-avec le centre réel de la particule. L'analyse a tout de même retrouvée une taille estimée du même ordre de grandeur que la taille réelle, ce qui est convenable pour le contexte du projet.
+avec le centre réel de la particule. L'analyse a tout de même retrouvé une taille estimée du même ordre de grandeur que la taille réelle, ce qui est convenable pour le contexte du projet.
 
 \printbibliography
 
@@ -387,7 +387,11 @@ avec le centre réel de la particule. L'analyse a tout de même retrouvée une t
 \section{Annexes}
 
 \subsection{Preuve de correction par Antidote}
-
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.1]{Screenshot (113).png}
+  \caption{Correction par Antidote}
+\end{figure}
 \clearpage
 
 
