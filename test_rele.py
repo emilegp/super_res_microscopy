@@ -10,21 +10,20 @@ import os
 pixel_size = 3.45 # en um, x et y
 cam_width = 1440
 cam_height = 1080
-particule_initiale_px = (500, 300)
+particule_initiale_px = (500, 300) # à changer
 
 # Paramètres de la simulation
 f2 = 150  # Focale de L2
 na = 0.85  # Numerical aperture
 lamb = 0.405  # Wavelength in um
 M_theo = 60  # Magnification of the objective
-poisson_lamb = 400  # Average number of photons
-mean_photon_count = 2  # Mean number of photons emitted
+
 
 output_dir = 'runs/f2=150_lamb=405_na=0,85_Mtheo=60_Size=1um-2'
 
 # D théorique, taille pxiel et variance théorique
 #D = (1.38 * 10**-23 * 300 / (6 * np.pi * 10**(-3) * 0.5*10**-6))  # Diffusion coefficient
-D = 1.0981691 * 10**(-13) # m^2/s
+# D = 1.0981691 * 10**(-13) # m^2/s
 nb_steps = 50
 duree_totale = 1
 delta_t = duree_totale/nb_steps
