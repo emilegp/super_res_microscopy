@@ -199,7 +199,7 @@ Taille_estime = Taille * D_estime/(D*(10**12)) # um
 Taille_inc_estime = Taille * D_inc_estime/(D*(10**12)) # um
 
 print(f'D estimé = {D_estime} ± {D_inc_estime} um^2/s et vrai D = {D*(10**12)} um^2/s')
-print(f'Taille estimé = {Taille_estime} ± {Taille_inc_estime} um et vrai Taille = {1} um')
+print(f'Taille estimé = {Taille_estime} ± {Taille_inc_estime} um et vrai Taille = {Taille} um')
 
 
 # Définir la durée de la pause entre chaque image (en secondes)
@@ -226,7 +226,10 @@ for frame, position in zip(video_camera, positions_estimée):
     plt.clf()  
     plt.imshow(frame_zoom, origin='lower', cmap='gray', extent=[x_position.min(), x_position.max(), y_position.min(), y_position.max()])
     plt.title('Grille Zoomée avec Position')
-    plt.colorbar()  # Ajouter la colorbar
+    plt.xlabel('Pixels en x')
+    plt.ylabel('Pixels en y')
+    cb = plt.colorbar()  # Ajouter la colorbar
+    cb.set_label('Nombre de photons (Intensité)')
 
     trajectory.append(position)
     plt.scatter(position[0], position[1], color='red', s=50)  # Position marquée en rouge
@@ -235,4 +238,5 @@ for frame, position in zip(video_camera, positions_estimée):
     plt.pause(pause_duration)
 
 plt.show()
+
 

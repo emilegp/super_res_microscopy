@@ -16,7 +16,7 @@ M_theo = 60  # Magnification of the objective
 poisson_lamb = 400  # Average number of photons
 mean_photon_count = 2  # Mean number of photons emitted
 
-output_dir = 'runs/f2=150_lamb=405_na=0,85_Mtheo=60_Size=1um-2'
+output_dir = 'runs/f2=150_lamb=405_na=0,85_Mtheo=60_Size=1um-3'
 
 # Simuler les localisations
 #D = (1.38 * 10**-23 * 300 / (6 * np.pi * 10**(-3) * 0.5*10**-6))  # Diffusion coefficient
