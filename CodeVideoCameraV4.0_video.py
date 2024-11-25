@@ -3,24 +3,16 @@ import matplotlib as plt
 import pycromanager
 from pycromanager import Core
 import time
-import os
-import cv2
 from typing import Any
-
-
-
+from PIL import Image
 import pylablib as pll
-pll.par["devices/dlls/thorlabs_tlcam"] = r"C:\Users\marie\Documents\Scientific Camera Interfaces\SDK\Python Toolkit\dlls\64_lib"
 from pylablib.devices import Thorlabs
+from thorlabs_tsi_sdk.tl_camera import TLCameraSDK, OPERATION_MODE, TLCameraError
 
+pll.par["devices/dlls/thorlabs_tlcam"] = r"C:\Users\marie\Documents\Scientific Camera Interfaces\SDK\Python Toolkit\dlls\64_lib"
 
 #Numéro de série de la caméra
 print(Thorlabs.list_cameras_tlcam())
-
-import pylablib
-from pylablib.devices import Thorlabs
-import thorlabs_tsi_sdk 
-from thorlabs_tsi_sdk.tl_camera import TLCameraSDK, OPERATION_MODE, TLCameraError
 
 try:
     # Initialiser le SDK
@@ -48,39 +40,39 @@ try:
             cam1.frames_per_trigger_zero_for_unlimited = 1  # Mode de capture continue : 0 ; Mode de capture ponctuel : 1
             cam1.arm(2)  # Préparez la caméra avec 2 tampons
             nombre_image_par_seconde=10
-            output_path = fr"C:\Users\marie\Documents\GitHub\super_res_microscopy\image2.avi"
             print("Caméra armée et prête pour capturer des images.")
             
-            #Définir les dimensions de la vidéo
-            frame_width = cam1.image_width_pixels
-            frame_height = cam1.image_height_pixels
-            fourcc = cv2.VideoWriter_fourcc(*'XVID')
-            out = cv2.VideoWriter(output_path, fourcc, nombre_image_par_seconde, (frame_width, frame_height), isColor=False)
+            output_tiff_path = r"C:\Users\marie\Documents\GitHub\super_res_microscopy\video_output.tiff"
 
-
-            for picture_number in range (100):
-                # Commencer à capturer des imagesc 
+            # Capture and save images
+            images = []  # List to store frames for TIFF
+            for picture_number in range(100):  # Capture 100 frames
                 cam1.issue_software_trigger()
-                time.sleep(1/nombre_image_par_seconde)
-                print("Capture d'images en cours...")
+                time.sleep(1 / nombre_image_par_seconde)  # Maintain frame rate
+
                 frame = cam1.get_pending_frame_or_null()
-                #print(frame.frame_count)
-
                 if frame is not None:
-                    print(f"Image capturée avec succès : {frame.frame_count}")
-                    image = frame.image_buffer  # Assurez-vous que cet attribut est correct
-                    #cv2.imshow('Image Capturee', image)  # Affichez l'image
-                    #cv2.waitKey(0)  # Attendez une touche pour fermer la fenêtre
-
-                    # Enregistrer l'image en format video
-                    image = np.array(frame.image_buffer, dtype=np.uint8).reshape((frame_height, frame_width))
-                    out.write(image)
-                    #filename = fr"C:\Users\User\Desktop\Polyautomne2024\Laboratoire Lucien\Test_pictures\image_videopourlucien.tiff"
-                    #cv2.imwrite(filename, image)
-                    #print(f"Image enregistrée sous : {filename}")
+                    print(f"Image successfully captured: {frame.frame_count}")
+                    # Convert the image buffer to a NumPy array
+                    image = np.array(frame.image_buffer, dtype=np.uint8).reshape(
+                        (cam1.image_height_pixels, cam1.image_width_pixels)
+                    )
+                    # Add the image to the list as a Pillow Image
+                    images.append(Image.fromarray(image))
                 else:
-                    print("Aucune image capturée.")
-            
+                    print("No image captured.")
+
+            # Save all frames as a multi-page TIFF
+            if images:
+                images[0].save(
+                    output_tiff_path,
+                    save_all=True,
+                    append_images=images[1:],  # Save as multi-page TIFF
+                    compression="tiff_deflate"  # Optional: Apply compression
+                )
+                print(f"Multi-page TIFF saved at: {output_tiff_path}")
+            else:
+                print("No frames to save.")
 
             # Désarmer et fermer la caméra après utilisation
             cam1.disarm()
