@@ -34,19 +34,19 @@ try:
             print(f"Caméra connectée avec succès : {available_cameras[0]}")
 
             # Configurer les paramètres de la caméra
-            cam1.exposure_time_us = 25000  # Exemple de temps d'exposition de 50 ms (tester sur Thorlab)
-            cam1.black_level=5
+            cam1.exposure_time_us = 125000  # Exemple de temps d'exposition de 50 ms (tester sur Thorlab)
+            cam1.black_level=1
             cam1.gain=0
             cam1.frames_per_trigger_zero_for_unlimited = 1  # Mode de capture continue : 0 ; Mode de capture ponctuel : 1
-            cam1.arm(2)  # Préparez la caméra avec 2 tampons
-            nombre_image_par_seconde=10
+            cam1.arm(10)  # Préparez la caméra avec 2 tampons
+            nombre_image_par_seconde=2
             print("Caméra armée et prête pour capturer des images.")
             
-            output_tiff_path = r"C:\Users\marie\Documents\GitHub\super_res_microscopy\video_output.tiff"
+            output_tiff_path = r"C:\Users\marie\Documents\GitHub\super_res_microscopy\acquisition\video_output_carac_125ms_2im_poussieres.tiff"
 
             # Capture and save images
             images = []  # List to store frames for TIFF
-            for picture_number in range(100):  # Capture 100 frames
+            for picture_number in range(5):  # Capture 100 frames
                 cam1.issue_software_trigger()
                 time.sleep(1 / nombre_image_par_seconde)  # Maintain frame rate
 
@@ -57,10 +57,12 @@ try:
                     image = np.array(frame.image_buffer, dtype=np.uint8).reshape(
                         (cam1.image_height_pixels, cam1.image_width_pixels)
                     )
-                    # Add the image to the list as a Pillow Image
-                    images.append(Image.fromarray(image))
                 else:
+                    image = np.zeros((cam1.image_height_pixels, cam1.image_width_pixels), dtype=np.uint8)
                     print("No image captured.")
+
+                # Add the image to the list as a Pillow Image
+                images.append(Image.fromarray(image))
 
             # Save all frames as a multi-page TIFF
             if images:
