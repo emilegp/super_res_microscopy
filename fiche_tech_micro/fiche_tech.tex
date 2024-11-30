@@ -179,11 +179,11 @@ table, il a pour coût total 1483.59 \$, prix qui peut être réduit par l'usage
 
 
 \subsection{Caractérisation de la taille de particules}
-Lors de l'acquisition des images, il a été vu que le temps d'exposition devait être assez long, environ 150ms. Par conséquent, pour espérer 
+Lors de l'acquisition des images, il a été conclu que le temps d'exposition devait être assez long, environ 150ms. Par conséquent, pour espérer 
 obtenir des images, il fallait réduire le temps d'acquisition, soit environ 2 images par seconde. Margé ces ajustements, la caméra ne parvient tout de même
-pas a enregistré chaque image demandée et remplace les images non enregistrées par une image noire. Pour palier à cette contrainte et que celle-ci n'influence pas les divers calculs d'analyse,
+pas a enregistré chaque image demandée et remplace les images non enregistrées par une image noire (environ 4 images noir pour 75 images au totales). Pour palier à cette contrainte et que celle-ci n'influence pas les divers calculs d'analyse,
  la procédure suivante a été choisie: 
-Pour traité les images et pouvoir tracker les particules, toutes les images étant noir sont ignorées pour ne garder que les images analysables.
+Pour traité les images et pouvoir tracker les particules, toutes les images noir sont ignorées pour ne garder que les images analysables.
 Une fois que la liste de position pour chaque image a été produite, toutes les images de départ sont toutes revues une par une, et à chaque fois qu'une
 image noire apparaît un vecteur de $\left [ NaN ,NaN \right ]$ est ajouté au vecteur contenant toutes les positions.
  Cette procédure nous permet de savoir avec exactitude les emplacements des images qui n'ont pas pu être enregistrés. Une fois le vecteur de positions 
@@ -192,16 +192,36 @@ image noire apparaît un vecteur de $\left [ NaN ,NaN \right ]$ est ajouté au v
   MSD &= \frac{1}{N_{\Delta t}} \sum_{i=0}^{N_{\Delta t} - 1} \left( \mathbf{r}(i+\Delta t) - \mathbf{r}(i) \right)^2,\\ 
   \mathbf{r}(i) &= x(i)\hat{x}+ y(i)\hat{y}
 \end{align}
-L'incertitude sur ces valeurs ce retrouve dans:
+L'incertitude sur ces valeurs sont donnée par les formule suivante: 
+\begin{equation}
+  \alpha =A+B
+\end{equation}
+\begin{align*}
+  A = \sqrt{
+    \begin{aligned}
+      &\left( 2(x(i+\Delta t) - x(i))\cdot \Delta x(i+\Delta t) \right)^2 \\
+      &+ \left( 2(x(i+\Delta t) - x(i))\cdot \Delta x(i) \right)^2
+    \end{aligned}
+  }
+\end{align*}
+\begin{align*}
+  B = \sqrt{
+    \begin{aligned}
+      &\left( 2(y(i+\Delta t) - y(i))\cdot \Delta y(i+\Delta t) \right)^2 \\
+      &+ \left( 2(y(i+\Delta t) - y(i))\cdot \Delta y(i) \right)^2
+    \end{aligned}
+  }
+\end{align*}
 \textcolor{red}{SOURCE: travail prep}
 
 On remarque que c'est ici que le traitement de toutes les images est important, car sinon le $\Delta t$ n'aurait pas été cohérent avec la procédure de la MDS. 
 La façon de traiter ce calcul avec les vecteurs $\left [ NaN ,NaN \right ]$ tout en perdant le moins d'information possible a été de définir que 
 dès que l’élément NaN est détecté dans un calcul, $\left( \mathbf{r}(i+\Delta t) - \mathbf{r}(i) \right)=0$. De cette façon les images non enregistrées
-ne peuvent pas interférer dans le calcul de la MDS. Dans la même idée, les incertitudes sur les positions    étaient calculées à l'aide de l'écart-type 
-du fit gaussien, dans le cas d'une image noire, on pose dx=0 et dy=0. 
+ne peuvent pas interférer dans le calcul de la MDS. Dans la même idée, les incertitudes sur les positions étaient calculées à l'aide de l'écart-type 
+du fit gaussien, dans le cas d'une image noire, on pose dx=0 et dy=0. Les images noir ne sont donc pas pris en compte non plus dans les calcul d'incertitude.  
 
-Un fit quadratique est en suite effectuer sur les 5 premiers points de la MDS, il est ainsi possible d'identifier les 3 coefficients de celle-ci.
+Une fois toutes les valeurs trouvées, un graphique des résultat de MDS en fonction du $\Delta t$ est produit. 
+Un fit quadratique est en suite effectuer sur les 5 premiers points de ce graphique, il est ainsi possible d'identifier les 3 coefficients de celle-ci.
 Les incertitudes sur ces 3 valeurs sont données par la racine carrée de la diagonalisation de la matrice de covariance donnée par la fonction curve\_fit. 
 C'est le coefficient B du fit qui sera utilisé pour trouver le coefficient de diffusion (D) et la taille de la particule (r). Les formules suivantes sont utilisées: 
 \begin{align*}
@@ -212,7 +232,7 @@ et ne comportent donc pas d'incertitudes.
 
 \textcolor{red}{Acquisition de données (paramètres d'acquisition, traitement des lost frames)}
 
-\textcolor{red}{}
+\textcolor{red}{Tableau des résultats}
 
 \subsubsection{Paramètres utilisés}
 
