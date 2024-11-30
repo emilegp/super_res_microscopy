@@ -193,6 +193,7 @@ image noire apparaît un vecteur de $\left [ NaN ,NaN \right ]$ est ajouté au v
   MSD &= \frac{1}{N_{\Delta t}} \sum_{i=0}^{N_{\Delta t} - 1} \left( \mathbf{r}(i+\Delta t) - \mathbf{r}(i) \right)^2,\\ 
   \mathbf{r}(i) &= x(i)\hat{x}+ y(i)\hat{y}
 \end{align}
+où $N_{\Delta t}$ est le nombre de paires $i$ disponibles pour un intervalle $\Delta t$ et $\Delta t$ qui varie de 1 jusqu'au nombre de positions (nombre d'images) moins une. 
 L'incertitude sur ces valeurs sont donnée par les formule suivante: 
 \begin{equation}
   \alpha =A+B
@@ -219,7 +220,7 @@ On remarque que c'est ici que le traitement de toutes les images est important, 
 La façon de traiter ce calcul avec les vecteurs $\left [ NaN ,NaN \right ]$ tout en perdant le moins d'information possible a été de définir que 
 dès que l’élément NaN est détecté dans un calcul, $\left( \mathbf{r}(i+\Delta t) - \mathbf{r}(i) \right)=0$. De cette façon les images non enregistrées
 ne peuvent pas interférer dans le calcul de la MDS. Dans la même idée, les incertitudes sur les positions étaient calculées à l'aide de l'écart-type 
-du fit gaussien, dans le cas d'une image noire, on pose dx=0 et dy=0. Les images noir ne sont donc pas pris en compte non plus dans les calcul d'incertitude.  
+du fit gaussien, dans le cas d'une image noire, on pose $\Delta x=0$ et $\Delta y=0$. Les images noir ne sont donc pas pris en compte non plus dans les calcul d'incertitude.  
 
 Une fois toutes les valeurs trouvées, un graphique des résultat de MDS en fonction du $\Delta t$ est produit. 
 Un fit quadratique est en suite effectuer sur les 5 premiers points de ce graphique, il est ainsi possible d'identifier les 3 coefficients de celle-ci.
