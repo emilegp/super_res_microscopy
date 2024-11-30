@@ -27,9 +27,7 @@
 \usepackage{multirow}
 \usepackage[hidelinks]{hyperref}
 \usepackage{abstract}
-\usepackage{svg}
-\usepackage{biblatex}
-\addbibresource{bibliographie.bib}
+
 
 \renewcommand{\abstractnamefont}{\normalfont\bfseries}
 \renewcommand{\abstracttextfont}{\normalfont\itshape}
@@ -145,11 +143,16 @@ Polytechnique Montréal\\}
 
 \section{Description générale et spécifications}
 
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=2.8]{schema_fiche_tech.png}
+  \caption{Schéma du microscope avec les dimensions critiques. Toutes les dimensions sont en millimètres avec une tolérance de $\pm$ 1 mm.}
+  \label{}
+\end{figure}
+
+
+
 \section{Rapports de tests}
-
-\subsection{Incertitude sur la taille des particules observées}
-
-pour plusieurs particules : étude stat
 
 \subsection{Caractérisation de la taille de particules}
 
@@ -159,22 +162,37 @@ pour plusieurs particules : étude stat
 
 \subsubsection{Paramètres utilisés}
 
-\textcolor{red}{pourquoi on les a pris}
-
-
-
-
-pour plusieurs particules : étude stat
 
 
 \subsection{Étude des coûts}
 
+\begin{table}[!ht]
+    \centering
+    \caption{Liste des pièces et coûts totaux pour le microscope sur table optique
+    \textcolor{red}{Source Thorlabs}.}
+    \begin{tabular}{|l|l|l|l|l|}
+    \hline
+        ID pièce & Description & Qté & \$ CAD & Total ind. \\ \hline\hline
+        KM100S & Montage à réseau de diffraction & 1 & \$130.45 & \$130.45 \\ \hline
+        CS165MU & Caméra CMOS monochrome & 1 & \$667.01 & \$667.01 \\ \hline
+        - & Objectif de microscope & 1 & \$10.00 & \$10.00 \\ \hline
+        420FDL12 & Filtre passe-long & 1 & \$36.29 & \$36.29 \\ \hline
+        LA1433-A-ML & Lentille tube f = 150.0 mm & 1 & \$71.42 & \$71.42 \\ \hline
+        CPS405 & Laser bleu 405 nm & 1 & \$312.07 & \$312.07 \\ \hline
+        LMR1 & Trou taraudé pour lentilles & 2 & \$22.89 & \$45.79 \\ \hline
+        TR3-P5 & 5 tiges 3 po pour optiques & 1 & \$38.50 & \$38.50 \\ \hline
+        PH4 & Base pour tiges d'optique 4 po & 4 & \$14.83 & \$59.33 \\ \hline
+        PH3 & Base pour tiges d'optique 3 po & 1 & \$13.37 & \$13.37 \\ \hline
+        BA1 & Pied de montage optique & 1 & \$8.42 & \$8.42 \\ \hline
+        BA1S & Pied de montage optique & 2 & \$7.83 & \$15.65 \\ \hline
+        BA2 & Pied de montage optique & 1 & \$11.26 & \$11.26 \\ \hline
+        VC1 & Pince en V & 1 & \$64.04 & \$64.04 \\ \hline\hline
+        ~ & ~ & ~ & Total : & \$1,483.59 \\ \hline
+    \end{tabular}
+\end{table}
 
+% Source Thorlabs : https://www.thorlabs.com
 
-
-
-% \clearpage
-% \printbibliography
 % \bibliographystyle{unsrtnat}
 % \bibliography{My_Library}
 
