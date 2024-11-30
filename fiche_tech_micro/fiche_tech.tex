@@ -98,9 +98,9 @@
 \large{\textbf{Équipe : Lundi 03}}\\[1.5cm]
 
 \rule{\linewidth}{0.5mm} \\[0.5cm]
-\Large{\textbf{Spectromètre}} \\[0.2cm]
+\Large{\textbf{Microscope pour suivi de particules}} \\[0.2cm]
 \text{Fiche technique}\\
-\rule{\linewidth}{0.2mm} \\[2.3cm]
+\rule{\linewidth}{0.5mm} \\[2.3cm]
 
 \large{\textbf{Présenté à}\\
   Jean Provost\\
@@ -157,8 +157,9 @@ particules dans la plage  \textcolor{red}{XX - XX} µm. Suite à la caractérisa
 de 1 µm, l'erreur sur la valeur identifiée est de \textcolor{red}{XX $\pm$ XX} µm.
 Pour la caractérisation de particules de 10 µm, l'erreur sur la valeur identifiée est de 
 \textcolor{red}{XX $\pm$ XX} µm. Le système, monté sur table optique et utilisable dans le noir 
-seulement, a des dimensions de \textcolor{red}{$600 \times 90 \times 200$} mm. Sans compter la
-table, il a pour coût total 1483.59 \$, prix qui peut être réduit par l'usage d'impression 3D.
+seulement, a des dimensions de \textcolor{red}{$600 \times 90 \times 200$} mm, tel que présenté à 
+la figure \ref{schema_micro}. Sans compter la table, il a pour coût total 1483.59 \$, prix qui
+peut être réduit par l'usage d'impression 3D.
 
 % Source Thorlabs : https://www.thorlabs.com
 
@@ -166,7 +167,7 @@ table, il a pour coût total 1483.59 \$, prix qui peut être réduit par l'usage
   \centering
   \includegraphics[scale=2.8]{schema_fiche_tech.png}
   \caption{Schéma du microscope avec les dimensions critiques. Toutes les dimensions sont en millimètres avec une tolérance de $\pm$ 1 mm.}
-  \label{}
+  \label{schema_micro}
 \end{figure}
 
 
@@ -240,6 +241,10 @@ et ne comportent donc pas d'incertitudes.
 
 \subsection{Étude des coûts}
 
+Une étude des coûts a été faite pour le microscope construit afin de voir s'il y a possibilité
+de construire un appareil aux performances similaires, mais à moindre coût. Le tableau \ref{table_cout}
+présente la liste exhaustive des pièces avec leur prix en dollars canadien avant taxes.
+
 \begin{table}[!ht]
     \centering
     \caption{Liste des pièces et coûts totaux pour le microscope sur table optique
@@ -247,7 +252,7 @@ et ne comportent donc pas d'incertitudes.
     \begin{tabular}{|l|l|l|l|l|}
     \hline
         ID pièce & Description & Qté & \$ CAD & Total ind. \\ \hline\hline
-        KM100S & Montage à réseau de diffraction & 1 & \$130.45 & \$130.45 \\ \hline
+        KM100S & Montage ajustable pour échantillon & 1 & \$130.45 & \$130.45 \\ \hline
         CS165MU & Caméra CMOS monochrome & 1 & \$667.01 & \$667.01 \\ \hline
         - & Objectif de microscope & 1 & \$10.00 & \$10.00 \\ \hline
         420FDL12 & Filtre passe-long & 1 & \$36.29 & \$36.29 \\ \hline
@@ -261,11 +266,40 @@ et ne comportent donc pas d'incertitudes.
         BA1S & Pied de montage optique & 2 & \$7.83 & \$15.65 \\ \hline
         BA2 & Pied de montage optique & 1 & \$11.26 & \$11.26 \\ \hline
         VC1 & Pince en V & 1 & \$64.04 & \$64.04 \\ \hline\hline
-        ~ & ~ & ~ & Total : & \$1,483.59 \\ \hline
+        ~ & ~ & ~ & Total : & \$1483.59 \\ \hline
     \end{tabular}
+    \label{table_cout}
 \end{table}
 
 % Source Thorlabs : https://www.thorlabs.com
+
+Quelques éléments sont à souligner. Premièrement, étant donné que l'objectif de microscope a
+été fourni par le gouvernement du Québec, le coût qui y est associé a été estimé selon leurs
+informations. Ces objectifs sont de seconde main, et ils ont été achetés en ensemble. Cela mène
+au faible coût d'environ 10\$, qui pourrait être difficile à retrouver pour la construction d'un
+seul microscope. Toutefois, pour la construction d'un ensemble d'appareils spécialisés pour
+différentes tailles de particules, donc ayant besoin de différents objectifs à différents 
+grossissements, le prix d'ensemble est idéal. Deuxièmement, un coût important a été omis dans 
+le tableau de calcul, soit celui de la table optique elle-même. Cette dernière est très
+dispendieuse, mais elle a été omise car elle est déja présente dans plusieurs laboratoires 
+d'optique, ou si non, elle peut être acheté à plus faible coût si les dimensions de la table
+achetée se limitent aux dimensions de l'appareil. Par exemple, chez Thorlabs, la plus petite 
+table optique pour tenir ce microscope est la B1824F, avec des dimensions de 18" $\times$ 24".
+Avec un coût de 1319.08 \$ CAD, presque l'entièreté du coût du reste de l'appareil, le total
+monte à 2802.67 \$. Troisièmement, selon le tableau \ref{table_cout}, les pièces ayant les
+coûts les plus considérables sont celles directement lié à l'optique et à l'alignement. Le
+reste des pièces sont pour des éléments de construction du montage, et leur total s'élève à
+733.31 \$.
+
+Il est donc possible de recommander fortement l'utilisation de l'impression 3D pour une production
+à plus grand volume de ce microscope. Cela permettrat de sauver l'argent sur les pièces de
+construction et sur la table optique elle-même, aiderait à l'alignement des éléments optiques,
+permettrait plus de flexibilité sur les composantes à ajuster tel que le motage de l'échantillon pour
+s'occuper du focus, et enfin pourrait rendre l'appareil plus portatif pour des essais sur le terrain.
+Comme les éléments optiques seraient tous réutilisables dans un design d'impression 3D, les
+performances du dispositif resteraient identiques. Il est aussi possible de recommander l'usage
+d'un différent laser de 405 nm, car ils sont fréquemment vendus seconde main pour beaucoup moins
+cher.
 
 % \bibliographystyle{unsrtnat}
 % \bibliography{My_Library}
