@@ -152,6 +152,36 @@ Polytechnique Montréal\\}
 pour plusieurs particules : étude stat
 
 \subsection{Caractérisation de la taille de particules}
+Lors de l'acquisition des images, il a été vu que le temps d'exposition devait être assez long, environ 150ms. Par conséquent, pour espérer 
+obtenir des images, il fallait réduire le temps d'acquisition, soit environ 2 images par seconde. Margé ces ajustements, la caméra ne parvient tout de même
+pas a enregistré chaque image demandée et remplace les images non enregistrées par une image noire. Pour palier à cette contrainte et que celle-ci n'influence pas les divers calculs d'analyse,
+ la procédure suivante a été choisie: 
+Pour traité les images et pouvoir tracker les particules, toutes les images étant noir sont ignorées pour ne garder que les images analysables.
+Une fois que la liste de position pour chaque image a été produite, toutes les images de départ sont toutes revues une par une, et à chaque fois qu'une
+image noire apparaît un vecteur de $\left [ NaN ,NaN \right ]$ est ajouté au vecteur contenant toutes les positions.
+ Cette procédure nous permet de savoir avec exactitude les emplacements des images qui n'ont pas pu être enregistrés. Une fois le vecteur de positions 
+ complet, il est possible de de commencer le calcul de MDS avec la formule suivante: 
+ \begin{align}
+  MSD &= \frac{1}{N_{\Delta t}} \sum_{i=0}^{N_{\Delta t} - 1} \left( \mathbf{r}(i+\Delta t) - \mathbf{r}(i) \right)^2,\\ 
+  \mathbf{r}(i) &= x(i)\hat{x}+ y(i)\hat{y}
+\end{align}
+L'incertitude sur ces valeurs ce retrouve dans:
+\textcolor{red}{SOURCE: travail prep}
+
+On remarque que c'est ici que le traitement de toutes les images est important, car sinon le $\Delta t$ n'aurait pas été cohérent avec la procédure de la MDS. 
+La façon de traiter ce calcul avec les vecteurs $\left [ NaN ,NaN \right ]$ tout en perdant le moins d'information possible a été de définir que 
+dès que l’élément NaN est détecté dans un calcul, $\left( \mathbf{r}(i+\Delta t) - \mathbf{r}(i) \right)=0$. De cette façon les images non enregistrées
+ne peuvent pas interférer dans le calcul de la MDS. Dans la même idée, les incertitudes sur les positions    étaient calculées à l'aide de l'écart-type 
+du fit gaussien, dans le cas d'une image noire, on pose dx=0 et dy=0. 
+
+Un fit quadratique est en suite effectuer sur les 5 premiers points de la MDS, il est ainsi possible d'identifier les 3 coefficients de celle-ci.
+Les incertitudes sur ces 3 valeurs sont données par la racine carrée de la diagonalisation de la matrice de covariance donnée par la fonction curve\_fit. 
+C'est le coefficient B du fit qui sera utilisé pour trouver le coefficient de diffusion (D) et la taille de la particule (r). Les formules suivantes sont utilisées: 
+\begin{align*}
+  D &= \frac{B}{4} \quad & r &= \frac{k_B T}{6 \pi \eta D}
+\end{align*}
+L'incertitude sur chacune de ces valeurs est donnée par l'incertitude sur le coefficient B, car on considère que les autres paramètres sont des constantes
+et ne comportent donc pas d'incertitudes. 
 
 \textcolor{red}{Acquisition de données (paramètres d'acquisition, traitement des lost frames)}
 
