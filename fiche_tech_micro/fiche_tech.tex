@@ -214,64 +214,10 @@ tableau \ref{specs} ci-dessous.
 \subsection{Magnification réelle}
 
 
-\subsection{Caractérisation de la taille de particules}
-Lors de l'acquisition des images, il a été conclu que le temps d'exposition devait être assez long, environ 150ms. Par conséquent, pour espérer 
-obtenir des images, il fallait réduire le temps d'acquisition, soit environ 2 images par seconde. Margé ces ajustements, la caméra ne parvient tout de même
-pas a enregistré chaque image demandée et remplace les images non enregistrées par une image noire (environ 4 images noir pour 75 images au totales). Pour palier à cette contrainte et que celle-ci n'influence pas les divers calculs d'analyse,
- la procédure suivante a été choisie: 
-Pour traité les images et pouvoir tracker les particules, toutes les images noir sont ignorées pour ne garder que les images analysables.
-Une fois que la liste de position pour chaque image a été produite, toutes les images de départ sont toutes revues une par une, et à chaque fois qu'une
-image noire apparaît un vecteur de $\left [ NaN ,NaN \right ]$ est ajouté au vecteur contenant toutes les positions.
- Cette procédure nous permet de savoir avec exactitude les emplacements des images qui n'ont pas pu être enregistrés. Une fois le vecteur de positions 
- complet, il est possible de de commencer le calcul de MDS avec la formule suivante: 
- \begin{align}
-  MSD &= \frac{1}{N_{\Delta t}} \sum_{i=0}^{N_{\Delta t} - 1} \left( \mathbf{r}(i+\Delta t) - \mathbf{r}(i) \right)^2,\\ 
-  \mathbf{r}(i) &= x(i)\hat{x}+ y(i)\hat{y}
-\end{align}
-où $N_{\Delta t}$ est le nombre de paires $i$ disponibles pour un intervalle $\Delta t$ et $\Delta t$ qui varie de 1 jusqu'au nombre de positions (nombre d'images) moins une. 
-L'incertitude sur ces valeurs sont donnée par les formule suivante: 
-\begin{equation}
-  \alpha =A+B
-\end{equation}
-\begin{align*}
-  A = \sqrt{
-    \begin{aligned}
-      &\left( 2(x(i+\Delta t) - x(i))\cdot \Delta x(i+\Delta t) \right)^2 \\
-      &+ \left( 2(x(i+\Delta t) - x(i))\cdot \Delta x(i) \right)^2
-    \end{aligned}
-  }
-\end{align*}
-\begin{align*}
-  B = \sqrt{
-    \begin{aligned}
-      &\left( 2(y(i+\Delta t) - y(i))\cdot \Delta y(i+\Delta t) \right)^2 \\
-      &+ \left( 2(y(i+\Delta t) - y(i))\cdot \Delta y(i) \right)^2
-    \end{aligned}
-  }
-\end{align*}
-\textcolor{red}{SOURCE: travail prep}
-
-On remarque que c'est ici que le traitement de toutes les images est important, car sinon le $\Delta t$ n'aurait pas été cohérent avec la procédure de la MDS. 
-La façon de traiter ce calcul avec les vecteurs $\left [ NaN ,NaN \right ]$ tout en perdant le moins d'information possible a été de définir que 
-dès que l’élément NaN est détecté dans un calcul, $\left( \mathbf{r}(i+\Delta t) - \mathbf{r}(i) \right)=0$. De cette façon les images non enregistrées
-ne peuvent pas interférer dans le calcul de la MDS. Dans la même idée, les incertitudes sur les positions étaient calculées à l'aide de l'écart-type 
-du fit gaussien, dans le cas d'une image noire, on pose $\Delta x=0$ et $\Delta y=0$. Les images noir ne sont donc pas pris en compte non plus dans les calcul d'incertitude.  
-
-Une fois toutes les valeurs trouvées, un graphique des résultat de MDS en fonction du $\Delta t$ est produit. Afin de bien caractériser le mouvement de la particule
-qui correspond au mouvement brownien, un \textit{fit} quadratique sur les points de la MSD est déterminé; les 5 premiers points sont choisis. En utilisant un \textit{fit} quadratique et non un \textit{fit} linéaire,
-il est possible de prendre en compte le facteur de dérive du mouvement de la particule et de l'éliminer. Les trois coefficients de la fonction $a$, $b$ et $c$, correspondent respectivement au mouvement de dérive, au mouvement brownien
-et à un décalage qui peut être négligé. Les incertitudes sur ces 3 valeurs sont données par la racine carrée de la diagonalisation de la matrice de covariance donnée par la fonction \textit{curve\_fit}. 
-C'est le coefficient $b$ du \textit{fit} qui sera utilisé pour trouver le coefficient de diffusion ($D$) et la taille de la particule ($r$). Les formules suivantes sont utilisées: 
-\begin{align*}
-  D &= \frac{b}{4} \quad & r &= \frac{k_B T}{6 \pi \eta D}
-\end{align*}
-L'incertitude sur chacune de ces valeurs est donnée par l'incertitude sur le coefficient $b$, car on considère que les autres paramètres sont des constantes
-et ne comportent donc pas d'incertitudes. 
-
-\subsubsection{Paramètres utilisés}
+\subsection{Paramètres utilisés \label{para}}
 Certains paramètres du microscope ont eu besoin d'être choisis pour optimiser sa performance. Entres autres,
 l'objectif du microscope choisi possède une magnification théorique de 20, et une ouverture numérique de 0.4. Après quelques essais, 
-il a été conclu qu'une magnification de 20 offrait un plage de fonctionnement optimale, en considérant 
+il a été conclu qu'une magnification de 20 offrait une plage de fonctionnement optimale, en considérant 
 que pour des magnifications plus élevées, les plus grosses particules (de l'ordre de 10 microns) se déplaçaient souvent hors de la région observée. 
 Le temps d'exposition a été établi à 150 ms. La figure \ref{exposition} ci-dessous présente les images
 capturées pour trois différents temps d'exposition.
@@ -311,6 +257,64 @@ ci-dessous:
 \end{equation*}
 où $\Delta t$ correspond au temps d'exposition. Pour un temps d'exposition de 0.150 s, on a : $f_{image}\leq 1/0.150 = 6.67$ images/s. 
 Pour limiter le nombre d'images perdues, la fréquence d'images a été diminuée à 1 image/s.
+\textcolor{red}{rajouter explication pour le nb d'images capturées et pour images perdues}
+\subsection{Caractérisation de la taille de particules}
+Lors de l'acquisition des images, il a été conclu que le temps d'exposition devait être assez long, soit d'environ 150 ms. Par conséquent, il a fallu réduire 
+la fréquence d'image à 1 image par seconde (voir section \ref{para}). Malgré ces ajustements, la caméra ne parvient tout de même
+pas à enregistrer chaque image. Afin de remedier ce problème, l'acquisition d'images remplace les images qui ne sont pas enregistrées par une image noire. 
+Pour traiter les images et \textit{tracker} les particules correctement, toutes les images noires sont premièrement ignorées pour 
+produire une liste de positions. Les images de départ sont évaluées une par une, et à chaque fois qu'une
+image noire apparaît, un vecteur $[NaN ,NaN]$ est ajouté à la liste contenant toutes les positions.
+Cette procédure nous permet de savoir avec exactitude les emplacements des images qui n'ont pas pu être enregistrées. Une fois la liste de positions 
+complétée, il est possible d'effectuer le calcul de la MDS avec la formule suivante: 
+ \begin{align}
+  MSD &= \frac{1}{N_{\Delta t}} \sum_{i=0}^{N_{\Delta t} - 1} \left( \mathbf{r}(i+\Delta t) - \mathbf{r}(i) \right)^2,\\ 
+  \mathbf{r}(i) &= x(i)\hat{x}+ y(i)\hat{y}
+\end{align}
+où $N_{\Delta t}$ est le nombre de paires $i$ disponibles pour un intervalle $\Delta t$ et $\Delta t$ qui varie de 1 jusqu'au nombre de positions (nombre d'images) moins une. 
+L'incertitude sur ces valeurs est donnée par la formule suivante: 
+\begin{equation}
+  \alpha =A+B
+\end{equation}
+\begin{align*}
+  A = \sqrt{
+    \begin{aligned}
+      &\left( 2(x(i+\Delta t) - x(i))\cdot \Delta x(i+\Delta t) \right)^2 \\
+      &+ \left( 2(x(i+\Delta t) - x(i))\cdot \Delta x(i) \right)^2
+    \end{aligned}
+  }
+\end{align*}
+\begin{align*}
+  B = \sqrt{
+    \begin{aligned}
+      &\left( 2(y(i+\Delta t) - y(i))\cdot \Delta y(i+\Delta t) \right)^2 \\
+      &+ \left( 2(y(i+\Delta t) - y(i))\cdot \Delta y(i) \right)^2.
+    \end{aligned}
+  }
+\end{align*}
+\textcolor{red}{SOURCE: travail prep}
+
+On remarque que c'est ici que le traitement de toutes les images est important, même celles qui ont été perdues, car sinon le $\Delta t$ n'aurait pas été cohérent avec la procédure de la MDS. 
+La façon de traiter ce calcul avec les vecteurs $\left [ NaN ,NaN \right ]$ tout en perdant le moins d'information possible a été de définir que 
+dès que l’élément NaN est détecté dans un calcul, $\left( \mathbf{r}(i+\Delta t) - \mathbf{r}(i) \right)=0$. De cette façon, les images non-enregistrées
+ne peuvent pas interférer dans le calcul de la MDS. Dans la même idée, les incertitudes sur les positions sont calculées à l'aide de l'écart-type 
+du \textit{fit} gaussien, et dans le cas d'une vecteur identifié par $[NaN, NaN]$, on pose $\Delta x=0$ et $\Delta y=0$. Les images noires ne sont donc pas prises en compte non plus dans les calculs d'incertitude.  
+
+Une fois toutes les valeurs trouvées, un graphique des résultat de MDS en fonction du $\Delta t$ est produit. La calcul de la MSD est évalué en fonction de l'intervalle de temps
+qui sépare deux points. En considérant que plus l'intervalle est important, moins il existe de paires de positions, seuls les cinq premiers points de
+la MSD ont été choisis. Effectivement, ces points correspondent à un intervalle de temps $\Delta t=1,2,3,4,5$, pour lesquels le poids statistique est beaucoup plus élevé
+que pour des intervalles proches du nombre de positions évaluées ($\Delta t=50$ dans le cas ci-présent).
+Afin de bien caractériser le mouvement de la particule
+qui correspond au mouvement brownien, un \textit{fit} quadratique sur les points de la MSD est déterminé. 
+En utilisant un \textit{fit} quadratique et non un \textit{fit} linéaire,
+il est possible de prendre en compte le facteur de dérive du mouvement de la particule et de l'éliminer. Les trois coefficients de la fonction $a$, $b$ et $c$, correspondent respectivement au mouvement de dérive, au mouvement brownien
+et à un décalage qui peut être négligé. Les incertitudes sur ces 3 valeurs sont données par la racine carrée de la diagonalisation de la matrice de covariance donnée par la fonction \textit{curve\_fit}. 
+C'est le coefficient $b$ du \textit{fit} qui sera utilisé pour trouver le coefficient de diffusion ($D$) et la taille de la particule ($r$). Les formules suivantes sont utilisées: 
+\begin{align*}
+  D &= \frac{b}{4} \quad & r &= \frac{k_B T}{6 \pi \eta D}
+\end{align*}
+L'incertitude sur chacune de ces valeurs est donnée par l'incertitude sur le coefficient $b$, car on considère que les autres paramètres sont des constantes
+et ne comportent donc pas d'incertitudes. 
 
 \subsection{Étude des coûts}
 
