@@ -47,14 +47,19 @@ popt2, pcov2 = curve_fit(gaussian_2d, xy2, z2, p0=initial_guess2)
 amp1, x01, y01, sigma_x1, sigma_y1, offset1 = popt1
 amp2, x02, y02, sigma_x2, sigma_y2, offset2 = popt2
 
+perr1 = np.sqrt(np.diag(pcov1))
+perr2 = np.sqrt(np.diag(pcov2))
+
 print('centre premier point:',x01,y01,'pixels')
 print('centre deuxième point:',x02,y02,'pixels')
 
 d = (width//2+x02-x01)*3.45e-6
+
 m = d/0.01e-3
 
-print(m)
+uncertainty= np.sqrt((3.45e-6*perr2[1])**2+(3.45e-6*perr1[1])**2)/0.01e-3
 
+print(m,'+-',uncertainty)
 
 
 
