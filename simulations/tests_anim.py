@@ -51,5 +51,5 @@ def update(frame):
 
 # Animation
 ani = animation.FuncAnimation(fig, update, frames=frames, interval=50, blit=True)
-# ani.save("particle_brownian_motion.mp4", fps=30, writer="ffmpeg")
+ani.save("particle_brownian_motion.mp4", fps=30, writer="")
 plt.show()
