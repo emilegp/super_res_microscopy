@@ -315,6 +315,47 @@ C'est le coefficient $b$ du \textit{fit} qui sera utilisé pour trouver le coeff
 \end{align*}
 L'incertitude sur chacune de ces valeurs est donnée par l'incertitude sur le coefficient $b$, car on considère que les autres paramètres sont des constantes
 et ne comportent donc pas d'incertitudes. 
+\subsection{Étude statistique}
+Pour un échantillon inconnu, 9 particules ont été suivies pour déterminer, par une analyse statistique, leurs rayons ainsi que leurs coefficients de diffusion. 
+Les résultats suivants ont été obtenus,
+\begin{table}[h!]
+  \centering
+  \begin{tabular}{|c|c|c|}
+  \hline
+  \( \text{Particule} \) &\( D \, (\times 10^{-13} \, \text{m}^2/\text{s}) \) & \( r \, (\times 10^{-6} \, \text{m}) \) \\
+  \hline
+  \( 1 \) &\( 1.6 \pm 0.3 \) & \( 1.4 \pm 0.2 \) \\
+  \( 2 \) &\( 3.6 \pm 0.5 \) & \( 0.61 \pm 0.08 \) \\
+  \( 3 \) &\( 2.2 \pm 0.5 \) & \( 1.0 \pm 0.3 \) \\
+  \( 4 \) &\( 4.0 \pm 0.4 \) & \( 0.55 \pm 0.05 \) \\
+  \( 5 \) &\( 1.4 \pm 0.6 \) & \( 1.5 \pm 0.7 \) \\
+  \( 6 \) &\( 7.4 \pm 0.2 \) & \( 0.298 \pm 0.007 \) \\
+  \( 7 \) &\( 2.8 \pm 0.5 \) & \( 0.8 \pm 0.2 \) \\
+  \( 8 \) &\( 2.72 \pm 0.09 \) & \( 0.8 \pm 0.3 \) \\
+  \( 9 \) &\( 4.1 \pm 0.7 \) & \( 0.54 \pm 0.09 \) \\
+  \hline
+  \hline
+  \( \textbf{Moyenne} \) & \( \mathbf{3.3 \pm 0.5} \) & \( \mathbf{0.8 \pm 0.2} \) \\
+  \hline
+  \end{tabular}
+  \caption{Tableau des valeurs du coefficient de diffusion et du rayon des particules.}
+\end{table}
+On remarque donc que les valeurs finales ont été obtenues en faisant la moyenne de chaque valeur. l'incertitude liée à cette moyenne est donnée
+par l'équation suivante: 
+\[
+  \Delta x = \sqrt{\frac{\sum_{i=1}^N \delta x_{i}^2}{N^2}}
+\]
+Où dans notre cas, x peut être remplacé par r ou D. On remarque ici qu'il s'agit d'une propagation de l’incertitude de chaque point de point sur la 
+moyenne. Il aurait pu être considéré de prendre l'écart type des valeurs dues a la théorie du théorème central-limite, mais il a été jugé ici que le nombre de points 
+analysables de l’échantillon était insuffisant pour appliqué cette théorie. 
+Finalement, il est possible de conclure que pour un échantillon inconnu et en analysant 9 particules différentes présentes dans cet échantillon, 
+le traitement de données élaboré nous donne les résultats suivant: 
+Coefficien de dérive: $(3.3 \pm 0.5) \times 10^{-13} m^{2}/s$
+rayon de la particule: $(0.8 \pm 0.2)\times 10^{-6} m$
+bien que nous ne connaissions pas la taille et le coefficient de dérive théorique de l'échantillon, au vu des valeurs et de leurs incertitudes, 
+il est acceptable de conclure que l'analyse de donnée retourne des valeurs cohérentes et logiques. 
+
+
 
 \subsection{Étude des coûts}
 
