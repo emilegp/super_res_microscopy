@@ -181,7 +181,7 @@ tableau \ref{specs} ci-dessous.
   \begin{tabular}{|p{2.5cm}|p{2cm}|p{3cm}|p{1.5cm}|p{6.5cm}|}
   \hline
       Magnification réelle & Résolution (nm) & Dimensions (mm) & Coût  \$CAD & Composantes \\ \hline\hline
-      \textcolor{red}{XX} & \textcolor{red}{XX} & L 600 $\times$ W 90 $\times$ H 200 & \$1,483.59 & \vspace{-20pt} {\small\parbox{7cm}{\setlength{\columnsep}{0pt} 
+      $17.14\pm0.02$ & \textcolor{red}{XX} & L 600 $\times$ W 90 $\times$ H 200 & \$1,483.59 & \vspace{-20pt} {\small\parbox{7cm}{\setlength{\columnsep}{0pt} 
       \begin{multicols}{2}\begin{itemize}[label=$\triangleright$, topsep=0pt, itemsep=0pt]
             \item KM100S
             \item CS165MU
@@ -211,9 +211,6 @@ tableau \ref{specs} ci-dessous.
 
 \textcolor{red}{ce qui était dans le rapport préliminaire}
 
-\subsection{Magnification réelle}
-
-
 \subsection{Paramètres utilisés \label{para}}
 Certains paramètres du microscope ont eu besoin d'être choisis pour optimiser sa performance. Entres autres,
 l'objectif du microscope choisi possède une magnification théorique de 20, et une ouverture numérique de 0.4. Après quelques essais, 
@@ -225,39 +222,88 @@ capturées pour trois différents temps d'exposition.
 \begin{figure}[H]
   \begin{subfigure}{0.3\textwidth}
       \centering
-      \includegraphics[width=\textwidth]{video_output_carac_125ms_2im_10um.png}
+      \includegraphics[width=\textwidth]{essai_10um_2im_50ms.png}
       \caption{}
       \label{a}
   \end{subfigure}
   \hfill
   \begin{subfigure}{0.3\textwidth}
       \centering
-      \includegraphics[width=\textwidth]{video_output_carac_150ms_1im_10um.png}
+      \includegraphics[width=\textwidth]{essai_10um_2im_100ms.png}
       \caption{}
       \label{b}
   \end{subfigure}
   \hfill
   \begin{subfigure}{0.3\textwidth}
     \centering
-    \includegraphics[width=\textwidth]{video_output_carac_200ms_1im_10um.png}
+    \includegraphics[width=\textwidth]{essai_10um_1im_150ms.png}
     \caption{}
     \label{c}
   \end{subfigure}
-  \caption{Image capturée pour un temps d'exposition de: (a) 125 ms (b) 150 ms et (c) 200 ms.}
+  \caption{Image capturée pour un temps d'exposition de: (a) 50 ms (b) 100 ms et (c) 150 ms.}
       \label{exposition}
 \end{figure}
-Ici, l'image \ref{a} est sous-exposée et l'image \ref{c} est surexposée. Dans les deux cas, le contraste entre
+Ici, l'image \ref{a} est sous-exposée et l'image \ref{c} est surexposée. Pour le cas sous-exposé, le contraste entre
 le bruit et les particules est réduit, ce qui peut affecter la justesse des \textit{fits} gaussiens effectués pour suivre
-le déplacement des particules. Par conséquent, un temps d'exposition de 150 ms, correspondant à l'image \ref{b}, a été choisi.
+le déplacement des particules. Pour le cas surexposé, l'intensité des pixels de certaines particules est saturée, ce qu'on peut
+observer en haut à droite de l'image \ref{c}. Par conséquent, un temps d'exposition de 100 ms, correspondant à l'image \ref{b}, a été choisi.
 
 La fréquence d'images $f_{image}$ est dépendante au temps d'exposition choisi. Effectivement, celle-ci doit respecter la contrainte
 ci-dessous:
 \begin{equation*}
   f_{image}\leq \frac{1}{\Delta t},
 \end{equation*}
-où $\Delta t$ correspond au temps d'exposition. Pour un temps d'exposition de 0.150 s, on a : $f_{image}\leq 1/0.150 = 6.67$ images/s. 
-Pour limiter le nombre d'images perdues, la fréquence d'images a été diminuée à 1 image/s.
-\textcolor{red}{rajouter explication pour le nb d'images capturées et pour images perdues}
+où $\Delta t$ correspond au temps d'exposition. Pour un temps d'exposition de 0.100 s, on a : $f_{image}\leq 1/0.100 = 10$ images/s. 
+Normalement, la fréquence d'images peut être gardée à sa valeur maximale, mais après quelques essais, il a pu été observé que de nombreuses
+images ne se sauvegardaient pas. Sachant que la position dans le temps de chaque capture d'image est importante pour le calcul de la MSD, la fréquence 
+d'images a été réduite à deux images par secondes pour essayer limiter le nombre d'images perdues. 
+
+Afin d'obtenir un calcul des premiers points de la MSD ayant des poids statistiques significatifs, le nombre d'images capturées a été posé à 75. 
+Ce choix a été fait pour que le nombre d'images enregistrées soit de 50 ou plus, en ajoutant une marge de 25 images pour prendre en compte les images qui seront 
+potentiellement perdues.
+
+
+\subsection{Magnification réelle}
+La magnification réelle du système a été déterminée à l'aide d'une cible ayant des dimensions connues. L'image de la cible, capturée par la
+caméra et suite au microscope, est présentée dans la figure \ref{cible}. La distance réelle entre le centre de deux carrés blancs voisins dans le 
+quadrillage est de 0.01 mm.
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.2]{magnification_rele.png}
+  \caption{Image de la cible au plan du capteur.}
+  \label{cible}
+\end{figure}
+Afin de déterminer la distance entre les centres pour l'image de la cible, deux \textit{fits} gaussiens ont
+été effectués sur une région recadrée de l'image, comprenant l'équivalent de deux carrés blancs. L'image recadrée est illustrée dans la 
+figure \ref{crop} ci-dessous.
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=2]{magnification_rele_crop.png}
+  \caption{Image recadrée de la cible.}
+  \label{crop}
+\end{figure}
+Les deux \textit{fits} gaussiens 2D ont été effectués avec la fonction Python \textit{curve\_fit} sur la moitié droite et sur la moitié gauche de l'image \ref{crop},
+ce qui a permis de trouver le centre de chaque carré blanc. La gaussienne 2D est décrite par:
+\begin{equation}
+  f(x,y)=A\cdot exp\left(-\left(\frac{(x-x_0)^2}{2\sigma_x^2}+\frac{(y-y_0)^2}{2\sigma_y^2}\right)\right)+B,
+\end{equation}
+où $A$ est l'amplitude, $B$ est le décalage, $x_0$ et $y_0$ sont les moyennes et $\sigma_x$ et $\sigma_y$ sont les écarts-types.
+En ayant obtenu les coordonnées des centres des deux gaussiennes, on peut trouver la distance $d_{im}$ entre les deux centres:
+\begin{equation}
+  d_{im}=(x_{0_2}-x_{0_1})\cdot d_{pixel}\approx 0.1714\ mm,
+\end{equation}
+où $d_{pixel}=3.45\times10^{-6} \ m$ est la dimension d'un pixel \textcolor{red}{source caméra}. Ici, on approxime la distance en utilisant la distance en $x$
+parce que la composante $|y_{0_2}-y_{0_1}|\approx 0.6\ pixel$ est négligeable. Finalement, on retrouve la magnification réelle de l'objectif:
+\begin{equation}
+  m=\frac{d_{im}}{d_{vraie}}\approx\frac{0.1714}{0.01}= 17.14.
+\end{equation}
+L'incertitude sur $m$ provient des incertitudes sur les paramètres du \textit{fit} gaussien. 
+On retrouve:
+\begin{equation}
+  \sigma_m=\frac{\sqrt{(d_{pixel}*\sigma_{x_{0_2}})^2+(d_{pixel}*\sigma_{x_{0_2}})^2}}{d_{vraie}}\approx0.0169.
+\end{equation}
+On obtient donc que la magnification réelle est de: $17.14\pm0.02$.
+
 \subsection{Caractérisation de la taille de particules}
 Lors de l'acquisition des images, il a été conclu que le temps d'exposition devait être assez long, soit d'environ 150 ms. Par conséquent, il a fallu réduire 
 la fréquence d'image à 1 image par seconde (voir section \ref{para}). Malgré ces ajustements, la caméra ne parvient tout de même
@@ -307,11 +353,30 @@ que pour des intervalles proches du nombre de positions évaluées ($\Delta t=50
 Afin de bien caractériser le mouvement de la particule
 qui correspond au mouvement brownien, un \textit{fit} quadratique sur les points de la MSD est déterminé. 
 En utilisant un \textit{fit} quadratique et non un \textit{fit} linéaire,
-il est possible de prendre en compte le facteur de dérive du mouvement de la particule et de l'éliminer. Les trois coefficients de la fonction $a$, $b$ et $c$, correspondent respectivement au mouvement de dérive, au mouvement brownien
-et à un décalage qui peut être négligé. Les incertitudes sur ces 3 valeurs sont données par la racine carrée de la diagonalisation de la matrice de covariance donnée par la fonction \textit{curve\_fit}. 
+il est possible de prendre en compte le facteur de dérive du mouvement de la particule et de l'éliminer. Effectivement, on sait que la MSD est décrite par:
+\begin{equation}\label{msd1}
+  MSD(t)=\langle\left(\Delta x \right)^2\rangle.
+\end{equation} 
+En considérant le facteur de dérive et le facteur du déplacement Brownien, on peut écrire:
+\begin{equation}\label{x}
+  \Delta x (t)=vt+\Delta x_{Brownien}(t),
+\end{equation} 
+où $v$ est la vitesse des particules due à la dérive. On insère l'équation \ref{x} dans l'équation \ref{msd1}:
+\begin{align*}
+  MSD(t)&=\langle\left(vt+\Delta x_{Brownien}(t) \right)^2\rangle\\
+  &=\langle\left(vt\right)^2\rangle+\langle\left(\Delta x_{Brownien}(t)\right)^2\rangle+\langle2vt\cdot \Delta x_{Brownien}(t)x_{Brownien}(t)\rangle,
+\end{align*}
+où $vt$ est indépendant de $\Delta x_{Brownien}(t)$, et $\langle\Delta x_{Brownien}(t)\rangle=0$,
+\begin{equation}\label{msd2}
+  MSD(t)=v^2t^2+2nDt+2n\sigma^2,
+\end{equation}
+où $n$ est le nombre de dimensions pour lesquelles le mouvement est analysé, $D$ est le coefficient de diffusion et $\sigma$ est l'écart type
+de l'erreur de localisation \textcolor{red}{source procédurier}. L'équation \ref{msd2} correspond à une quadratique avec
+les coefficients $a=v^2$, $b=2nD$ et $c=2n\sigma^2$.Les incertitudes sur ces 3 valeurs sont données par la racine carrée 
+de la diagonalisation de la matrice de covariance donnée par la fonction \textit{curve\_fit}. 
 C'est le coefficient $b$ du \textit{fit} qui sera utilisé pour trouver le coefficient de diffusion ($D$) et la taille de la particule ($r$). Les formules suivantes sont utilisées: 
 \begin{align*}
-  D &= \frac{b}{4} \quad & r &= \frac{k_B T}{6 \pi \eta D}
+  D &= \frac{b}{2n}=\frac{b}{4} \quad & r &= \frac{k_B T}{6 \pi \eta D}
 \end{align*}
 L'incertitude sur chacune de ces valeurs est donnée par l'incertitude sur le coefficient $b$, car on considère que les autres paramètres sont des constantes
 et ne comportent donc pas d'incertitudes. 
