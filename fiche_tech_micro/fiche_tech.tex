@@ -157,7 +157,7 @@ $M = 20$, aperture NA $= 0.4$) pour le grossissement, puis une lentille tube de 
 théorique de 1.012 µm. Afin d'analyser des particules d'environ cette taille, un traitement
 numérique est fait pour extraire la taille des particules du mouvement brownien filmé, avec 
 une résolution sous-pixellaire. Avec ce procédé, le microscope peut détecter des tailles de 
-particules dans la plage  \textcolor{red}{XX - XX} µm. Suite à la caractérisation de particules 
+particules dans la plage 1-10 µm. Suite à la caractérisation de particules 
 de 1 µm, l'erreur sur la valeur identifiée est de \textcolor{red}{XX $\pm$ XX} µm.
 Pour la caractérisation de particules de 10 µm, l'erreur sur la valeur identifiée est de 
 \textcolor{red}{XX $\pm$ XX} µm. Le système, monté sur table optique et utilisable dans le noir 
@@ -180,8 +180,8 @@ tableau \ref{specs} ci-dessous.
   \caption{Tableau des spécifications}
   \begin{tabular}{|p{2.5cm}|p{2cm}|p{3cm}|p{1.5cm}|p{6.5cm}|}
   \hline
-      Magnification réelle & Résolution (nm) & Dimensions (mm) & Coût  \$CAD & Composantes \\ \hline\hline
-      $17.14\pm0.02$ & \textcolor{red}{XX} & L 600 $\times$ W 90 $\times$ H 200 & \$1,483.59 & \vspace{-20pt} {\small\parbox{7cm}{\setlength{\columnsep}{0pt} 
+      Magnification réelle & Résolution (um) & Dimensions (mm) & Coût  \$CAD & Composantes \\ \hline\hline
+      $17.14\pm0.02$ & 0.2 & L 600 $\times$ W 90 $\times$ H 200 & \$1,483.59 & \vspace{-20pt} {\small\parbox{7cm}{\setlength{\columnsep}{0pt} 
       \begin{multicols}{2}\begin{itemize}[label=$\triangleright$, topsep=0pt, itemsep=0pt]
             \item KM100S
             \item CS165MU
@@ -207,33 +207,43 @@ tableau \ref{specs} ci-dessous.
 
 \section{Rapports de tests}
 
-\subsection{Résolution sans analyse numérique}
+% \subsection{Résolution sans analyse numérique}
 
-\textcolor{red}{ce qui était dans le rapport préliminaire}
+% \textcolor{red}{ce qui était dans le rapport préliminaire}
 
 \subsection{Suivi de particules}
 
 Pour obtenir la taille d'une particule avec la plus grande précision possible, la position de la particule doit être 
-déterminée sur au moins une cinquantaine de frames successifs, avant de pouvoir procéder à l'estimation de son 
+déterminée sur au moins une cinquantaine d'instants successifs, avant de pouvoir procéder à l'estimation de son 
 coefficient de diffusion et de sa taille. 
-
-Pour reconnaitre la particule, système de comparaison en fonction de sa taille (facteur majeur) et sa luminosité 
-(impact moindre, mais présent) est utilisé lorsque plus d'une particule sont dans la même zone. 
-OBTENTION DE CES INFOS ET MÉCANISME DE COMPARAISON.
 
 Pour positionner la particule avec la plus faible incertitude possible, un 
 fit gaussien est effectué sur l'image pixelisée de la particule. Pour que le fit s'effectue
 adéquatement, il faut restreindre la zone de fit à la particule. Pour se faire, le suivi de la particule commence 
 autour de la position précédente de la particule, par la recherche de maxima d'intensité surpassant un seuil. Les
 dimensions de la zone rectangulaire en question et le seuil utilisé sont des valeurs déterminées par essai erreur
-et sont d'environ 100 pixels de large et 50 sur un maximum de 200 respectivement.
+et sont respectivement d'environ 100 pixels de côté et une intensité de 50 sur un maximum de 200 .
 Une fois le nombre de maxima obtenu, soit le nombre de particules potentielles, la zone de fit est recentrée sur 
 la particule la plus similaire à celle du départ.  
 
-La position de la particule est alors donné par le fit et l'incertitude sur la position correspond alors à 
-l'écart-type de la gaussienne obtenue, qui est généralement plus faible que la taille d'un pixel. 
-Des vérifications sont faites pour s'assurer que la nouvelle position est plausible et la nouvelle position est alors
+Pour reconnaitre la particule, un système de comparaison des particules potentielles en fonction de leur taille 
+et leur luminosité est utilisé lorsque plus d'une particule sont dans la même zone. 
+La taille, soit le nombre de pixels au dessus d'un seuil fixé, y a un rôle prépondérant, mais la luminosité, soit 
+la moyenne d'intensité des pixels en question, a également un impact. Ces informations sont obtenues en centrant 
+l'image sur la particule d'intérêt et en appliquant la fonction DBSCAN pour regrouper les maximas en des entités
+qui correspondent aux particules. La luminosité et la taille obtenues sont alors comparées à la luminosité et la 
+taille de la première observation qui sert de référence. La première observation est obtenue comme les suivantes,
+avec comme seul différence que sa détection est faite par l'humain utilisant le système, qui clique initialement 
+sur la particule que le système aura à suivre.
+
+Une fois que la particule peut être suivie d'un instant au suivant, la localisation de la particule est obtenue à 
+l'aide du fit gaussien, et l'incertitude sur la position correspond alors à l'écart-type de la gaussienne obtenue, 
+qui est généralement plus faible que la taille d'un pixel. 
+Des vérifications sont faites pour s'assurer que la nouvelle position est plausible et elle est alors
 enregistrée avant de servir de référence pour le traitement du frame suivant.
+
+Si la particule choisie sort de l'écran avant la fin des instants observés, le système s'arrête tout simplement à 
+sa dernière position identifiable, soit environ 100 pixels avant le bord.
 
 \subsection{Paramètres utilisés \label{para}}
 Certains paramètres du microscope ont eu besoin d'être choisis pour optimiser sa performance. Entres autres,
@@ -247,21 +257,21 @@ capturées pour trois différents temps d'exposition.
   \begin{subfigure}{0.3\textwidth}
       \centering
       \includegraphics[width=\textwidth]{essai_10um_2im_50ms.png}
-      \caption{}
+      \caption{50 ms d'exposition}
       \label{a}
   \end{subfigure}
   \hfill
   \begin{subfigure}{0.3\textwidth}
       \centering
       \includegraphics[width=\textwidth]{essai_10um_2im_100ms.png}
-      \caption{}
+      \caption{100 ms d'exposition}
       \label{b}
   \end{subfigure}
   \hfill
   \begin{subfigure}{0.3\textwidth}
     \centering
     \includegraphics[width=\textwidth]{essai_10um_1im_150ms.png}
-    \caption{}
+    \caption{150 ms d'exposition}
     \label{c}
   \end{subfigure}
   \caption{Image capturée pour un temps d'exposition de: (a) 50 ms (b) 100 ms et (c) 150 ms.}
@@ -445,11 +455,40 @@ Bien que nous ne connaissions pas la taille et le coefficient de dérive théori
 entre 1 et 10 micromètres. De plus, en comparant  la figure ci-dessous aux images a la section 2.3 qui représente des particules de 10 micromètres, il est correct de penser 
 que l'échantillon analysé contient des particules se rapprochant plus d'une valeur de 1 micromètre. Donc au vu des résultats obtenus et de leurs 
 incertitudes, il est correct d'affirmer que l'analyse de l'échantillon donne des valeurs tout à fait cohérentes et logiques avec les observations de l'échantillon. 
+
 \begin{figure}[H]
-  \centering
-  \includegraphics[width=0.5\textwidth]{Test_cond_rapport.png}
-  \caption{Échantillon inconnu}
+  \begin{subfigure}[H]{0.45\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{Test_cond_rapport.png}
+    \caption{Échantillon inconnu}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[H]{0.45\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{Échantillon1um.png}
+    \caption{Échantillon avec particules de 1 um}
+  \end{subfigure}
+  \caption{Images d'échantillons testés pour comparaison qualitative}
 \end{figure}
+
+\subsection{Résolution de l'instrument}
+
+La résolution de l'instrument concernant la taille des particules observables est définie
+comme la plus petite différence qu'il est capable de discerner. Selon les tests effectués, 
+cette plus petite différence est obtenue lors de l'identification des particules de 1 um 
+de diamètre. Elle correspond à l'incertitude obtenue sur la valeur estimée, ce qui se traduit
+par une résolution de 0,2 um. 
+
+\subsection{Limitations de l'appareil}
+
+L'appareil peut distinguer et suivre des particules dans la gamme de 1 à 10 um avec et sans dérive.
+Toutefois, pour estimer la taille des particules, une dérive trop forte peut affecter négativement 
+les performances de l'appareil. C'est pour cette raison que les tailles obtenues pour les particules
+de 10 um sont sous-estimées. Le seuil critique survient lorsque la dérive est plus importante que la 
+diffusion associée au mouvement brownien de quelques ordre de grandeur. Dans ce régime, malgré une 
+compensation de la plus grande partie de la dérive, l'incertitude qu'elle vient ajouter, bien que faible
+relativement au mouvement de dérive, est grande relativement à la diffusion. Celle-ci n'est alors plus 
+adéquatement estimée par le modèle utilisé. 
 
 
 \subsection{Étude des coûts}
