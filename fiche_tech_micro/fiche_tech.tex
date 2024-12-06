@@ -211,6 +211,30 @@ tableau \ref{specs} ci-dessous.
 
 \textcolor{red}{ce qui était dans le rapport préliminaire}
 
+\subsection{Suivi de particules}
+
+Pour obtenir la taille d'une particule avec la plus grande précision possible, la position de la particule doit être 
+déterminée sur au moins une cinquantaine de frames successifs, avant de pouvoir procéder à l'estimation de son 
+coefficient de diffusion et de sa taille. 
+
+Pour reconnaitre la particule, système de comparaison en fonction de sa taille (facteur majeur) et sa luminosité 
+(impact moindre, mais présent) est utilisé lorsque plus d'une particule sont dans la même zone. 
+OBTENTION DE CES INFOS ET MÉCANISME DE COMPARAISON.
+
+Pour positionner la particule avec la plus faible incertitude possible, un 
+fit gaussien est effectué sur l'image pixelisée de la particule. Pour que le fit s'effectue
+adéquatement, il faut restreindre la zone de fit à la particule. Pour se faire, le suivi de la particule commence 
+autour de la position précédente de la particule, par la recherche de maxima d'intensité surpassant un seuil. Les
+dimensions de la zone rectangulaire en question et le seuil utilisé sont des valeurs déterminées par essai erreur
+et sont d'environ 100 pixels de large et 50 sur un maximum de 200 respectivement.
+Une fois le nombre de maxima obtenu, soit le nombre de particules potentielles, la zone de fit est recentrée sur 
+la particule la plus similaire à celle du départ.  
+
+La position de la particule est alors donné par le fit et l'incertitude sur la position correspond alors à 
+l'écart-type de la gaussienne obtenue, qui est généralement plus faible que la taille d'un pixel. 
+Des vérifications sont faites pour s'assurer que la nouvelle position est plausible et la nouvelle position est alors
+enregistrée avant de servir de référence pour le traitement du frame suivant.
+
 \subsection{Paramètres utilisés \label{para}}
 Certains paramètres du microscope ont eu besoin d'être choisis pour optimiser sa performance. Entres autres,
 l'objectif du microscope choisi possède une magnification théorique de 20, et une ouverture numérique de 0.4. Après quelques essais, 
