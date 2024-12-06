@@ -4,7 +4,7 @@
 \usepackage{graphicx}
 \usepackage{etoolbox}
 \apptocmd{\sloppy}{\hbadness 10000\relax}{}{}
-% \usepackage[numbers]{natbib}
+\usepackage[numbers]{natbib}
 \usepackage[T1]{fontenc}
 \usepackage{ragged2e}
 \usepackage[french]{babel}
@@ -102,7 +102,7 @@
 \large{\textbf{Équipe : Lundi 03}}\\[1.5cm]
 
 \rule{\linewidth}{0.5mm} \\[0.5cm]
-\Large{\textbf{Microscope pour suivi de particules}} \\[0.2cm]
+\Large{\textbf{Suivi de particules}} \\[0.2cm]
 \text{Fiche technique}\\
 \rule{\linewidth}{0.5mm} \\[2.3cm]
 
@@ -136,7 +136,7 @@ Polytechnique Montréal\\}
 \fancyhf{}
 \renewcommand{\headrulewidth}{1pt}
 \fancyhead[L]{\textbf{PHS3910}}
-\fancyhead[C]{Fiche technique du microscope}
+\fancyhead[C]{Fiche technique : suivi de particules}
 \fancyhead[R]{\today}
 \fancyfoot[R]{\thepage}
 
@@ -148,8 +148,8 @@ Polytechnique Montréal\\}
 \section{Description générale et spécifications}
 
 Cette fiche technique, à la demande du Gouvernement du Québec, présente les caractéristiques 
-d'un microscope servant au suivi de microparticules contaminants l'environnement près de 
-l'usine Polyfab \textcolor{red}{lol}. Les composantes principales sont un laser 405 nm (CPS405)
+d'un dispositif de mesure de taille de microparticules contaminants l'environnement près de 
+l'usine Polyfab. Les composantes principales sont un laser 405 nm (CPS405)
 pour illuminer les fluorophores dans les échantillons, un objectif de microscope (grossissement 
 $M = 20$, aperture NA $= 0.4$) pour le grossissement, puis une lentille tube de 150 mm de focale
 (LA1433-A-ML) pour converger les rayons sortants de l'objectif sur le capteur d'une caméra CMOS 
@@ -162,7 +162,7 @@ de 1 µm, l'erreur sur la valeur identifiée est de \textcolor{red}{XX $\pm$ XX}
 Pour la caractérisation de particules de 10 µm, l'erreur sur la valeur identifiée est de 
 \textcolor{red}{XX $\pm$ XX} µm. Le système, monté sur table optique et utilisable dans le noir 
 seulement, a des dimensions de \textcolor{red}{$600 \times 90 \times 200$} mm, tel que présenté à 
-la figure \ref{schema_micro}. Sans compter la table, il a pour coût total 1483.59 \$, prix qui
+la figure \ref{schema_micro}. Sans compter la table, il a pour coût total 1789.39 \$, prix qui
 peut être réduit par l'usage d'impression 3D. Les spécifications de microscope sont rassemblées dans le
 tableau \ref{specs} ci-dessous.
 
@@ -175,13 +175,15 @@ tableau \ref{specs} ci-dessous.
   \label{schema_micro}
 \end{figure}
 
+\textcolor{red}{yap yap voici le tableau}
+
 \begin{table}[H]
   \centering
   \caption{Tableau des spécifications}
   \begin{tabular}{|p{2.5cm}|p{2cm}|p{3cm}|p{1.5cm}|p{6.5cm}|}
   \hline
       Magnification réelle & Résolution (um) & Dimensions (mm) & Coût  \$CAD & Composantes \\ \hline\hline
-      $17.14\pm0.02$ & 0.2 & L 600 $\times$ W 90 $\times$ H 200 & \$1,483.59 & \vspace{-20pt} {\small\parbox{7cm}{\setlength{\columnsep}{0pt} 
+      $17.14\pm0.02$ & 0.2 & L 600 $\times$ W 90 $\times$ H 200 & \$1789.39 & \vspace{-20pt} {\small\parbox{7cm}{\setlength{\columnsep}{0pt} 
       \begin{multicols}{2}\begin{itemize}[label=$\triangleright$, topsep=0pt, itemsep=0pt]
             \item KM100S
             \item CS165MU
@@ -206,6 +208,9 @@ tableau \ref{specs} ci-dessous.
 
 
 \section{Rapports de tests}
+
+Cette section explique en détail le processus et les résultats pour les tests de caractérisation
+effectués sur le dispositif de suivi de particules.
 
 % \subsection{Résolution sans analyse numérique}
 
@@ -253,30 +258,31 @@ que pour des magnifications plus élevées, les plus grosses particules (de l'or
 Le temps d'exposition a été établi à 150 ms. La figure \ref{exposition} ci-dessous présente les images
 capturées pour trois différents temps d'exposition.
 
-\begin{figure}[H]
-  \begin{subfigure}{0.3\textwidth}
-      \centering
-      \includegraphics[width=\textwidth]{essai_10um_2im_50ms.png}
-      \caption{50 ms d'exposition}
-      \label{a}
-  \end{subfigure}
-  \hfill
-  \begin{subfigure}{0.3\textwidth}
-      \centering
-      \includegraphics[width=\textwidth]{essai_10um_2im_100ms.png}
-      \caption{100 ms d'exposition}
-      \label{b}
-  \end{subfigure}
-  \hfill
-  \begin{subfigure}{0.3\textwidth}
-    \centering
-    \includegraphics[width=\textwidth]{essai_10um_1im_150ms.png}
-    \caption{150 ms d'exposition}
-    \label{c}
-  \end{subfigure}
-  \caption{Image capturée pour un temps d'exposition de: (a) 50 ms (b) 100 ms et (c) 150 ms.}
-      \label{exposition}
-\end{figure}
+\textcolor{red}{réafficher images}
+% \begin{figure}[H]
+%   \begin{subfigure}{0.3\textwidth}
+%       \centering
+%       \includegraphics[width=\textwidth]{essai_10um_2im_50ms.png}
+%       \caption{50 ms d'exposition}
+%       \label{a}
+%   \end{subfigure}
+%   \hfill
+%   \begin{subfigure}{0.3\textwidth}
+%       \centering
+%       \includegraphics[width=\textwidth]{essai_10um_2im_100ms.png}
+%       \caption{100 ms d'exposition}
+%       \label{b}
+%   \end{subfigure}
+%   \hfill
+%   \begin{subfigure}{0.3\textwidth}
+%     \centering
+%     \includegraphics[width=\textwidth]{essai_10um_1im_150ms.png}
+%     \caption{150 ms d'exposition}
+%     \label{c}
+%   \end{subfigure}
+%   \caption{Image capturée pour un temps d'exposition de: (a) 50 ms (b) 100 ms et (c) 150 ms.}
+%       \label{exposition}
+% \end{figure}
 Ici, l'image \ref{a} est sous-exposée et l'image \ref{c} est surexposée. Pour le cas sous-exposé, le contraste entre
 le bruit et les particules est réduit, ce qui peut affecter la justesse des \textit{fits} gaussiens effectués pour suivre
 le déplacement des particules. Pour le cas surexposé, l'intensité des pixels de certaines particules est saturée, ce qu'on peut
@@ -336,17 +342,19 @@ On retrouve:
 \begin{equation}
   \sigma_m=\frac{\sqrt{(d_{pixel}*\sigma_{x_{0_2}})^2+(d_{pixel}*\sigma_{x_{0_2}})^2}}{d_{vraie}}\approx0.0169.
 \end{equation}
-On obtient donc que la magnification réelle est de: $17.14\pm0.02$.
+On obtient donc que la magnification réelle est de: $17.14\pm0.02$. \textcolor{red}{à quoi ça sert}
+
+% Source caméra :
 
 \subsection{Caractérisation de la taille de particules}
 Lors de l'acquisition des images, il a été conclu que le temps d'exposition devait être assez long, soit d'environ 150 ms. Par conséquent, il a fallu réduire 
-la fréquence d'image à 1 image par seconde (voir section \ref{para}). Malgré ces ajustements, la caméra ne parvient tout de même
+la fréquence d'image à 1 image par seconde (voir section \ref{para}) \textcolor{red}{contradiction}. Malgré ces ajustements, la caméra ne parvient tout de même
 pas à enregistrer chaque image. Afin de remedier ce problème, l'acquisition d'images remplace les images qui ne sont pas enregistrées par une image noire. 
 Pour traiter les images et \textit{tracker} les particules correctement, toutes les images noires sont premièrement ignorées pour 
 produire une liste de positions. Les images de départ sont évaluées une par une, et à chaque fois qu'une
 image noire apparaît, un vecteur $[NaN ,NaN]$ est ajouté à la liste contenant toutes les positions.
 Cette procédure nous permet de savoir avec exactitude les emplacements des images qui n'ont pas pu être enregistrées. Une fois la liste de positions 
-complétée, il est possible d'effectuer le calcul de la MDS avec la formule suivante: 
+complétée, il est possible d'effectuer le calcul de la MSD avec la formule suivante: 
  \begin{align}
   MSD &= \frac{1}{N_{\Delta t}} \sum_{i=0}^{N_{\Delta t} - 1} \left( \mathbf{r}(i+\Delta t) - \mathbf{r}(i) \right)^2,\\ 
   \mathbf{r}(i) &= x(i)\hat{x}+ y(i)\hat{y}
@@ -378,9 +386,11 @@ On remarque que c'est ici que le traitement de toutes les images est important, 
 La façon de traiter ce calcul avec les vecteurs $\left [ NaN ,NaN \right ]$ tout en perdant le moins d'information possible a été de définir que 
 dès que l’élément NaN est détecté dans un calcul, $\left( \mathbf{r}(i+\Delta t) - \mathbf{r}(i) \right)=0$. De cette façon, les images non-enregistrées
 ne peuvent pas interférer dans le calcul de la MDS. Dans la même idée, les incertitudes sur les positions sont calculées à l'aide de l'écart-type 
-du \textit{fit} gaussien, et dans le cas d'une vecteur identifié par $[NaN, NaN]$, on pose $\Delta x=0$ et $\Delta y=0$. Les images noires ne sont donc pas prises en compte non plus dans les calculs d'incertitude.  
+du \textit{fit} gaussien, et dans le cas d'une vecteur identifié par $[NaN, NaN]$, on pose $\Delta x=0$ et $\Delta y=0$. Les images noires ne sont donc pas prises en compte non plus dans les calculs d'incertitude. 
 
-Une fois toutes les valeurs trouvées, un graphique des résultat de MDS en fonction du $\Delta t$ est produit. La calcul de la MSD est évalué en fonction de l'intervalle de temps
+\textcolor{red}{sans perte d'images, meilleure incertitude. maybe suggérer autre cam?}
+
+Une fois toutes les valeurs trouvées, un graphique des résultat de MSD en fonction du $\Delta t$ est produit. La calcul de la MSD est évalué en fonction de l'intervalle de temps
 qui sépare deux points. En considérant que plus l'intervalle est important, moins il existe de paires de positions, seuls les cinq premiers points de
 la MSD ont été choisis. Effectivement, ces points correspondent à un intervalle de temps $\Delta t=1,2,3,4,5$, pour lesquels le poids statistique est beaucoup plus élevé
 que pour des intervalles proches du nombre de positions évaluées ($\Delta t=50$ dans le cas ci-présent).
@@ -395,7 +405,7 @@ En considérant le facteur de dérive et le facteur du déplacement Brownien, on
 \begin{equation}\label{x}
   \Delta x (t)=vt+\Delta x_{Brownien}(t),
 \end{equation} 
-où $v$ est la vitesse des particules due à la dérive. On insère l'équation \ref{x} dans l'équation \ref{msd1}:
+où $v$ est la vitesse des particules due à la dérive. On insère l'équation (\ref{x}) dans l'équation (\ref{msd1}) :
 \begin{align*}
   MSD(t)&=\langle\left(vt+\Delta x_{Brownien}(t) \right)^2\rangle\\
   &=\langle\left(vt\right)^2\rangle+\langle\left(\Delta x_{Brownien}(t)\right)^2\rangle+\langle2vt\cdot \Delta x_{Brownien}(t)x_{Brownien}(t)\rangle,
@@ -405,8 +415,8 @@ où $vt$ est indépendant de $\Delta x_{Brownien}(t)$, et $\langle\Delta x_{Brow
   MSD(t)=v^2t^2+2nDt+2n\sigma^2,
 \end{equation}
 où $n$ est le nombre de dimensions pour lesquelles le mouvement est analysé, $D$ est le coefficient de diffusion et $\sigma$ est l'écart type
-de l'erreur de localisation \textcolor{red}{source procédurier}. L'équation \ref{msd2} correspond à une quadratique avec
-les coefficients $a=v^2$, $b=2nD$ et $c=2n\sigma^2$.Les incertitudes sur ces 3 valeurs sont données par la racine carrée 
+de l'erreur de localisation \textcolor{red}{source procédurier}. L'équation (\ref{msd2}) correspond à une quadratique avec
+les coefficients $a=v^2$, $b=2nD$ et $c=2n\sigma^2$. Les incertitudes sur ces trois valeurs sont données par la racine carrée 
 de la diagonalisation de la matrice de covariance donnée par la fonction \textit{curve\_fit}. 
 C'est le coefficient $b$ du \textit{fit} qui sera utilisé pour trouver le coefficient de diffusion ($D$) et la taille de la particule ($r$). Les formules suivantes sont utilisées: 
 \begin{align*}
@@ -416,9 +426,11 @@ L'incertitude sur chacune de ces valeurs est donnée par l'incertitude sur le co
 et ne comportent donc pas d'incertitudes. 
 \subsection{Étude statistique}
 Pour un échantillon inconnu, 9 particules ont été suivies pour déterminer, par une analyse statistique, leurs rayons ainsi que leurs coefficients de diffusion. 
-Les résultats suivants ont été obtenus,
-\begin{table}[h!]
+Les résultats suivants ont été obtenus :
+
+\begin{table}[H]
   \centering
+  \caption{Tableau des valeurs du coefficient de diffusion et du rayon des particules.}
   \begin{tabular}{|c|c|c|}
   \hline
   \( \text{Particule} \) &\( D \, (\times 10^{-13} \, \text{m}^2/\text{s}) \) & \( r \, (\times 10^{-6} \, \text{m}) \) \\
@@ -437,8 +449,8 @@ Les résultats suivants ont été obtenus,
   \( \textbf{Moyenne} \) & \( \mathbf{3.3 \pm 0.5} \) & \( \mathbf{0.8 \pm 0.2} \) \\
   \hline
   \end{tabular}
-  \caption{Tableau des valeurs du coefficient de diffusion et du rayon des particules.}
 \end{table}
+
 On remarque donc que les valeurs finales ont été obtenues en faisant la moyenne de chaque valeur. l'incertitude liée à cette moyenne est donnée
 par l'équation suivante: 
 \[
@@ -538,7 +550,7 @@ le tableau de calcul, soit celui de la table optique elle-même. Cette dernière
 dispendieuse, mais elle a été omise car elle est déja présente dans plusieurs laboratoires 
 d'optique, ou si non, elle peut être acheté à plus faible coût si les dimensions de la table
 achetée se limitent aux dimensions de l'appareil. Par exemple, chez Thorlabs, la plus petite 
-table optique pour tenir ce microscope est la B1824F, avec des dimensions de 18" $\times$ 24".
+table optique pour tenir ce microscope est la B1824F, avec des dimensions de 18" $\times$ 24" \cite{noauthor_thorlabs_2024}.
 Avec un coût de 1319.08 \$ CAD, presque l'entièreté du coût du reste de l'appareil, le total
 monte à 3108.47 \$. Troisièmement, selon le tableau \ref{table_cout}, les pièces ayant les
 coûts les plus considérables sont celles directement lié à l'optique et à l'alignement. Le
@@ -555,7 +567,7 @@ performances du dispositif resteraient identiques. Il est aussi possible de reco
 d'un différent laser de 405 nm, car ils sont fréquemment vendus seconde main pour beaucoup moins
 cher.
 
-% \bibliographystyle{unsrtnat}
-% \bibliography{My_Library}
+\bibliographystyle{unsrtnat}
+\bibliography{suivi_particules.bib}
 
 \end{document}
