@@ -322,10 +322,10 @@ ce qui a permis de trouver le centre de chaque carré blanc. La gaussienne 2D es
 où $A$ est l'amplitude, $B$ est le décalage, $x_0$ et $y_0$ sont les moyennes et $\sigma_x$ et $\sigma_y$ sont les écarts-types.
 En ayant obtenu les coordonnées des centres des deux gaussiennes, on peut trouver la distance $d_{im}$ entre les deux centres:
 \begin{equation}
-  d_{im}=(x_{0_2}-x_{0_1})\cdot d_{pixel}\approx 0.1714\ mm,
+  d_{im}=(x_{0_2}-x_{0_1})\cdot d_{pixel}\approx 0.1714 \text{ mm},
 \end{equation}
-où $d_{pixel}=3.45\times10^{-6} \ m$ est la dimension d'un pixel \cite{noauthor_thorlabs_2024-1}. Ici, on approxime la distance en utilisant la distance en $x$
-parce que la composante $|y_{0_2}-y_{0_1}|\approx 0.6\ pixel$ est négligeable. Finalement, on retrouve la magnification réelle de l'objectif:
+où $d_{pixel}=3.45\times10^{-6}$ m est la dimension d'un pixel \cite{noauthor_thorlabs_2024-1}. Ici, on approxime la distance en utilisant la distance en $x$
+parce que la composante $|y_{0_2}-y_{0_1}|\approx 0.6$ pixel est négligeable. Finalement, on retrouve la magnification réelle de l'objectif:
 \begin{equation}
   m=\frac{d_{im}}{d_{vraie}}\approx\frac{0.1714}{0.01}= 17.14.
 \end{equation}
@@ -414,13 +414,13 @@ C'est le coefficient $b$ du \textit{fit} qui sera utilisé pour trouver le coeff
 L'incertitude sur chacune de ces valeurs est donnée par l'incertitude sur le coefficient $b$, car on considère que les autres paramètres sont des constantes
 et ne comportent donc pas d'incertitudes. 
 \subsection{Étude statistique}
-Pour un échantillon contenant des particules de 1 $\mu m$, 9 particules ont été suivies pour déterminer, par une analyse statistique, leurs rayons ainsi que leurs coefficients de diffusion. 
-Le même principe a été utilisé dans un échantillon contenant des particules de 10 $\mu m$. Dans ce cas-ci, 3 particules ont été jugées comme analysables. 
+Pour un échantillon contenant des particules de 1 µm, 9 particules ont été suivies pour déterminer, par une analyse statistique, leurs rayons ainsi que leurs coefficients de diffusion. 
+Le même principe a été utilisé dans un échantillon contenant des particules de 10 µm. Dans ce cas-ci, 3 particules ont été jugées comme analysables. 
 Les résultats suivants ont été obtenus :
 
 \begin{table}[H]
   \centering
-  \caption{Tableau des valeurs du coefficient de diffusion et du rayon des particules dans l'échantillon de 1um.}
+  \caption{Tableau des valeurs du coefficient de diffusion et du rayon des particules dans l'échantillon de 1 µm.}
   \begin{tabular}{|c|c|c|}
   \hline
   \( \text{Particule} \) &\( D \, (\times 10^{-13} \, \text{m}^2/\text{s}) \) & \( r \, (\times 10^{-6} \, \text{m}) \) \\
@@ -446,7 +446,7 @@ Les résultats suivants ont été obtenus :
 
 \begin{table}[H]
   \centering
-  \caption{Tableau des valeurs du coefficient de diffusion et du rayon des particules dans l'échantillon de 10um.}
+  \caption{Tableau des valeurs du coefficient de diffusion et du rayon des particules dans l'échantillon de 10 µm.}
   \begin{tabular}{|c|c|c|}
   \hline
   \( \text{Particule} \) &\( D \, (\times 10^{-13} \, \text{m}^2/\text{s}) \) & \( r \, (\times 10^{-6} \, \text{m}) \) \\
@@ -464,36 +464,36 @@ Les résultats suivants ont été obtenus :
 On remarque donc que les valeurs finales ont été obtenues en faisant la moyenne de chaque valeur. l'incertitude liée à cette moyenne est donnée
 par l'équation suivante: 
 \[
-  \Delta x = \sqrt{\frac{\sum_{i=1}^N \delta x_{i}^2}{N^2}}
+  \Delta x = \sqrt{\frac{\sum_{i=1}^N \delta x_{i}^2}{N^2}},
 \]
-Où dans notre cas, x peut être remplacé par r ou D. On remarque ici qu'il s'agit d'une propagation de l’incertitude de chaque point sur la 
+où dans notre cas, $x$ peut être remplacé par $r$ ou $D$. On remarque ici qu'il s'agit d'une propagation de l’incertitude de chaque point sur la 
 moyenne. Il aurait pu être considéré de prendre l'écart-type des valeurs dues à la théorie du théorème central limite, mais il a été jugé ici que le nombre de points 
 analysables des échantillons était insuffisant pour appliquer cette théorie. 
-Pour conclure,on rappelle que pour un échantillon de r=1$\mu m$, analysant 9 particules différentes, 
+Pour conclure,on rappelle que pour un échantillon de $r =$ 1 µm, analysant 9 particules différentes, 
 le traitement de données élaboré nous donne les résultats suivants: 
-Coefficiant de dérive: $(8 \pm 1) \times 10^{-13} m^{2}/s$
-rayon de la particule: $(1.6 \pm 0.3)\times 10^{-6} m$
+Coefficiant de dérive: $(8 \pm 1) \times 10^{-13}$ m$^{2}$/s
+rayon de la particule: $(1.6 \pm 0.3)\times 10^{-6}$ m.
 On remarque ici qu'une erreur de 16 \% été obtenu pour le coefficient de dérive et 21.41\% sur la taille de la particule.
 De plus, connaissant maintenant la valeur de r et son incertitude, on peut conclure, en comparant a la valeur théorique, que l'analyse 
 des petites particules retourne des valeurs cohérentes et logiques. 
-Finalement, pour un échantillon de r=10$\mu m$, analysant 3 particules différentes, 
+Finalement, pour un échantillon de $r =$ 10 m, analysant 3 particules différentes, 
 le traitement de données élaboré nous donne les résultats suivants: 
-Coefficient de dérive: $(1.6 \pm 0.4) \times 10^{-13} m^{2}/s$
-rayon de la particule: $(6 \pm 1)\times 10^{-6} m$
+Coefficient de dérive: $(1.6 \pm 0.4) \times 10^{-13}$ m$^{2}$/s
+rayon de la particule: $(6 \pm 1)\times 10^{-6}$ µm
 On a donc ici une erreur de 23,15\% sur la valeur coefficient de dérive et une erreur de 23.40\% sur le rayon de la particule. 
-En comparant ici les erreurs relatives entre les deux échantillons, on peut considérer que dans les deux cas les tailles de rayon sont assez bien estimées. Cependant, il est important de remarquer que le nombre de particules analysable dans l'échantillon de 10$\mu m$ est assez faible, ce qui 
+En comparant ici les erreurs relatives entre les deux échantillons, on peut considérer que dans les deux cas les tailles de rayon sont assez bien estimées. Cependant, il est important de remarquer que le nombre de particules analysable dans l'échantillon de 10 µm est assez faible, ce qui 
 peut jouer sur la fiabilité de représentation de nos résultats. Les images ci-dessous représentent les deux échantillons. 
 \begin{figure}[H]
   \begin{subfigure}[H]{0.45\textwidth}
     \centering
     \includegraphics[width=\textwidth]{essai_10um_2im_100ms.png}
-    \caption{Échantillon avec particules de 10 $\mu m$}
+    \caption{Échantillon avec particules de 10 µm}
   \end{subfigure}
   \hfill
   \begin{subfigure}[H]{0.45\textwidth}
     \centering
     \includegraphics[width=\textwidth]{Échantillon1um.png}
-    \caption{Échantillon avec particules de 1 $\mu m$}
+    \caption{Échantillon avec particules de 1 µm}
   \end{subfigure}
   \caption{Images d'échantillons testés pour comparaison qualitative}
 \end{figure}
