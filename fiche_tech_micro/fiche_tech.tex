@@ -413,8 +413,10 @@ C'est le coefficient $b$ du \textit{fit} qui sera utilisé pour trouver le coeff
 \end{align*}
 L'incertitude sur chacune de ces valeurs est donnée par l'incertitude sur le coefficient $b$, car on considère que les autres paramètres sont des constantes
 et ne comportent donc pas d'incertitudes. 
+
 \subsection{Étude statistique}
-Pour un échantillon contenant des particules de 1 µm, 9 particules ont été suivies pour déterminer, par une analyse statistique, leurs rayons ainsi que leurs coefficients de diffusion. 
+
+Pour un échantillon contenant des particules de 1 µm, 12 particules ont été suivies pour déterminer, par une analyse statistique, leurs rayons ainsi que leurs coefficients de diffusion. 
 Le même principe a été utilisé dans un échantillon contenant des particules de 10 µm. Dans ce cas-ci, 3 particules ont été jugées comme analysables. 
 Les résultats suivants ont été obtenus :
 
@@ -469,7 +471,7 @@ par l'équation suivante:
 où dans notre cas, $x$ peut être remplacé par $r$ ou $D$. On remarque ici qu'il s'agit d'une propagation de l’incertitude de chaque point sur la 
 moyenne. Il aurait pu être considéré de prendre l'écart-type des valeurs dues à la théorie du théorème central limite, mais il a été jugé ici que le nombre de points 
 analysables des échantillons était insuffisant pour appliquer cette théorie. 
-Pour conclure,on rappelle que pour un échantillon de $r =$ 1 µm, analysant 9 particules différentes, 
+Pour conclure,on rappelle que pour un échantillon de $r =$ 1 µm, analysant 12 particules différentes, 
 le traitement de données élaboré nous donne les résultats suivants: 
 Coefficiant de dérive: $(8 \pm 1) \times 10^{-13}$ m$^{2}$/s
 rayon de la particule: $(1.6 \pm 0.3)\times 10^{-6}$ m.
@@ -508,10 +510,10 @@ par une résolution de 0,3 um.
 
 \subsection{Limitations de l'appareil}
 
-L'appareil peut distinguer et suivre des particules dans la gamme de 1 à 10 um avec et sans dérive.
+L'appareil peut distinguer et suivre des particules dans la gamme de 1 à 10 µm avec et sans dérive.
 Toutefois, pour estimer la taille des particules, une dérive trop forte peut affecter négativement 
 les performances de l'appareil. La grande dérive des particules dans l'échantillon de particules 
-de 10 um est la raison pour laquelle leur étude statistique n'est faite qu'avec 3 données, puisque 
+de 10 µm est la raison pour laquelle leur étude statistique n'est faite qu'avec 3 données, puisque 
 les tests effectués avec les autres particules de l'échantillon ne permettaient pas d'obtenir une 
 valeur cohérente. La valeur obtenue était soit négative, soit erronée par plusieurs ordres de grandeur.
 
@@ -525,10 +527,18 @@ dérive qui ne semble pas être constant. Cette dérive non-homogène dans l'esp
 attribué à la diffusion, ce qui augmente la mobilité de la particule et fausse les résultats. 
 
 Il y a plusieurs sources potentielles pour ces types de dérive. D'abord, pour la grande dérive, une 
-fuite due à un mauvais calfeutrage de l'échantillon peut causer un 
+fuite due à un mauvais calfeutrage de l'échantillon peut causer un courant dans le liquide qui englobe 
+les particules. Ce courant peut être la cause de la dérive observée. Sans qu'il y ait de fuite, le scotch
+utilisé pour tenir les lames de verre ensemble peut absorber du liquide par capillarité, ce qui peut 
+également entrainer des courants dans diverses directions. Enfin, le laser utilisé pour éclairer l'échantillon
+peut également y proquer des différences de températures, entrainant un effet de convection dans le liquide.
+Cet effet peut provoquer lui-aussi provoquer un dérive qui varie selon la position dans l'échantillon. 
 
-
-
+En tenant compte de ces limitations, la plage de particules identifiables avec cet appareil est de 1 à 10 µm
+lorsque la dérive n'empêche pas la détermination adéquate de la taille. Les tailles obtenues dans cette plage 
+de détection sont toutefois obtenues à un facteur 2 près, c'est-à-dire de 0,5 µm à 2 µm pour des particules de
+1 µm, et de 5 µm à 20 µm pour celles de 10 µm. Ainsi, sans donner exactement la taille de la particule, 
+l'appareil fourni un estimé du bon ordre de grandeur et à au plus un facteur 2.
 
 \subsection{Étude des coûts}
 
