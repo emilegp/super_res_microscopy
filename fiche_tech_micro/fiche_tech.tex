@@ -373,10 +373,11 @@ L'incertitude sur ces valeurs est donnée par la formule suivante:
   }
 \end{align*}
 
-C'est ici que le traitement de toutes les images est important, même celles qui sont "perdues", car sinon le $\Delta t$ n'est pas cohérent avec la procédure de la MSD \cite{rouillon_travail_2024}. 
-La façon de traiter ce calcul avec les vecteurs \texttt{[NaN, NaN]} tout en perdant le moins d'information possible a été de définir qu'au moment où l’élément \texttt{NaN} est détecté dans un calcul, $\left( \mathbf{r}(i+\Delta t) - \mathbf{r}(i) \right)=0$. De cette façon, les images non-enregistrées
-ne peuvent pas interférer dans le calcul de la MSD. Dans la même idée, les incertitudes sur les positions sont calculées à l'aide de l'écart-type 
-du \textit{fit} gaussien, et dans le cas d'une vecteur identifié par \texttt{[NaN, NaN]}, on pose $\Delta x=0$ et $\Delta y=0$. Les images noires ne sont donc pas prises en compte non plus dans les calculs d'incertitude. 
+On remarque que c'est ici que le traitement de toutes les images est important, même celles qui ont été perdues, car sinon le $\Delta t$ n'aurait pas été cohérent avec la procédure de la MDS. 
+La façon de traiter ce calcul avec les vecteurs $\left [ NaN ,NaN \right ]$ tout en perdant le moins d'information possible a été de définir que 
+dès que l’élément NaN est détecté dans un calcul, $\left( \mathbf{r}(i+\Delta t) - \mathbf{r}(i) \right)=0$. De cette façon, les images non-enregistrées
+ne peuvent pas interférer dans le calcul de la MDS. Dans la même idée, les incertitudes sur les positions sont calculées à l'aide de l'écart-type 
+du \textit{fit} gaussien, et dans le cas d'une vecteur identifié par $[NaN, NaN]$, on pose $\Delta x=0$ et $\Delta y=0$. Les images noires ne sont donc pas prises en compte non plus dans les calculs d'incertitude. 
 
 Une fois toutes les valeurs trouvées, un graphique des résultat de MSD en fonction du $\Delta t$ est produit. La calcul de la MSD est évalué en fonction de l'intervalle de temps
 qui sépare deux points. En considérant que plus l'intervalle est important, moins il existe de paires de positions, seuls les cinq premiers points de
@@ -503,18 +504,22 @@ La résolution de l'instrument concernant la taille des particules observables e
 comme la plus petite différence qu'il est capable de discerner. Selon les tests effectués, 
 cette plus petite différence est obtenue lors de l'identification des particules de 1 um 
 de diamètre. Elle correspond à l'incertitude obtenue sur la valeur estimée, ce qui se traduit
-par une résolution de 0,2 um. 
+par une résolution de 0,3 um. 
 
 \subsection{Limitations de l'appareil}
 
 L'appareil peut distinguer et suivre des particules dans la gamme de 1 à 10 um avec et sans dérive.
 Toutefois, pour estimer la taille des particules, une dérive trop forte peut affecter négativement 
-les performances de l'appareil. C'est pour cette raison que les tailles obtenues pour les particules
-de 10 um sont sous-estimées. Le seuil critique survient lorsque la dérive est plus importante que la 
-diffusion associée au mouvement brownien de quelques ordre de grandeur. Dans ce régime, malgré une 
+les performances de l'appareil. C'est pour cette raison que les particules de 10 um sont 
+sous-estimées. 
+
+Le seuil critique survient lorsque la dérive est de quelques ordres de grandeur supérieure à la 
+diffusion associée au mouvement brownien. Dans ce régime, malgré une 
 compensation de la plus grande partie de la dérive, l'incertitude qu'elle vient ajouter, bien que faible
-relativement au mouvement de dérive, est grande relativement à la diffusion. Celle-ci n'est alors plus 
+relativement au mouvement de dérive, est grande par rapport à la diffusion. Celle-ci n'est alors plus 
 adéquatement estimée par le modèle utilisé. 
+
+
 
 
 \subsection{Étude des coûts}
