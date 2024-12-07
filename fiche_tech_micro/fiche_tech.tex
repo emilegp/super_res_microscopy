@@ -156,13 +156,12 @@ $M = 20$, aperture NA $= 0.4$) pour le grossissement, puis une lentille tube de 
 (CS165MU) pour l'analyse \cite{noauthor_thorlabs_2024}. Ce système présente une résolution
 théorique de 1.012 µm \cite{rouillon_travail_2024}. Afin d'analyser des particules d'environ cette taille, un traitement
 numérique est fait pour extraire la taille des particules du mouvement brownien filmé, avec 
-une résolution sous-pixellaire. Avec ce procédé, le microscope peut détecter des tailles de 
+une résolution sous-pixellaire. Avec ce procédé, l'appareil a été testé pour des tailles de 
 particules dans la plage 1-10 µm. Suite à la caractérisation de particules 
-de 1 µm, la valeur identifiée est de \textcolor{red}{XX $\pm$ XX} µm.
-Pour la caractérisation de particules de 10 µm, elle est de 
-\textcolor{red}{XX $\pm$ XX} µm. Le système, monté sur table optique et utilisable dans le noir 
+de 1 µm, la valeur identifiée est de 1.6 $\pm$ 0.3 µm.
+Pour la caractérisation de particules de 10 µm, elle est de 6 $\pm$ 1 µm. Le système, monté sur table optique et utilisable dans le noir 
 seulement, a des dimensions de $600 \times 90 \times 200$ mm, tel que présenté à 
-la figure \ref{schema_micro}. La résolution de l'appareil post traitement est de \textcolor{red}{XX $\pm$ XX} µm, et
+la figure \ref{schema_micro}. La résolution de l'appareil post traitement est de 0.3 µm, et
 son grossissement réel est de $17.14 \pm 0.02$. Sans compter la table optique, le dispositif a pour coût total 1789.39 \$, prix qui
 peut être réduit par l'usage d'impression 3D. Les spécifications de microscope sont rassemblées dans le
 tableau \ref{specs} ci-dessous.
@@ -180,7 +179,7 @@ tableau \ref{specs} ci-dessous.
   \begin{tabular}{|p{2.5cm}|p{2cm}|p{3cm}|p{1.5cm}|p{6.5cm}|}
   \hline
       Magnification réelle & Résolution (um) & Dimensions (mm) & Coût  \$CAD & Composantes \\ \hline\hline
-      $17.14\pm0.02$ & 0.2 & L 600 $\times$ W 90 $\times$ H 200 & \$1789.39 & \vspace{-20pt} {\small\parbox{7cm}{\setlength{\columnsep}{0pt} 
+      $17.14\pm0.02$ & 0.3 & L 600 $\times$ W 90 $\times$ H 200 & \$1789.39 & \vspace{-20pt} {\small\parbox{7cm}{\setlength{\columnsep}{0pt} 
       \begin{multicols}{2}\begin{itemize}[label=$\triangleright$, topsep=0pt, itemsep=0pt]
             \item KM100S
             \item CS165MU
@@ -245,7 +244,7 @@ Si la particule choisie sort de l'écran avant la fin des instants observés, le
 sa dernière position identifiable, soit environ 100 pixels avant le bord.
 
 \subsection{Paramètres utilisés \label{para}}
-Certains paramètres du microscope ont eu besoin d'être choisis pour optimiser sa performance. Entres autres,
+Certains paramètres du dispositif ont eu besoin d'être choisis pour optimiser sa performance. Entres autres,
 l'objectif du microscope choisi possède une magnification théorique de 20, et une ouverture numérique de 0.4. Après quelques essais, 
 il a été conclu qu'une magnification de 20 offrait une plage de fonctionnement optimale, en considérant 
 que pour des magnifications plus élevées, les plus grosses particules (de l'ordre de 10 microns) se déplaçaient souvent hors de la région observée. 
@@ -428,18 +427,18 @@ Les résultats suivants ont été obtenus :
   \hline
   \( \text{Particule} \) &\( D \, (\times 10^{-13} \, \text{m}^2/\text{s}) \) & \( r \, (\times 10^{-6} \, \text{m}) \) \\
   \hline
-  \( 1 \) &\( 5 \pm 3 \) & \( 2 \pm 1 \) \\
-  \( 2 \) &\( 14.7 \pm 0.8 \) & \( 0.60 \pm 0.03 \) \\
-  \( 3 \) &\( 9.0 \pm 0.9 \) & \( 1.0 \pm 0.1 \) \\
-  \( 4 \) &\( 22 \pm 4 \) & \( 0.40 \pm 0.07 \) \\
-  \( 5 \) &\( 2.6 \pm 0.3 \) & \( 3.4 \pm 0.4 \) \\
-  \( 6 \) &\( 5 \pm 2 \) & \( 1.7 \pm 0.6 \) \\
-  \( 7 \) &\( 4.97 \pm 0.09 \) & \( 1.77 \pm 0.03 \) \\
-  \( 8 \) &\( 4 \pm 1 \) & \( 2.1 \pm 0.5 \) \\
-  \( 9 \) &\( 8 \pm 2 \) & \( 1.1 \pm 0.2 \) \\
-  \( 10 \) &\( 3.1 \pm 0.5 \) & \( 2.9 \pm 0.5 \) \\
-  \( 11 \) &\( 5 \pm 1 \) & \( 1.7 \pm 0.4 \) \\
-  \( 12 \) &\( 16 \pm 1 \) & \( 0.55 \pm 0.04 \) \\
+  \( 1 \) &\( 1.2 \pm 0.7 \) & \( 2 \pm 1 \) \\
+  \( 2 \) &\( 3.7 \pm 0.2 \) & \( 0.60 \pm 0.03 \) \\
+  \( 3 \) &\( 2.3 \pm 0.2 \) & \( 1.0 \pm 0.1 \) \\
+  \( 4 \) &\( 5.5 \pm 0.9 \) & \( 0.40 \pm 0.07 \) \\
+  \( 5 \) &\( 0.66 \pm 0.09 \) & \( 3.4 \pm 0.4 \) \\
+  \( 6 \) &\( 1.3 \pm 0.5 \) & \( 1.7 \pm 0.6 \) \\
+  \( 7 \) &\( 1.24 \pm 0.02 \) & \( 1.77 \pm 0.03 \) \\
+  \( 8 \) &\( 1.1 \pm 0.3 \) & \( 2.1 \pm 0.5 \) \\
+  \( 9 \) &\( 2.1 \pm 0.4 \) & \( 1.1 \pm 0.2 \) \\
+  \( 10 \) &\( 0.8 \pm 0.1 \) & \( 2.9 \pm 0.5 \) \\
+  \( 11 \) &\( 1.3 \pm 0.3 \) & \( 1.7 \pm 0.4 \) \\
+  \( 12 \) &\( 4.0 \pm 0.3 \) & \( 0.55 \pm 0.04 \) \\
   \hline
   \hline
   \( \textbf{Moyenne} \) & \( \mathbf{8 \pm 1} \) & \( \mathbf{1.6 \pm 0.3} \) \\
@@ -454,9 +453,9 @@ Les résultats suivants ont été obtenus :
   \hline
   \( \text{Particule} \) &\( D \, (\times 10^{-13} \, \text{m}^2/\text{s}) \) & \( r \, (\times 10^{-6} \, \text{m}) \) \\
   \hline
-  \( 1 \) &\( 1.7 \pm 0.3 \) & \( 5.3 \pm 0.9 \) \\
-  \( 2 \) &\( 1.6 \pm 0.4 \) & \( 6 \pm 2 \) \\
-  \( 3 \) &\( 1.6 \pm 0.4 \) & \( 6 \pm 1 \) \\
+  \( 1 \) &\( 0.42 \pm 0.07 \) & \( 5.3 \pm 0.9 \) \\
+  \( 2 \) &\( 0.4 \pm 0.1 \) & \( 6 \pm 2 \) \\
+  \( 3 \) &\( 0.39 \pm 0.10 \) & \( 6 \pm 1 \) \\
   \hline
   \hline
   \( \textbf{Moyenne} \) & \( \mathbf{1.6 \pm 0.4} \) & \( \mathbf{6 \pm 1} \) \\
