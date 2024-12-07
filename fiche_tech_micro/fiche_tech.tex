@@ -324,7 +324,7 @@ En ayant obtenu les coordonnées des centres des deux gaussiennes, on peut trouv
 \begin{equation}
   d_{im}=(x_{0_2}-x_{0_1})\cdot d_{pixel}\approx 0.1714\ mm,
 \end{equation}
-où $d_{pixel}=3.45\times10^{-6} \ m$ est la dimension d'un pixel \cite{noauthor_thorlabs_2024-1}. \textcolor{red}{source caméra} Ici, on approxime la distance en utilisant la distance en $x$
+où $d_{pixel}=3.45\times10^{-6} \ m$ est la dimension d'un pixel \cite{noauthor_thorlabs_2024-1}. Ici, on approxime la distance en utilisant la distance en $x$
 parce que la composante $|y_{0_2}-y_{0_1}|\approx 0.6\ pixel$ est négligeable. Finalement, on retrouve la magnification réelle de l'objectif:
 \begin{equation}
   m=\frac{d_{im}}{d_{vraie}}\approx\frac{0.1714}{0.01}= 17.14.
@@ -339,13 +339,13 @@ On obtient donc que la magnification réelle est de: $17.14\pm0.02$. Celle-ci pe
 % Source caméra :
 
 \subsection{Caractérisation de la taille de particules}
-Lors de l'acquisition des images, il a été conclu que le temps d'exposition devait être assez long, soit d'environ 150 ms. Par conséquent, il a fallu réduire 
-la fréquence d'image à 1 image par seconde (voir section \ref{para}) \textcolor{red}{contradiction}. Malgré ces ajustements, la caméra ne parvient tout de même
+
+Lors de l'acquisition, il a été observé que la caméra ne parvient
 pas à enregistrer chaque image. Afin de remedier ce problème, l'acquisition d'images remplace les images qui ne sont pas enregistrées par une image noire. 
-Pour traiter les images et \textit{tracker} les particules correctement, toutes les images noires sont premièrement ignorées pour 
+Pour traiter les images et suivre les particules correctement, toutes les images noires sont premièrement ignorées pour 
 produire une liste de positions. Les images de départ sont évaluées une par une, et à chaque fois qu'une
-image noire apparaît, un vecteur $[NaN ,NaN]$ est ajouté à la liste contenant toutes les positions.
-Cette procédure nous permet de savoir avec exactitude les emplacements des images qui n'ont pas pu être enregistrées. Une fois la liste de positions 
+image noire apparaît, un vecteur \texttt{[NaN, NaN]} est ajouté à la liste contenant toutes les positions.
+Cette procédure nous permet de savoir avec exactitude les temps des images qui n'ont pas pu être enregistrées. Une fois la liste de positions 
 complétée, il est possible d'effectuer le calcul de la MSD avec la formule suivante: 
  \begin{align}
   MSD &= \frac{1}{N_{\Delta t}} \sum_{i=0}^{N_{\Delta t} - 1} \left( \mathbf{r}(i+\Delta t) - \mathbf{r}(i) \right)^2,\\ 
@@ -372,7 +372,6 @@ L'incertitude sur ces valeurs est donnée par la formule suivante:
     \end{aligned}
   }
 \end{align*}
-\textcolor{red}{SOURCE: travail prep}
 
 On remarque que c'est ici que le traitement de toutes les images est important, même celles qui ont été perdues, car sinon le $\Delta t$ n'aurait pas été cohérent avec la procédure de la MDS. 
 La façon de traiter ce calcul avec les vecteurs $\left [ NaN ,NaN \right ]$ tout en perdant le moins d'information possible a été de définir que 
@@ -405,9 +404,9 @@ où $vt$ est indépendant de $\Delta x_{Brownien}(t)$, et $\langle\Delta x_{Brow
   MSD(t)=v^2t^2+2nDt+2n\sigma^2,
 \end{equation}
 où $n$ est le nombre de dimensions pour lesquelles le mouvement est analysé, $D$ est le coefficient de diffusion et $\sigma$ est l'écart type
-de l'erreur de localisation \textcolor{red}{source procédurier}. L'équation (\ref{msd2}) correspond à une quadratique avec
+de l'erreur de localisation \cite{weiss_mandat_2024}. L'équation (\ref{msd2}) correspond à une quadratique avec
 les coefficients $a=v^2$, $b=2nD$ et $c=2n\sigma^2$. Les incertitudes sur ces trois valeurs sont données par la racine carrée 
-de la diagonalisation de la matrice de covariance donnée par la fonction \textit{curve\_fit}. 
+de la diagonalisation de la matrice de covariance donnée par la fonction \texttt{curve\_fit}. 
 C'est le coefficient $b$ du \textit{fit} qui sera utilisé pour trouver le coefficient de diffusion ($D$) et la taille de la particule ($r$). Les formules suivantes sont utilisées: 
 \begin{align*}
   D &= \frac{b}{2n}=\frac{b}{4} \quad & r &= \frac{k_B T}{6 \pi \eta D}
@@ -540,7 +539,7 @@ présente la liste exhaustive des pièces avec leur prix en dollars canadien ava
 \begin{table}[!ht]
     \centering
     \caption{Liste des pièces et coûts totaux pour le microscope sur table optique
-    \textcolor{red}{Source Thorlabs et platine}.}
+    \cite{noauthor_thorlabs_2024} \cite{noauthor_m-tsx-1d_2024}.}
     \begin{tabular}{|l|l|l|l|l|}
     \hline
         ID pièce & Description & Qté & \$ CAD & Total ind. \\ \hline\hline
