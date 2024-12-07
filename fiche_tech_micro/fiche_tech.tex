@@ -314,7 +314,7 @@ figure \ref{crop} ci-dessous.
   \caption{Image recadrée de la cible.}
   \label{crop}
 \end{figure}
-Les deux \textit{fits} gaussiens 2D ont été effectués avec la fonction Python \textit{curve\_fit} sur la moitié droite et sur la moitié gauche de l'image \ref{crop},
+Les deux \textit{fits} gaussiens 2D ont été effectués avec la fonction Python \texttt{curve\_fit} sur la moitié droite et sur la moitié gauche de l'image \ref{crop},
 ce qui a permis de trouver le centre de chaque carré blanc. La gaussienne 2D est décrite par:
 \begin{equation}
   f(x,y)=A\cdot exp\left(-\left(\frac{(x-x_0)^2}{2\sigma_x^2}+\frac{(y-y_0)^2}{2\sigma_y^2}\right)\right)+B,
@@ -324,7 +324,7 @@ En ayant obtenu les coordonnées des centres des deux gaussiennes, on peut trouv
 \begin{equation}
   d_{im}=(x_{0_2}-x_{0_1})\cdot d_{pixel}\approx 0.1714\ mm,
 \end{equation}
-où $d_{pixel}=3.45\times10^{-6} \ m$ est la dimension d'un pixel \textcolor{red}{source caméra}. Ici, on approxime la distance en utilisant la distance en $x$
+où $d_{pixel}=3.45\times10^{-6} \ m$ est la dimension d'un pixel \cite{noauthor_thorlabs_2024-1}. \textcolor{red}{source caméra} Ici, on approxime la distance en utilisant la distance en $x$
 parce que la composante $|y_{0_2}-y_{0_1}|\approx 0.6\ pixel$ est négligeable. Finalement, on retrouve la magnification réelle de l'objectif:
 \begin{equation}
   m=\frac{d_{im}}{d_{vraie}}\approx\frac{0.1714}{0.01}= 17.14.
@@ -415,7 +415,8 @@ C'est le coefficient $b$ du \textit{fit} qui sera utilisé pour trouver le coeff
 L'incertitude sur chacune de ces valeurs est donnée par l'incertitude sur le coefficient $b$, car on considère que les autres paramètres sont des constantes
 et ne comportent donc pas d'incertitudes. 
 \subsection{Étude statistique}
-Pour un échantillon inconnu, 9 particules ont été suivies pour déterminer, par une analyse statistique, leurs rayons ainsi que leurs coefficients de diffusion. 
+Pour un échantillon contenant des particule de 1$\mu m$, 9 particules ont été suivies pour déterminer, par une analyse statistique, leurs rayons ainsi que leurs coefficients de diffusion. 
+Le meme principe a été utilisé dans un échantillon contenant des particule de 10$\mu m$, dans ce cas ci, 3 particules on été jugé comme analysable. 
 Les résultats suivants ont été obtenus :
 
 \begin{table}[H]
@@ -466,18 +467,23 @@ par l'équation suivante:
 \[
   \Delta x = \sqrt{\frac{\sum_{i=1}^N \delta x_{i}^2}{N^2}}
 \]
-Où dans notre cas, x peut être remplacé par r ou D. On remarque ici qu'il s'agit d'une propagation de l’incertitude de chaque point de point sur la 
-moyenne. Il aurait pu être considéré de prendre l'écart type des valeurs dues a la théorie du théorème central-limite, mais il a été jugé ici que le nombre de points 
-analysables de l’échantillon était insuffisant pour appliqué cette théorie. 
-Finalement, il est possible de conclure que pour un échantillon inconnu et en analysant 9 particules différentes présentes dans cet échantillon, 
+Où dans notre cas, x peut être remplacé par r ou D. On remarque ici qu'il s'agit d'une propagation de l’incertitude de chaque point sur la 
+moyenne. Il aurait pu être considéré de prendre l'écart type des valeurs dues à la théorie du théorème central-limite, mais il a été jugé ici que le nombre de points 
+analysables des échantillons était insuffisant pour appliquer cette théorie. 
+Pour conclure,on rappelle que pour un échantillon de r=1$\mu m$, analysant 9 particules différentes, 
 le traitement de données élaboré nous donne les résultats suivants: 
-Coefficiant de dérive: $(3.3 \pm 0.5) \times 10^{-13} m^{2}/s$
-rayon de la particule: $(0.8 \pm 0.2)\times 10^{-6} m$
-Bien que nous ne connaissions pas la taille et le coefficient de dérive théorique de l'échantillon, il est connu que la taille doit se trouver 
-entre 1 et 10 micromètres. De plus, en comparant  la figure ci-dessous aux images a la section 2.3 qui représente des particules de 10 micromètres, il est correct de penser 
-que l'échantillon analysé contient des particules se rapprochant plus d'une valeur de 1 micromètre. Donc au vu des résultats obtenus et de leurs 
-incertitudes, il est correct d'affirmer que l'analyse de l'échantillon donne des valeurs tout à fait cohérentes et logiques avec les observations de l'échantillon. 
-
+Coefficiant de dérive: $(8 \pm 1) \times 10^{-13} m^{2}/s$
+rayon de la particule: $(1.6 \pm 0.3)\times 10^{-6} m$
+On remarque ici qu'une erreur de 16 \% été obtenu pour le coefficient de dérive et 21.41\% sur la taille de la particule.
+De plus, connaissant maintenant la valeur de r et son incertitude, on peut conclure, en comparant a la valeur théorique, que l'analyse 
+des petites particules retourne des valeurs cohérentes et logiques. 
+Finalement, pour un échantillon de r=10$\mu m$, analysant 3 particules différentes, 
+le traitement de données élaboré nous donne les résultats suivants: 
+Coefficient de dérive: $(1.6 \pm 0.4) \times 10^{-13} m^{2}/s$
+rayon de la particule: $(6 \pm 1)\times 10^{-6} m$
+On a donc ici une erreur de 23,15\% sur la valeur coefficient de dérive et une erreur de 23.40\% sur le rayon de la particule. 
+En comparant ici les erreurs relatives entre les deux échantillons, on peut considérer que dans les deux cas les tailles de rayon sont assez bien estimées. Cependant, il est important de remarquer que le nombre de particules analysable dans l'échantillon de 10$\mu m$ est assez faible, ce qui 
+peut jouer sur la fiabilité de représentation de nos résultats. Les images ci-dessous représentent les deux échantillons. 
 \begin{figure}[H]
   \begin{subfigure}[H]{0.45\textwidth}
     \centering
