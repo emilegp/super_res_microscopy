@@ -153,20 +153,18 @@ l'usine Polyfab. Les composantes principales sont un laser 405 nm (CPS405)
 pour illuminer les fluorophores dans les échantillons, un objectif de microscope (grossissement 
 $M = 20$, aperture NA $= 0.4$) pour le grossissement, puis une lentille tube de 150 mm de focale
 (LA1433-A-ML) pour converger les rayons sortants de l'objectif sur le capteur d'une caméra CMOS 
-(CS165MU) pour l'analyse \textcolor{red}{Source Thorlabs}. Ce système présente une résolution
-théorique de 1.012 µm. Afin d'analyser des particules d'environ cette taille, un traitement
+(CS165MU) pour l'analyse \cite{noauthor_thorlabs_2024}. Ce système présente une résolution
+théorique de 1.012 µm \cite{rouillon_travail_2024}. Afin d'analyser des particules d'environ cette taille, un traitement
 numérique est fait pour extraire la taille des particules du mouvement brownien filmé, avec 
-une résolution sous-pixellaire. Avec ce procédé, le microscope peut détecter des tailles de 
+une résolution sous-pixellaire. Avec ce procédé, l'appareil a été testé pour des tailles de 
 particules dans la plage 1-10 µm. Suite à la caractérisation de particules 
-de 1 µm, l'erreur sur la valeur identifiée est de \textcolor{red}{XX $\pm$ XX} µm.
-Pour la caractérisation de particules de 10 µm, l'erreur sur la valeur identifiée est de 
-\textcolor{red}{XX $\pm$ XX} µm. Le système, monté sur table optique et utilisable dans le noir 
-seulement, a des dimensions de \textcolor{red}{$600 \times 90 \times 200$} mm, tel que présenté à 
-la figure \ref{schema_micro}. Sans compter la table, il a pour coût total 1789.39 \$, prix qui
+de 1 µm, la valeur identifiée est de 1.6 $\pm$ 0.3 µm.
+Pour la caractérisation de particules de 10 µm, elle est de 6 $\pm$ 1 µm. Le système, monté sur table optique et utilisable dans le noir 
+seulement, a des dimensions de $600 \times 90 \times 200$ mm, tel que présenté à 
+la figure \ref{schema_micro}. La résolution de l'appareil post traitement est de 0.3 µm, et
+son grossissement réel est de $17.14 \pm 0.02$. Sans compter la table optique, le dispositif a pour coût total 1789.39 \$, prix qui
 peut être réduit par l'usage d'impression 3D. Les spécifications de microscope sont rassemblées dans le
 tableau \ref{specs} ci-dessous.
-
-% Source Thorlabs : https://www.thorlabs.com
 
 \begin{figure}[H]
   \centering
@@ -175,15 +173,13 @@ tableau \ref{specs} ci-dessous.
   \label{schema_micro}
 \end{figure}
 
-\textcolor{red}{yap yap voici le tableau}
-
 \begin{table}[H]
   \centering
   \caption{Tableau des spécifications}
   \begin{tabular}{|p{2.5cm}|p{2cm}|p{3cm}|p{1.5cm}|p{6.5cm}|}
   \hline
       Magnification réelle & Résolution (um) & Dimensions (mm) & Coût  \$CAD & Composantes \\ \hline\hline
-      $17.14\pm0.02$ & 0.2 & L 600 $\times$ W 90 $\times$ H 200 & \$1789.39 & \vspace{-20pt} {\small\parbox{7cm}{\setlength{\columnsep}{0pt} 
+      $17.14\pm0.02$ & 0.3 & L 600 $\times$ W 90 $\times$ H 200 & \$1789.39 & \vspace{-20pt} {\small\parbox{7cm}{\setlength{\columnsep}{0pt} 
       \begin{multicols}{2}\begin{itemize}[label=$\triangleright$, topsep=0pt, itemsep=0pt]
             \item KM100S
             \item CS165MU
@@ -212,18 +208,15 @@ tableau \ref{specs} ci-dessous.
 Cette section explique en détail le processus et les résultats pour les tests de caractérisation
 effectués sur le dispositif de suivi de particules.
 
-% \subsection{Résolution sans analyse numérique}
-
-% \textcolor{red}{ce qui était dans le rapport préliminaire}
-
 \subsection{Suivi de particules}
 
-Pour obtenir la taille d'une particule avec la plus grande précision possible, la position de la particule doit être 
+Pour obtenir la taille d'une particule avec la plus grande précision possible, l'analyse de son
+mouvement brownien est utilisée. La position de la particule doit être 
 déterminée sur au moins une cinquantaine d'instants successifs, avant de pouvoir procéder à l'estimation de son 
-coefficient de diffusion et de sa taille. 
+coefficient de diffusion et de sa taille. Des images sont prises pour chaque instant.
 
 Pour positionner la particule avec la plus faible incertitude possible, un 
-fit gaussien est effectué sur l'image pixelisée de la particule. Pour que le fit s'effectue
+fit gaussien est effectué sur l'image pixelisée de la particule pour un moment précis. Pour que le fit s'effectue
 adéquatement, il faut restreindre la zone de fit à la particule. Pour se faire, le suivi de la particule commence 
 autour de la position précédente de la particule, par la recherche de maxima d'intensité surpassant un seuil. Les
 dimensions de la zone rectangulaire en question et le seuil utilisé sont des valeurs déterminées par essai erreur
@@ -235,7 +228,7 @@ Pour reconnaitre la particule, un système de comparaison des particules potenti
 et leur luminosité est utilisé lorsque plus d'une particule sont dans la même zone. 
 La taille, soit le nombre de pixels au dessus d'un seuil fixé, y a un rôle prépondérant, mais la luminosité, soit 
 la moyenne d'intensité des pixels en question, a également un impact. Ces informations sont obtenues en centrant 
-l'image sur la particule d'intérêt et en appliquant la fonction DBSCAN pour regrouper les maximas en des entités
+l'image sur la particule d'intérêt et en appliquant la fonction \texttt{DBSCAN} pour regrouper les maximas en des entités
 qui correspondent aux particules. La luminosité et la taille obtenues sont alors comparées à la luminosité et la 
 taille de la première observation qui sert de référence. La première observation est obtenue comme les suivantes,
 avec comme seul différence que sa détection est faite par l'humain utilisant le système, qui clique initialement 
@@ -251,38 +244,37 @@ Si la particule choisie sort de l'écran avant la fin des instants observés, le
 sa dernière position identifiable, soit environ 100 pixels avant le bord.
 
 \subsection{Paramètres utilisés \label{para}}
-Certains paramètres du microscope ont eu besoin d'être choisis pour optimiser sa performance. Entres autres,
+Certains paramètres du dispositif ont eu besoin d'être choisis pour optimiser sa performance. Entres autres,
 l'objectif du microscope choisi possède une magnification théorique de 20, et une ouverture numérique de 0.4. Après quelques essais, 
 il a été conclu qu'une magnification de 20 offrait une plage de fonctionnement optimale, en considérant 
 que pour des magnifications plus élevées, les plus grosses particules (de l'ordre de 10 microns) se déplaçaient souvent hors de la région observée. 
-Le temps d'exposition a été établi à 150 ms. La figure \ref{exposition} ci-dessous présente les images
+La figure \ref{exposition} ci-dessous présente les images
 capturées pour trois différents temps d'exposition.
 
-\textcolor{red}{réafficher images}
-% \begin{figure}[H]
-%   \begin{subfigure}{0.3\textwidth}
-%       \centering
-%       \includegraphics[width=\textwidth]{essai_10um_2im_50ms.png}
-%       \caption{50 ms d'exposition}
-%       \label{a}
-%   \end{subfigure}
-%   \hfill
-%   \begin{subfigure}{0.3\textwidth}
-%       \centering
-%       \includegraphics[width=\textwidth]{essai_10um_2im_100ms.png}
-%       \caption{100 ms d'exposition}
-%       \label{b}
-%   \end{subfigure}
-%   \hfill
-%   \begin{subfigure}{0.3\textwidth}
-%     \centering
-%     \includegraphics[width=\textwidth]{essai_10um_1im_150ms.png}
-%     \caption{150 ms d'exposition}
-%     \label{c}
-%   \end{subfigure}
-%   \caption{Image capturée pour un temps d'exposition de: (a) 50 ms (b) 100 ms et (c) 150 ms.}
-%       \label{exposition}
-% \end{figure}
+\begin{figure}[H]
+  \begin{subfigure}{0.3\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{essai_10um_2im_50ms.png}
+      \caption{}
+      \label{a}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}{0.3\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{essai_10um_2im_100ms.png}
+      \caption{}
+      \label{b}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}{0.3\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{essai_10um_1im_150ms.png}
+    \caption{}
+    \label{c}
+  \end{subfigure}
+  \caption{Image capturée pour un temps d'exposition de: (a) 50 ms (b) 100 ms et (c) 150 ms.}
+      \label{exposition}
+\end{figure}
 Ici, l'image \ref{a} est sous-exposée et l'image \ref{c} est surexposée. Pour le cas sous-exposé, le contraste entre
 le bruit et les particules est réduit, ce qui peut affecter la justesse des \textit{fits} gaussiens effectués pour suivre
 le déplacement des particules. Pour le cas surexposé, l'intensité des pixels de certaines particules est saturée, ce qu'on peut
@@ -322,7 +314,7 @@ figure \ref{crop} ci-dessous.
   \caption{Image recadrée de la cible.}
   \label{crop}
 \end{figure}
-Les deux \textit{fits} gaussiens 2D ont été effectués avec la fonction Python \textit{curve\_fit} sur la moitié droite et sur la moitié gauche de l'image \ref{crop},
+Les deux \textit{fits} gaussiens 2D ont été effectués avec la fonction Python \texttt{curve\_fit} sur la moitié droite et sur la moitié gauche de l'image \ref{crop},
 ce qui a permis de trouver le centre de chaque carré blanc. La gaussienne 2D est décrite par:
 \begin{equation}
   f(x,y)=A\cdot exp\left(-\left(\frac{(x-x_0)^2}{2\sigma_x^2}+\frac{(y-y_0)^2}{2\sigma_y^2}\right)\right)+B,
@@ -332,7 +324,7 @@ En ayant obtenu les coordonnées des centres des deux gaussiennes, on peut trouv
 \begin{equation}
   d_{im}=(x_{0_2}-x_{0_1})\cdot d_{pixel}\approx 0.1714\ mm,
 \end{equation}
-où $d_{pixel}=3.45\times10^{-6} \ m$ est la dimension d'un pixel \textcolor{red}{source caméra}. Ici, on approxime la distance en utilisant la distance en $x$
+où $d_{pixel}=3.45\times10^{-6} \ m$ est la dimension d'un pixel \cite{noauthor_thorlabs_2024-1}. \textcolor{red}{source caméra} Ici, on approxime la distance en utilisant la distance en $x$
 parce que la composante $|y_{0_2}-y_{0_1}|\approx 0.6\ pixel$ est négligeable. Finalement, on retrouve la magnification réelle de l'objectif:
 \begin{equation}
   m=\frac{d_{im}}{d_{vraie}}\approx\frac{0.1714}{0.01}= 17.14.
@@ -342,7 +334,7 @@ On retrouve:
 \begin{equation}
   \sigma_m=\frac{\sqrt{(d_{pixel}*\sigma_{x_{0_2}})^2+(d_{pixel}*\sigma_{x_{0_2}})^2}}{d_{vraie}}\approx0.0169.
 \end{equation}
-On obtient donc que la magnification réelle est de: $17.14\pm0.02$. \textcolor{red}{à quoi ça sert}
+On obtient donc que la magnification réelle est de: $17.14\pm0.02$. Celle-ci permettra de redimensionner les images d'une échelle en pixel à une échelle métrique.
 
 % Source caméra :
 
@@ -436,18 +428,18 @@ Les résultats suivants ont été obtenus :
   \hline
   \( \text{Particule} \) &\( D \, (\times 10^{-13} \, \text{m}^2/\text{s}) \) & \( r \, (\times 10^{-6} \, \text{m}) \) \\
   \hline
-  \( 1 \) &\( 5 \pm 3 \) & \( 2 \pm 1 \) \\
-  \( 2 \) &\( 14.7 \pm 0.8 \) & \( 0.60 \pm 0.03 \) \\
-  \( 3 \) &\( 9.0 \pm 0.9 \) & \( 1.0 \pm 0.1 \) \\
-  \( 4 \) &\( 22 \pm 4 \) & \( 0.40 \pm 0.07 \) \\
-  \( 5 \) &\( 2.6 \pm 0.3 \) & \( 3.4 \pm 0.4 \) \\
-  \( 6 \) &\( 5 \pm 2 \) & \( 1.7 \pm 0.6 \) \\
-  \( 7 \) &\( 4.97 \pm 0.09 \) & \( 1.77 \pm 0.03 \) \\
-  \( 8 \) &\( 4 \pm 1 \) & \( 2.1 \pm 0.5 \) \\
-  \( 9 \) &\( 8 \pm 2 \) & \( 1.1 \pm 0.2 \) \\
-  \( 10 \) &\( 3.1 \pm 0.5 \) & \( 2.9 \pm 0.5 \) \\
-  \( 11 \) &\( 5 \pm 1 \) & \( 1.7 \pm 0.4 \) \\
-  \( 12 \) &\( 16 \pm 1 \) & \( 0.55 \pm 0.04 \) \\
+  \( 1 \) &\( 1.2 \pm 0.7 \) & \( 2 \pm 1 \) \\
+  \( 2 \) &\( 3.7 \pm 0.2 \) & \( 0.60 \pm 0.03 \) \\
+  \( 3 \) &\( 2.3 \pm 0.2 \) & \( 1.0 \pm 0.1 \) \\
+  \( 4 \) &\( 5.5 \pm 0.9 \) & \( 0.40 \pm 0.07 \) \\
+  \( 5 \) &\( 0.66 \pm 0.09 \) & \( 3.4 \pm 0.4 \) \\
+  \( 6 \) &\( 1.3 \pm 0.5 \) & \( 1.7 \pm 0.6 \) \\
+  \( 7 \) &\( 1.24 \pm 0.02 \) & \( 1.77 \pm 0.03 \) \\
+  \( 8 \) &\( 1.1 \pm 0.3 \) & \( 2.1 \pm 0.5 \) \\
+  \( 9 \) &\( 2.1 \pm 0.4 \) & \( 1.1 \pm 0.2 \) \\
+  \( 10 \) &\( 0.8 \pm 0.1 \) & \( 2.9 \pm 0.5 \) \\
+  \( 11 \) &\( 1.3 \pm 0.3 \) & \( 1.7 \pm 0.4 \) \\
+  \( 12 \) &\( 4.0 \pm 0.3 \) & \( 0.55 \pm 0.04 \) \\
   \hline
   \hline
   \( \textbf{Moyenne} \) & \( \mathbf{8 \pm 1} \) & \( \mathbf{1.6 \pm 0.3} \) \\
@@ -462,9 +454,9 @@ Les résultats suivants ont été obtenus :
   \hline
   \( \text{Particule} \) &\( D \, (\times 10^{-13} \, \text{m}^2/\text{s}) \) & \( r \, (\times 10^{-6} \, \text{m}) \) \\
   \hline
-  \( 1 \) &\( 1.7 \pm 0.3 \) & \( 5.3 \pm 0.9 \) \\
-  \( 2 \) &\( 1.6 \pm 0.4 \) & \( 6 \pm 2 \) \\
-  \( 3 \) &\( 1.6 \pm 0.4 \) & \( 6 \pm 1 \) \\
+  \( 1 \) &\( 0.42 \pm 0.07 \) & \( 5.3 \pm 0.9 \) \\
+  \( 2 \) &\( 0.4 \pm 0.1 \) & \( 6 \pm 2 \) \\
+  \( 3 \) &\( 0.39 \pm 0.10 \) & \( 6 \pm 1 \) \\
   \hline
   \hline
   \( \textbf{Moyenne} \) & \( \mathbf{1.6 \pm 0.4} \) & \( \mathbf{6 \pm 1} \) \\
@@ -497,14 +489,14 @@ peut jouer sur la fiabilité de représentation de nos résultats. Les images ci
 \begin{figure}[H]
   \begin{subfigure}[H]{0.45\textwidth}
     \centering
-    \includegraphics[width=\textwidth]{Test_cond_rapport.png}
-    \caption{Échantillon inconnu}
+    \includegraphics[width=\textwidth]{essai_10um_2im_100ms.png}
+    \caption{Échantillon avec particules de 10 $\mu m$}
   \end{subfigure}
   \hfill
   \begin{subfigure}[H]{0.45\textwidth}
     \centering
     \includegraphics[width=\textwidth]{Échantillon1um.png}
-    \caption{Échantillon avec particules de 1 um}
+    \caption{Échantillon avec particules de 1 $\mu m$}
   \end{subfigure}
   \caption{Images d'échantillons testés pour comparaison qualitative}
 \end{figure}
