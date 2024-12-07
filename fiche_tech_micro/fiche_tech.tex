@@ -249,34 +249,33 @@ Certains paramètres du dispositif ont eu besoin d'être choisis pour optimiser 
 l'objectif du microscope choisi possède une magnification théorique de 20, et une ouverture numérique de 0.4. Après quelques essais, 
 il a été conclu qu'une magnification de 20 offrait une plage de fonctionnement optimale, en considérant 
 que pour des magnifications plus élevées, les plus grosses particules (de l'ordre de 10 microns) se déplaçaient souvent hors de la région observée. 
-Le temps d'exposition a été établi à 150 ms. La figure \ref{exposition} ci-dessous présente les images
+Le temps d'exposition a été établi à 100 ms. La figure \ref{exposition} ci-dessous présente les images
 capturées pour trois différents temps d'exposition.
 
-\textcolor{red}{réafficher images}
-% \begin{figure}[H]
-%   \begin{subfigure}{0.3\textwidth}
-%       \centering
-%       \includegraphics[width=\textwidth]{essai_10um_2im_50ms.png}
-%       \caption{50 ms d'exposition}
-%       \label{a}
-%   \end{subfigure}
-%   \hfill
-%   \begin{subfigure}{0.3\textwidth}
-%       \centering
-%       \includegraphics[width=\textwidth]{essai_10um_2im_100ms.png}
-%       \caption{100 ms d'exposition}
-%       \label{b}
-%   \end{subfigure}
-%   \hfill
-%   \begin{subfigure}{0.3\textwidth}
-%     \centering
-%     \includegraphics[width=\textwidth]{essai_10um_1im_150ms.png}
-%     \caption{150 ms d'exposition}
-%     \label{c}
-%   \end{subfigure}
-%   \caption{Image capturée pour un temps d'exposition de: (a) 50 ms (b) 100 ms et (c) 150 ms.}
-%       \label{exposition}
-% \end{figure}
+\begin{figure}[H]
+  \begin{subfigure}{0.3\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{essai_10um_2im_50ms.png}
+      \caption{}
+      \label{a}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}{0.3\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{essai_10um_2im_100ms.png}
+      \caption{}
+      \label{b}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}{0.3\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{essai_10um_1im_150ms.png}
+    \caption{}
+    \label{c}
+  \end{subfigure}
+  \caption{Image capturée pour un temps d'exposition de: (a) 50 ms (b) 100 ms et (c) 150 ms.}
+      \label{exposition}
+\end{figure}
 Ici, l'image \ref{a} est sous-exposée et l'image \ref{c} est surexposée. Pour le cas sous-exposé, le contraste entre
 le bruit et les particules est réduit, ce qui peut affecter la justesse des \textit{fits} gaussiens effectués pour suivre
 le déplacement des particules. Pour le cas surexposé, l'intensité des pixels de certaines particules est saturée, ce qu'on peut
