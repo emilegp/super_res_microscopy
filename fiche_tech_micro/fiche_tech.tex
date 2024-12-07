@@ -701,14 +701,552 @@ finally:
 
 \subsection{Programme d'analyse des particules de 1 micron}
 
+\begin{lstlisting}[language=python]
+import matplotlib
+matplotlib.use('Qt5Agg')  # Utiliser le backend Qt5Agg pour Windows
+import matplotlib.pyplot as plt
+import matplotlib.animation as animation
+from scipy.optimize import curve_fit
+import cv2
+import numpy as np
+import os
+from PIL import Image
+import lmfit
+#import tifffile
+#%matplotlib tk #pour Linux
 
+import scipy.ndimage as ndimage
+from sklearn.cluster import DBSCAN
 
+path_to_tiff = os.path.join("..", "acquisition", "essai_10um_2im_50ms.tiff")
+tiff = Image.open(path_to_tiff)
 
+with Image.open(path_to_tiff) as img:
+    frame_number = 0
+    actual_frames = 0
+    try:
+        while True:
+            frame_number += 1
+            if np.sum(np.array(img)) != 0:
+                actual_frames += 1
+                
+            img.seek(frame_number)
+    except EOFError:
+        print("All frames processed.")
 
-\bibliographystyle{unsrtnat}
-\bibliography{suivi_particules.bib}
+frame_index = 0
+first_frame = 0
+tiff.seek(frame_index)
+original_image = np.array(tiff)
 
-\section{Annexes}
+while np.sum(original_image) == 0:
+    frame_index += 1
+    tiff.seek(frame_index)
+    original_image = np.array(tiff)
+    first_frame += 1
+    print(frame_index)
+
+clahe = cv2.createCLAHE(clipLimit=10.0, tileGridSize=(30, 30))
+preprocessed = clahe.apply(original_image)
+
+blurred = cv2.medianBlur(preprocessed, 115)
+preprocessed2 = cv2.subtract(preprocessed, blurred)
+
+# Apply Non-Local Means Denoising
+img = cv2.fastNlMeansDenoising(preprocessed2, None, 15, 7, 41)
+
+def crop(img, x, y, crop_size_x, crop_size_y):  
+    x_start = int(x - crop_size_x // 2)
+    x_end = int(x + crop_size_x // 2)
+    y_start = int(y - crop_size_y // 2)
+    y_end = int(y + crop_size_y // 2)
+
+    if x_start < 0:
+        x_start = 0
+    if x_end > 1440:
+        x_end = 1440
+    if y_start < 0:
+        y_start = 0
+    if y_end > 1080:
+        y_end = 1080
+
+    return img[y_start:y_end, x_start:x_end]
+
+fig, ax = plt.subplots()
+ax.imshow(img, origin='lower', cmap='gray')
+plt.title(f"Frame {frame_index}: Select a point")
+
+# Selection de points
+print("Please click on the point you want to select.")
+x, y = plt.ginput(1)[0] 
+print(f"Selected point: ({x}, {y})")
+plt.close()
+
+crop_sze_x = 250
+crop_sze_y = 300
+
+def visionneur(frame, titre):
+    plt.figure(figsize=(10, 5))
+    plt.clf() 
+    plt.imshow(frame, origin='lower', cmap='gray')
+    plt.title(titre)
+    plt.colorbar()  
+    plt.show()
+
+def prepare_data(x, y, z):
+    return (x.flatten(), y.flatten()), z.flatten()
+
+def gaussian_2d(xy, amplitude, x0, y0, sigma_x, sigma_y, offset):
+    x, y = xy
+    a = 1 / (2 * sigma_x**2)
+    b = 1 / (2 * sigma_y**2)
+    return offset + amplitude * np.exp(- (a * (x - x0)**2 + b * (y - y0)**2))
+
+def localisateur_gaussien(intensity_grid, centre):
+    x = np.arange(intensity_grid.shape[1])
+    y = np.arange(intensity_grid.shape[0])
+    X, Y = np.meshgrid(x, y)
+
+    # Preparer les donnees pour le fit
+    (xdata, ydata), zdata = prepare_data(X, Y, intensity_grid)
+    model = lmfit.Model(gaussian_2d)
+    max_idx = np.unravel_index(np.argmax(intensity_grid), intensity_grid.shape)
+
+    initial_x0 = x[max_idx[1]]
+    initial_y0 = y[max_idx[0]]
+
+    # Definir les parametres du modele
+    params = model.make_params(
+        amplitude=np.max(intensity_grid),
+        x0=initial_x0,
+        y0=initial_y0,
+        sigma_x=5,
+        sigma_y=5,
+        offset=3
+    )
+
+    # Ajouter des bornes sur les parametres x0 et y0
+    params['x0'].min = 0    # Limite inferieure pour x0
+    params['x0'].max = intensity_grid.shape[1] - 1  # Limite superieure pour x0
+    params['y0'].min = 0    # Limite inferieure pour y0
+    params['y0'].max = intensity_grid.shape[0] - 1  # Limite superieure pour y0
+
+    # Ajouter des bornes sur les parametres sigma
+    params['sigma_x'].min = 1  # Limite inferieure de sigma_x
+    params['sigma_x'].max = 40 # Limite superieure de sigma_x
+    params['sigma_y'].min = 1  # Limite inferieure de sigma_y
+    params['sigma_y'].max = 40 # Limite superieure de sigma_y
+
+    # Effectuer l'ajustement
+    result = model.fit(zdata, params, xy=(xdata, ydata))
+    
+    x_position = result.params['x0'].value + centre[0] - crop_sze_x//4
+    y_position = result.params['y0'].value + centre[1] - crop_sze_y//4
+
+    return [x_position, y_position], result.params['sigma_x'].value, result.params['sigma_y'].value
+
+def denoise(image):
+    clahe = cv2.createCLAHE(clipLimit=10.0, tileGridSize=(30, 30))
+    preprocessed = clahe.apply(image)
+    
+    blurred = cv2.medianBlur(preprocessed, 115)
+    preprocessed2 = cv2.subtract(preprocessed, blurred)
+    
+    return cv2.fastNlMeansDenoising(preprocessed2, None, 15, 7, 41)
+
+def is_within_bounds(position):
+    x, y = position
+
+    # Definir les bornes du cadre
+    x_min, x_max = 100, 1300
+    y_min, y_max = 100, 980
+
+    # Verifier si la position est dans les bornes du cadre
+    if x_min <= x <= x_max and y_min <= y <= y_max:
+        return True
+    else:
+        return False
+
+def empreinte_digitale(image, threshold=50, eps=3, min_samples=1):
+    # 1. Observer chaque particule approximativement
+    visionneur(image, f'particule choisie')
+
+    maxima = (image > threshold)
+    
+    coordinates = np.column_stack(np.where(maxima))  
+    if coordinates.shape[0] == 0:
+        print("Aucune particule detectee.")
+        return [], image
+
+    dbscan = DBSCAN(eps=eps, min_samples=min_samples)
+    labels = dbscan.fit_predict(coordinates)
+    unique_labels = np.unique(labels)
+    size=0
+
+    # 2. Determiner l'empreinte digitale de notre particule
+    for label in unique_labels:
+        if label != -1:  # -1 correspond au bruit dans DBSCAN
+            cluster_points = coordinates[labels == label]
+            plt.scatter(cluster_points[:, 1], cluster_points[:, 0], label=f'Particule {label}')
+
+            if cluster_points.shape[0]>size:
+                size = cluster_points.shape[0]
+                luminosity = np.mean(image[cluster_points[:, 0], cluster_points[:, 1]])
+
+    seuil=np.max(image)*0.5
+    print(f'seuil:{seuil}, taille:{size} et luminosite: {luminosity}')
+
+    # 3. Afficher les resultats et filtrer les particules selon leur taille et luminosite
+    plt.imshow(image, origin='lower', cmap='gray')
+    plt.title(f"Empreinte digitale de la particule, lum={luminosity} et taille={size}")
+    plt.legend()
+    plt.colorbar()  
+    plt.show()
+
+    return size, luminosity, seuil
+
+def detect_nbre_particles(image, threshold, eps=9, min_samples=1):
+    # 1. Appliquer un filtre de voisinage pour detecter les maxima locaux
+    neighborhood_size = 3  # Taille du voisinage pour detecter les maxima locaux
+    local_max = ndimage.maximum_filter(image, size=neighborhood_size)
+    # 2. Comparer l'image originale et les maxima locaux pour identifier les vrais maxima
+    maxima = (image == local_max) & (image > threshold)
+
+    # 3. Extraire les coordonnees des maxima (particules)
+    coordinates = np.column_stack(np.where(maxima))  # Extraire les indices des pixels maximaux
+    if coordinates.shape[0] == 0:
+        print("Aucune particule detectee.")
+        visionneur(image, f'detection du nombre de particules')
+
+        return [], image
+
+    # 4. Appliquer DBSCAN pour regrouper les particules proches (cluster les maxima detectes)
+    dbscan = DBSCAN(eps=eps, min_samples=min_samples)
+    labels = dbscan.fit_predict(coordinates)
+
+    #5. Determiner le nombre de particules
+    unique_labels = np.unique(labels)
+    nb_particules = len(unique_labels)
+        
+    positions=[]
+    for label in unique_labels:
+        if label != -1:  # -1 correspond au bruit dans DBSCAN
+            cluster_points = coordinates[labels == label]
+        positions.append((np.mean(cluster_points[:, 1]), np.mean(cluster_points[:, 0])))
+
+    # Retourner les coordonnees des particules filtrees
+    return nb_particules, positions
+
+def identificateur_particles(image, ref_size, ref_luminosity, threshold=50, eps=9, min_samples=1):
+    # 1. Obtenir le plus d'info sur la particule
+    maxima = (image > threshold)
+    
+    coordinates = np.column_stack(np.where(maxima))  
+    if coordinates.shape[0] == 0:
+        print("Mauvais re-crop empeche identification de la particule.")
+        return [], image
+
+    dbscan = DBSCAN(eps=eps, min_samples=min_samples)
+    labels = dbscan.fit_predict(coordinates)
+    unique_labels = np.unique(labels)
+
+    # 2. Parcourir chaque particule et identifier laquelle est celle qu'on suit
+    distances = []
+    position_particules = []
+
+    for label in unique_labels:
+        if label != -1:  # -1 correspond au bruit dans DBSCAN
+            cluster_points = coordinates[labels == label]
+            plt.scatter(cluster_points[:, 1], cluster_points[:, 0], label=f'Particule {label}')
+
+            size = cluster_points.shape[0]
+            luminosity = np.mean(image[cluster_points[:, 0], cluster_points[:, 1]])
+            size_distance = abs(size - ref_size)  
+            luminosity_distance = abs(luminosity - ref_luminosity) 
+            
+            combined_distance = size_distance + luminosity_distance
+            distances.append(combined_distance)
+            position_particules.append((np.mean(cluster_points[:, 1]), np.mean(cluster_points[:, 0])))
+
+    ecart = np.min(distances)
+    position_best_particle = position_particules[np.argmin(distances)]  
+
+    return position_best_particle, ecart
+
+def particle_tracker_simple(image, x, y):
+    image = denoise(image)
+
+    cropped_img = crop(image, x, y, crop_sze_x, crop_sze_y)
+    
+    #Gerer plus qu'une particule
+    cropped_img = np.array(cropped_img)
+    max_index = np.argmax(cropped_img)
+    max_coords = np.unravel_index(max_index, cropped_img.shape)
+
+    nouveau_x = x - crop_sze_x // 2 + max_coords[1]
+    nouveau_y = y - crop_sze_y // 2 + max_coords[0]
+    
+    second_crop = crop(image, nouveau_x, nouveau_y, crop_sze_x, crop_sze_y)    # Re-crop autour d'une seule particule
+
+    result_fit = localisateur_gaussien(second_crop, [nouveau_x, nouveau_y])
+
+    x_new, y_new = result_fit[0][0], result_fit[0][1]
+
+    return [result_fit, cropped_img, (x_new, y_new), (result_fit[1], result_fit[2])]
+
+#Places ici pour pouvoir y faire reference dans particule_tracker
+position_list=[[x,y]]
+sigma_list = []
+crop_frames = []
+big_frames = []
+
+def particle_tracker(imge, x, y, taille_initiale, luminosite_initiale, seuil):
+    # 1. Ce qu'on voit pres de l'ancienne position
+    image = denoise(imge)
+
+    cropped_img = crop(image, x, y, crop_sze_x, crop_sze_y)
+    
+    # 2. Determiner combien il y a de particules et laquelle est la notre
+    # Utiliser une reconnaissance de particules et si plus qu'une, alors clic pour choisir
+    nb_part, coordonnees = detect_nbre_particles(cropped_img, seuil)
+
+    if nb_part == 1:
+        cropped_img = np.array(cropped_img)
+        max_index = np.argmax(cropped_img)
+        max_coords = np.unravel_index(max_index, cropped_img.shape)
+
+        nouveau_x = x - crop_sze_x // 2 + max_coords[1] #Oui c'est inverse a cause du unravel juste avant
+        nouveau_y = y - crop_sze_y // 2 + max_coords[0]
+    elif  (nb_part == 0) or (nb_part == []):
+        # choix de point
+        fig, ax = plt.subplots()
+        ax.imshow(denoise(img), origin='lower', cmap='gray') 
+        plt.title(f"Frame {len(position_list)-1}: Select a point")
+
+        # Ajouter une croix rouge a la position donnee
+        cx, cy = position_list[len(position_list)-1]
+        ax.plot(cx, cy, 'rx', markersize=10) 
+        
+        # Afficher l'image et demander a l'utilisateur de cliquer
+        print("Please click on the point you want to select.")
+        nouveau_x, nouveau_y = plt.ginput(1)[0]  # Attente du clic de l'utilisateur (1 point)
+        
+        # Fermer l'affichage apres selection
+        plt.close()
+    else:
+        imperfections, emplacements = [] , []
+        for num_particule in range(nb_part):
+            x_identifier=x - crop_sze_x // 2 + coordonnees[num_particule][0]
+            y_identifier=y - crop_sze_y // 2 + coordonnees[num_particule][1]
+            crop_pour_identifier = crop(image, x_identifier, y_identifier, crop_sze_x//2, crop_sze_x//2)
+            emplacement, ecart = identificateur_particles(crop_pour_identifier, taille_initiale, luminosite_initiale, seuil)
+            imperfections.append(ecart)
+            emplacements.append(emplacement)
+        qualite = np.min(imperfections)
+        print(f'ecart:{qualite}')
+        max_coords = emplacements[np.argmin(imperfections)]  
+        nouveau_x = x_identifier - crop_sze_x // 4 + max_coords[0]
+        nouveau_y = y_identifier - crop_sze_y // 4 + max_coords[1]
+    
+    # Verification s'il fout le camp 
+    dis = np.sqrt((position_list[-1][0]-nouveau_x)**2+(position_list[-1][1]-nouveau_y)**2)
+    if dis>100:
+        # Display the image and let the user select a point interactively
+        fig, ax = plt.subplots()
+        ax.imshow(denoise(img), origin='lower', cmap='gray') 
+        plt.title(f"Frame {len(position_list)-1}: Probleme d'identification, nouvelle pos a {dis}, select a point")
+
+        print('probleme d''identification')
+        # Ajouter une croix rouge a la position donnee
+        cx, cy = position_list[-1]
+        ax.plot(cx, cy, 'rx', markersize=10) 
+        
+        # Afficher l'image et demander a l'utilisateur de cliquer
+        print("Please click on the point you want to select.")
+        nouveau_x, nouveau_y = plt.ginput(1)[0]  # Attente du clic de l'utilisateur (1 point)
+        print(f"Selected point: ({nouveau_x}, {nouveau_y})")
+        
+        # Fermer l'affichage apres selection
+        plt.close()
+    
+    # 3. Crop autour de notre particule et fit dessus
+    second_crop = crop(image, nouveau_x, nouveau_y, crop_sze_x//2, crop_sze_y//2)    # Re-crop autour d'une seule particule
+
+    result_fit = localisateur_gaussien(second_crop, [nouveau_x, nouveau_y])
+
+    x_new, y_new = result_fit[0][0], result_fit[0][1]
+
+    return [result_fit, second_crop, (x_new, y_new), (result_fit[1], result_fit[2])]
+
+taille_initiale, luminosite_initiale, seuil = empreinte_digitale(crop(img,x,y,crop_sze_x*0.8,crop_sze_y*0.5))
+print(f'position initiale: {position_list}')
+
+for i in range(first_frame,actual_frames):
+    tiff.seek(i)
+    if np.sum(np.array(tiff))==0:
+        position_list.append(np.array([np.nan,np.nan]))
+        sigma_list.append(np.array([np.nan,np.nan]))
+        print(f'frames vide:{i}')
+    else:
+        data = particle_tracker(img, x, y, taille_initiale, luminosite_initiale, seuil)
+        position_list.append(data[2])
+        x,y = position_list[i-first_frame+1]
+        sigma_list.append(data[3])
+        tiff.seek(i)
+        img = np.array(tiff)
+        big_frames.append(img)
+        crop_frames.append(data[1])
+        if is_within_bounds(position_list[-1]):
+            pass
+        else:
+            break
+    print(f'liste des positions frame {i}:{position_list}')
+
+pixel_size = 3.45 # Taille absolue
+f2 = 150  # Focale de L2
+M_theo = 20  # Magnification
+pxl = pixel_size / (f2 * M_theo / 160)  # Pixel size en um dans le plan de la particule
+
+sigma_arr=np.array(sigma_list)* pxl * 10**(-6)
+position_arr=np.array(position_list)* pxl * 10**(-6)
+print(position_arr)
+
+def calculate_msd_with_uncertainty(position_arr, delta_x, delta_y):
+    """
+    Calcule les MSD avec propagation des incertitudes analytiques.
+    """
+    if position_arr[0:].shape[0] != delta_x[0:].shape :
+        position_arr=position_arr[:len(position_arr)-1]
+
+    # Traitement Lucien
+    diff_pair = np.zeros_like(position_arr[1:])
+    dx = np.zeros_like(delta_x[1:])
+    dy = np.zeros_like(delta_y[1:])
+
+    # Masque pour detecter les NaN
+    nan_mask_pos = np.isnan(position_arr[1:]) | np.isnan(position_arr[:-1])
+    nan_mask_delta = np.isnan(delta_x[1:]) | np.isnan(delta_x[:-1])
+    
+    # Calculer les differences uniquement ou nan_mask est False
+    valid_mask_pos = ~nan_mask_pos.any(axis=1)  # Inverser le masque pour obtenir les position_arr valides
+    valid_mask_delta = ~nan_mask_delta
+    
+    diff_pair[valid_mask_pos] = position_arr[1:][valid_mask_pos, :] - position_arr[:-1][valid_mask_pos, :]
+    # Calculer les differences en x uniquement (prendre la premiere colonne des positions)
+    print(len(diff_pair))
+    vitesse_moyenne = np.mean(diff_pair,axis=0)
+    
+    temps = np.arange(0,len(position_arr))  # vecteur de temps
+
+    # Appliquer la soustraction terme a terme
+    nouvelles_donnees = position_arr - vitesse_moyenne * temps[:, np.newaxis]    
+    print(f'vitesse moyenne d'f'environ: {vitesse_moyenne}')
+    
+    msd = []
+    uncertainties = []
+    for d in range(1, len(nouvelles_donnees)):
+        diff_pairs = np.zeros_like(nouvelles_donnees[d:])
+        dx = np.zeros_like(delta_x[d:])
+        dy = np.zeros_like(delta_y[d:])
+
+        # Masque pour detecter les NaN
+        nan_mask_pos = np.isnan(nouvelles_donnees[d:]) | np.isnan(nouvelles_donnees[:-d])
+        nan_mask_delta = np.isnan(delta_x[d:]) | np.isnan(delta_x[:-d])
+        
+        # Calculer les differences uniquement ou nan_mask est False
+        valid_mask_pos = ~nan_mask_pos.any(axis=1)  # Inverser le masque pour obtenir les position_arr valides
+        valid_mask_delta = ~nan_mask_delta
+        
+        diff_pairs[valid_mask_pos] = nouvelles_donnees[d:][valid_mask_pos, :] - nouvelles_donnees[:-d][valid_mask_pos, :]
+
+        distances_squared = np.sum(diff_pairs**2, axis=1)
+        msd.append(np.mean(distances_squared))  
+        
+        dx[valid_mask_delta] = delta_x[d:][valid_mask_delta] + delta_x[:-d][valid_mask_delta]
+        dy[valid_mask_delta] = delta_y[d:][valid_mask_delta] + delta_y[:-d][valid_mask_delta]
+        term_x = 2 * (diff_pairs[:, 0]**2) * (dx**2)
+        term_y = 2 * (diff_pairs[:, 1]**2) * (dy**2)
+
+        # Propagation des incertitudes
+        total_uncertainty = np.mean(term_x + term_y)
+        uncertainties.append(np.sqrt(total_uncertainty))
+
+    return np.array(msd), np.array(uncertainties)
+
+calculate_msd_with_uncertainty(position_arr, sigma_arr[:, 0], sigma_arr[:, 1])
+
+msd_values, uncertainties = calculate_msd_with_uncertainty(position_arr, sigma_arr[:, 0], sigma_arr[:, 1])
+
+time_intervals = np.arange(1, len(msd_values) + 1) * 0.5
+
+# Plot MSD
+plt.figure(figsize=(8, 6))
+plt.errorbar(time_intervals, msd_values, yerr=uncertainties, fmt='o', label='MSD', color='blue')
+plt.title("MSD en fonction de l'intervalle de temps")
+plt.xlabel("Intervalle de temps")
+plt.ylabel("MSD")
+plt.grid(True)
+plt.legend()
+plt.show()
+
+# Fonction quadratique pour l'ajustement
+def quadratic(x, a, b, c):
+    return a * x**2 + b * x + c
+def line(x, b,c):
+    return b*x+c
+
+msd_values, uncertainties = calculate_msd_with_uncertainty(position_arr, sigma_arr[:, 0], sigma_arr[:, 1])
+
+cropped_msd = msd_values[:5]
+cropped_inc = uncertainties[:5]
+
+time_intervals = np.arange(1, len(cropped_msd) + 1)
+
+# curve fit quadratique
+bounds = ([-np.inf, -np.inf, -np.inf], [np.inf, np.inf, np.inf])
+popt, pcov = curve_fit(line, time_intervals, cropped_msd, sigma=cropped_inc)
+
+# coefficients optimaux
+coeffs = popt
+
+  # Incertitudes sur les coefficients sont les elements diagonaux
+coeff_uncertainties = np.sqrt(np.diag(pcov))
+
+# Affichage des coefficients separement
+print("Coefficients du polynome ajuste :")
+print(coeffs)
+
+# Affichage de la matrice de covariance separement
+print("Matrice de covariance des coefficients :")
+print(pcov)
+
+# Creation de la fonction quadratique de l'ajustement
+quadratic_fit = np.poly1d(coeffs)
+
+# Generation des valeurs ajustees pour afficher la courbe
+fitted_msd = quadratic_fit(time_intervals)
+
+# Affichage du MSD avec les barres d'erreur
+plt.figure(figsize=(8, 6))
+plt.errorbar(time_intervals, cropped_msd, yerr=cropped_inc, fmt='o', label='MSD', color='blue')
+plt.plot(time_intervals, fitted_msd, label='Quadratic Fit', color='red', linestyle='--')
+plt.title("MSD en fonction de l'intervalle de temps")
+plt.xlabel("Intervalle de temps")
+plt.ylabel("MSD")
+plt.grid(True)
+plt.legend()
+plt.show()
+
+# Affichage des incertitudes sur les coefficients
+print(f"Incertitudes sur les coefficients : {coeff_uncertainties}")
+
+# Calcul du coefficient de diffusion et de la taille de la particule
+r = (4 * 1.38 * 10**-23 * 300 / (6 * np.pi * 10**(-3) * coeffs[0]))  # Coefficient de diffusion
+r_uncertainty = (4 * 1.38 * 10**(-23) * 300 * coeff_uncertainties[0] / (6 * np.pi * 10**(-3) * (coeffs[0])**2))  # Coefficient de diffusion
+
+# Affichage de la taille de la particule avec incertitude
+print(f"Taille de la particule (m): {r:.2e} m, avec une incertitude : {r_uncertainty:.2e}")
+\end{lstlisting}
 
 \subsection{Preuve de correction par Antidote}
 \begin{figure}[H]
@@ -717,5 +1255,10 @@ finally:
   \caption{Correction par Antidote}
 \end{figure}
 \clearpage
+
+\bibliographystyle{unsrtnat}
+\bibliography{suivi_particules.bib}
+
+
 
 \end{document}
