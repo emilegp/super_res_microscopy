@@ -148,10 +148,10 @@ Polytechnique Montréal\\}
 \section{Description générale et spécifications}
 
 Cette fiche technique, à la demande du Gouvernement du Québec, présente les caractéristiques 
-d'un dispositif de mesure de taille de microparticules contaminants l'environnement près de 
+d'un dispositif de mesure de taille de microparticules contaminant l'environnement près de 
 l'usine Polyfab. Les composantes principales sont un laser 405 nm (CPS405)
 pour illuminer les fluorophores dans les échantillons, un objectif de microscope (grossissement 
-$M = 20$, aperture NA $= 0.4$) pour le grossissement, puis une lentille tube de 150 mm de focale
+$M = 20$, aperture NA $= 0.4$), puis une lentille tube de 150 mm de focale
 (LA1433-A-ML) pour converger les rayons sortants de l'objectif sur le capteur d'une caméra CMOS 
 (CS165MU) pour l'analyse \cite{noauthor_thorlabs_2024}. Ce système présente une résolution
 théorique de 1.012 µm \cite{rouillon_travail_2024}. Afin d'analyser des particules d'environ cette taille, un traitement
@@ -161,9 +161,9 @@ particules dans la plage 1-10 µm. Suite à la caractérisation de particules
 de 1 µm, la valeur identifiée est de 1.6 $\pm$ 0.3 µm.
 Pour la caractérisation de particules de 10 µm, elle est de 6 $\pm$ 1 µm. Le système, monté sur table optique et utilisable dans le noir 
 seulement, a des dimensions de $600 \times 90 \times 200$ mm, tel que présenté à 
-la figure \ref{schema_micro}. La résolution de l'appareil post traitement est de 0.3 µm, et
+la figure \ref{schema_micro}. La résolution de l'appareil post-traitement est de 0.3 µm, et
 son grossissement réel est de $17.14 \pm 0.02$. Sans compter la table optique, le dispositif a pour coût total 1789.39 \$, prix qui
-peut être réduit par l'usage d'impression 3D. Les spécifications de microscope sont rassemblées dans le
+peut être réduit par l'usage d'impression 3D. Les spécifications du dispositif sont rassemblées dans le
 tableau \ref{specs} ci-dessous.
 
 \begin{figure}[H]
@@ -178,7 +178,7 @@ tableau \ref{specs} ci-dessous.
   \caption{Tableau des spécifications}
   \begin{tabular}{|p{2.5cm}|p{2cm}|p{3cm}|p{1.5cm}|p{6.5cm}|}
   \hline
-      Magnification réelle & Résolution (um) & Dimensions (mm) & Coût  \$CAD & Composantes \\ \hline\hline
+      Magnification réelle & Résolution ($\mu m$) & Dimensions (mm) & Coût  \$CAD & Composantes \\ \hline\hline
       $17.14\pm0.02$ & 0.3 & L 600 $\times$ W 90 $\times$ H 200 & \$1789.39 & \vspace{-20pt} {\small\parbox{7cm}{\setlength{\columnsep}{0pt} 
       \begin{multicols}{2}\begin{itemize}[label=$\triangleright$, topsep=0pt, itemsep=0pt]
             \item KM100S
@@ -216,35 +216,35 @@ déterminée sur au moins une cinquantaine d'instants successifs, avant de pouvo
 coefficient de diffusion et de sa taille. Des images sont prises pour chaque instant.
 
 Pour positionner la particule avec la plus faible incertitude possible, un 
-fit gaussien est effectué sur l'image pixelisée de la particule pour un moment précis. Pour que le fit s'effectue
-adéquatement, il faut restreindre la zone de fit à la particule. Pour se faire, le suivi de la particule commence 
+\textit{fit} gaussien est effectué sur l'image pixelisée de la particule pour un moment précis. Pour que le \textit{fit} s'effectue
+adéquatement, il faut restreindre la zone de \textit{fit} à la particule. Pour ce faire, le suivi de la particule commence 
 autour de la position précédente de la particule, par la recherche de maxima d'intensité surpassant un seuil. Les
-dimensions de la zone rectangulaire en question et le seuil utilisé sont des valeurs déterminées par essai erreur
-et sont respectivement d'environ 100 pixels de côté et une intensité de 50 sur un maximum de 200 .
-Une fois le nombre de maxima obtenu, soit le nombre de particules potentielles, la zone de fit est recentrée sur 
+dimensions de la zone rectangulaire en question et le seuil utilisé sont des valeurs déterminées par essai-erreur
+et sont respectivement d'environ 100 pixels de côté et une intensité de 50 sur un maximum de 255.
+Une fois le nombre de maxima obtenu, soit le nombre de particules potentielles, la zone de \textit{fit} est recentrée sur 
 la particule la plus similaire à celle du départ.  
 
 Pour reconnaitre la particule, un système de comparaison des particules potentielles en fonction de leur taille 
-et leur luminosité est utilisé lorsque plus d'une particule sont dans la même zone. 
-La taille, soit le nombre de pixels au dessus d'un seuil fixé, y a un rôle prépondérant, mais la luminosité, soit 
+et leur luminosité est utilisé lorsque plus d'une particule est dans la même zone. 
+La taille, soit le nombre de pixels au-dessus d'un seuil fixé, y a un rôle prépondérant, mais la luminosité, soit 
 la moyenne d'intensité des pixels en question, a également un impact. Ces informations sont obtenues en centrant 
-l'image sur la particule d'intérêt et en appliquant la fonction \texttt{DBSCAN} pour regrouper les maximas en des entités
+l'image sur la particule d'intérêt et en appliquant la\ fonction \texttt{DBSCAN} pour regrouper les maximas en des entités
 qui correspondent aux particules. La luminosité et la taille obtenues sont alors comparées à la luminosité et la 
 taille de la première observation qui sert de référence. La première observation est obtenue comme les suivantes,
 avec comme seul différence que sa détection est faite par l'humain utilisant le système, qui clique initialement 
 sur la particule que le système aura à suivre.
 
 Une fois que la particule peut être suivie d'un instant au suivant, la localisation de la particule est obtenue à 
-l'aide du fit gaussien, et l'incertitude sur la position correspond alors à l'écart-type de la gaussienne obtenue, 
+l'aide du \textit{fit} gaussien, et l'incertitude sur la position correspond alors à l'écart-type de la gaussienne obtenue, 
 qui est généralement plus faible que la taille d'un pixel. 
 Des vérifications sont faites pour s'assurer que la nouvelle position est plausible et elle est alors
-enregistrée avant de servir de référence pour le traitement du frame suivant.
+enregistrée avant de servir de référence pour le traitement du cadre suivant.
 
 Si la particule choisie sort de l'écran avant la fin des instants observés, le système s'arrête tout simplement à 
 sa dernière position identifiable, soit environ 100 pixels avant le bord.
 
 \subsection{Paramètres utilisés \label{para}}
-Certains paramètres du dispositif ont eu besoin d'être choisis pour optimiser sa performance. Entres autres,
+Certains paramètres du dispositif ont eu besoin d'être choisis pour optimiser sa performance. Entre autres,
 l'objectif du microscope choisi possède une magnification théorique de 20, et une ouverture numérique de 0.4. Après quelques essais, 
 il a été conclu qu'une magnification de 20 offrait une plage de fonctionnement optimale, en considérant 
 que pour des magnifications plus élevées, les plus grosses particules (de l'ordre de 10 microns) se déplaçaient souvent hors de la région observée. 
@@ -288,7 +288,7 @@ ci-dessous:
 où $\Delta t$ correspond au temps d'exposition. Pour un temps d'exposition de 0.100 s, on a : $f_{image}\leq 1/0.100 = 10$ images/s. 
 Normalement, la fréquence d'images peut être gardée à sa valeur maximale, mais après quelques essais, il a pu été observé que de nombreuses
 images ne se sauvegardaient pas. Sachant que la position dans le temps de chaque capture d'image est importante pour le calcul de la MSD, la fréquence 
-d'images a été réduite à deux images par secondes pour essayer limiter le nombre d'images perdues. 
+d'images a été réduite à deux images par secondes pour essayer de limiter le nombre d'images perdues. 
 
 Afin d'obtenir un calcul des premiers points de la MSD ayant des poids statistiques significatifs, le nombre d'images capturées a été posé à 75. 
 Ce choix a été fait pour que le nombre d'images enregistrées soit de 50 ou plus, en ajoutant une marge de 25 images pour prendre en compte les images qui seront 
@@ -375,11 +375,11 @@ L'incertitude sur ces valeurs est donnée par la formule suivante:
 
 On remarque que c'est ici que le traitement de toutes les images est important, même celles qui ont été perdues, car sinon le $\Delta t$ n'aurait pas été cohérent avec la procédure de la MDS. 
 La façon de traiter ce calcul avec les vecteurs $\left [ NaN ,NaN \right ]$ tout en perdant le moins d'information possible a été de définir que 
-dès que l’élément NaN est détecté dans un calcul, $\left( \mathbf{r}(i+\Delta t) - \mathbf{r}(i) \right)=0$. De cette façon, les images non-enregistrées
+dès que l’élément NaN est détecté dans un calcul, $\left( \mathbf{r}(i+\Delta t) - \mathbf{r}(i) \right)=0$. De cette façon, les images non enregistrées
 ne peuvent pas interférer dans le calcul de la MDS. Dans la même idée, les incertitudes sur les positions sont calculées à l'aide de l'écart-type 
-du \textit{fit} gaussien, et dans le cas d'une vecteur identifié par $[NaN, NaN]$, on pose $\Delta x=0$ et $\Delta y=0$. Les images noires ne sont donc pas prises en compte non plus dans les calculs d'incertitude. 
+du \textit{fit} gaussien, et dans le cas d'un vecteur identifié par $[NaN, NaN]$, on pose $\Delta x=0$ et $\Delta y=0$. Les images noires ne sont donc pas prises en compte non plus dans les calculs d'incertitude. 
 
-Une fois toutes les valeurs trouvées, un graphique des résultat de MSD en fonction du $\Delta t$ est produit. La calcul de la MSD est évalué en fonction de l'intervalle de temps
+Une fois toutes les valeurs trouvées, un graphique des résultats de MSD en fonction du $\Delta t$ est produit. Le calcul de la MSD est évalué en fonction de l'intervalle de temps
 qui sépare deux points. En considérant que plus l'intervalle est important, moins il existe de paires de positions, seuls les cinq premiers points de
 la MSD ont été choisis. Effectivement, ces points correspondent à un intervalle de temps $\Delta t=1,2,3,4,5$, pour lesquels le poids statistique est beaucoup plus élevé
 que pour des intervalles proches du nombre de positions évaluées ($\Delta t=50$ dans le cas ci-présent).
@@ -414,8 +414,8 @@ C'est le coefficient $b$ du \textit{fit} qui sera utilisé pour trouver le coeff
 L'incertitude sur chacune de ces valeurs est donnée par l'incertitude sur le coefficient $b$, car on considère que les autres paramètres sont des constantes
 et ne comportent donc pas d'incertitudes. 
 \subsection{Étude statistique}
-Pour un échantillon contenant des particule de 1$\mu m$, 9 particules ont été suivies pour déterminer, par une analyse statistique, leurs rayons ainsi que leurs coefficients de diffusion. 
-Le meme principe a été utilisé dans un échantillon contenant des particule de 10$\mu m$, dans ce cas ci, 3 particules on été jugé comme analysable. 
+Pour un échantillon contenant des particules de 1 $\mu m$, 9 particules ont été suivies pour déterminer, par une analyse statistique, leurs rayons ainsi que leurs coefficients de diffusion. 
+Le même principe a été utilisé dans un échantillon contenant des particules de 10 $\mu m$. Dans ce cas-ci, 3 particules ont été jugées comme analysables. 
 Les résultats suivants ont été obtenus :
 
 \begin{table}[H]
@@ -467,7 +467,7 @@ par l'équation suivante:
   \Delta x = \sqrt{\frac{\sum_{i=1}^N \delta x_{i}^2}{N^2}}
 \]
 Où dans notre cas, x peut être remplacé par r ou D. On remarque ici qu'il s'agit d'une propagation de l’incertitude de chaque point sur la 
-moyenne. Il aurait pu être considéré de prendre l'écart type des valeurs dues à la théorie du théorème central-limite, mais il a été jugé ici que le nombre de points 
+moyenne. Il aurait pu être considéré de prendre l'écart-type des valeurs dues à la théorie du théorème central limite, mais il a été jugé ici que le nombre de points 
 analysables des échantillons était insuffisant pour appliquer cette théorie. 
 Pour conclure,on rappelle que pour un échantillon de r=1$\mu m$, analysant 9 particules différentes, 
 le traitement de données élaboré nous donne les résultats suivants: 
@@ -521,12 +521,20 @@ adéquatement estimée par le modèle utilisé.
 
 
 
+La dérive des particules de 10 um est la raison pour laquelle l'étude statistique n'est faite qu'avec 3 
+données, puisque les tests effectués avec les autres particules de l'échantillon ne permettaient pas 
+d'obtenir une valeur cohérente. Elle était soit négative, soit erronée par plusieurs ordres de grandeur.
+
+
+
+
+
 
 \subsection{Étude des coûts}
 
 Une étude des coûts a été faite pour le microscope construit afin de voir s'il y a possibilité
 de construire un appareil aux performances similaires, mais à moindre coût. Le tableau \ref{table_cout}
-présente la liste exhaustive des pièces avec leur prix en dollars canadien avant taxes.
+présente la liste exhaustive des pièces avec leur prix en dollars canadiens avant taxes.
 
 \begin{table}[!ht]
     \centering
@@ -566,24 +574,24 @@ seul microscope. Toutefois, pour la construction d'un ensemble d'appareils spéc
 différentes tailles de particules, donc ayant besoin de différents objectifs à différents 
 grossissements, le prix d'ensemble est idéal. Deuxièmement, un coût important a été omis dans 
 le tableau de calcul, soit celui de la table optique elle-même. Cette dernière est très
-dispendieuse, mais elle a été omise car elle est déja présente dans plusieurs laboratoires 
+dispendieuse, mais elle a été omise, car elle est déjà présente dans plusieurs laboratoires 
 d'optique, ou si non, elle peut être acheté à plus faible coût si les dimensions de la table
 achetée se limitent aux dimensions de l'appareil. Par exemple, chez Thorlabs, la plus petite 
 table optique pour tenir ce microscope est la B1824F, avec des dimensions de 18" $\times$ 24" \cite{noauthor_thorlabs_2024}.
-Avec un coût de 1319.08 \$ CAD, presque l'entièreté du coût du reste de l'appareil, le total
+Avec un coût de 1319.08 CAD, presque l'entièreté du coût du reste de l'appareil, le total
 monte à 3108.47 \$. Troisièmement, selon le tableau \ref{table_cout}, les pièces ayant les
-coûts les plus considérables sont celles directement lié à l'optique et à l'alignement. Le
+coûts les plus considérables sont celles directement liées à l'optique et à l'alignement. Le
 reste des pièces sont pour des éléments de construction du montage, et leur total s'élève à
 1039.11 \$.
 
 Il est donc possible de recommander fortement l'utilisation de l'impression 3D pour une production
-à plus grand volume de ce microscope. Cela permettrat de sauver l'argent sur les pièces de
+à plus grand volume de ce microscope. Cela permettra de sauver l'argent sur les pièces de
 construction et sur la table optique elle-même, aiderait à l'alignement des éléments optiques,
-permettrait plus de flexibilité sur les composantes à ajuster tel que le motage de l'échantillon pour
+permettrait plus de flexibilité sur les composantes à ajuster tel que le montage de l'échantillon pour
 s'occuper du focus, et enfin pourrait rendre l'appareil plus portatif pour des essais sur le terrain.
 Comme les éléments optiques seraient tous réutilisables dans un design d'impression 3D, les
 performances du dispositif resteraient identiques. Il est aussi possible de recommander l'usage
-d'un différent laser de 405 nm, car ils sont fréquemment vendus seconde main pour beaucoup moins
+d'un différent laser de 405 nm, car ils sont fréquemment vendus en seconde main pour beaucoup moins
 cher.
 
 \section{Annexes}
@@ -699,5 +707,15 @@ finally:
 
 \bibliographystyle{unsrtnat}
 \bibliography{suivi_particules.bib}
+
+\section{Annexes}
+
+\subsection{Preuve de correction par Antidote}
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.2]{Screenshot (1).png}
+  \caption{Correction par Antidote}
+\end{figure}
+\clearpage
 
 \end{document}
