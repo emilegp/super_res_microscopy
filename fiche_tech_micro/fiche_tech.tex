@@ -153,20 +153,19 @@ l'usine Polyfab. Les composantes principales sont un laser 405 nm (CPS405)
 pour illuminer les fluorophores dans les échantillons, un objectif de microscope (grossissement 
 $M = 20$, aperture NA $= 0.4$) pour le grossissement, puis une lentille tube de 150 mm de focale
 (LA1433-A-ML) pour converger les rayons sortants de l'objectif sur le capteur d'une caméra CMOS 
-(CS165MU) pour l'analyse \textcolor{red}{Source Thorlabs}. Ce système présente une résolution
-théorique de 1.012 µm. Afin d'analyser des particules d'environ cette taille, un traitement
+(CS165MU) pour l'analyse \cite{noauthor_thorlabs_2024}. Ce système présente une résolution
+théorique de 1.012 µm \cite{rouillon_travail_2024}. Afin d'analyser des particules d'environ cette taille, un traitement
 numérique est fait pour extraire la taille des particules du mouvement brownien filmé, avec 
 une résolution sous-pixellaire. Avec ce procédé, le microscope peut détecter des tailles de 
 particules dans la plage 1-10 µm. Suite à la caractérisation de particules 
-de 1 µm, l'erreur sur la valeur identifiée est de \textcolor{red}{XX $\pm$ XX} µm.
-Pour la caractérisation de particules de 10 µm, l'erreur sur la valeur identifiée est de 
+de 1 µm, la valeur identifiée est de \textcolor{red}{XX $\pm$ XX} µm.
+Pour la caractérisation de particules de 10 µm, elle est de 
 \textcolor{red}{XX $\pm$ XX} µm. Le système, monté sur table optique et utilisable dans le noir 
-seulement, a des dimensions de \textcolor{red}{$600 \times 90 \times 200$} mm, tel que présenté à 
-la figure \ref{schema_micro}. Sans compter la table, il a pour coût total 1789.39 \$, prix qui
+seulement, a des dimensions de $600 \times 90 \times 200$ mm, tel que présenté à 
+la figure \ref{schema_micro}. La résolution de l'appareil post traitement est de \textcolor{red}{XX $\pm$ XX} µm, et
+son grossissement réel est de $17.14 \pm 0.02$. Sans compter la table optique, le dispositif a pour coût total 1789.39 \$, prix qui
 peut être réduit par l'usage d'impression 3D. Les spécifications de microscope sont rassemblées dans le
 tableau \ref{specs} ci-dessous.
-
-% Source Thorlabs : https://www.thorlabs.com
 
 \begin{figure}[H]
   \centering
@@ -174,8 +173,6 @@ tableau \ref{specs} ci-dessous.
   \caption{Schéma du microscope avec les dimensions critiques. Toutes les dimensions sont en millimètres avec une tolérance de $\pm$ 1 mm.}
   \label{schema_micro}
 \end{figure}
-
-\textcolor{red}{yap yap voici le tableau}
 
 \begin{table}[H]
   \centering
@@ -212,18 +209,15 @@ tableau \ref{specs} ci-dessous.
 Cette section explique en détail le processus et les résultats pour les tests de caractérisation
 effectués sur le dispositif de suivi de particules.
 
-% \subsection{Résolution sans analyse numérique}
-
-% \textcolor{red}{ce qui était dans le rapport préliminaire}
-
 \subsection{Suivi de particules}
 
-Pour obtenir la taille d'une particule avec la plus grande précision possible, la position de la particule doit être 
+Pour obtenir la taille d'une particule avec la plus grande précision possible, l'analyse de son
+mouvement brownien est utilisée. La position de la particule doit être 
 déterminée sur au moins une cinquantaine d'instants successifs, avant de pouvoir procéder à l'estimation de son 
-coefficient de diffusion et de sa taille. 
+coefficient de diffusion et de sa taille. Des images sont prises pour chaque instant.
 
 Pour positionner la particule avec la plus faible incertitude possible, un 
-fit gaussien est effectué sur l'image pixelisée de la particule. Pour que le fit s'effectue
+fit gaussien est effectué sur l'image pixelisée de la particule pour un moment précis. Pour que le fit s'effectue
 adéquatement, il faut restreindre la zone de fit à la particule. Pour se faire, le suivi de la particule commence 
 autour de la position précédente de la particule, par la recherche de maxima d'intensité surpassant un seuil. Les
 dimensions de la zone rectangulaire en question et le seuil utilisé sont des valeurs déterminées par essai erreur
@@ -235,7 +229,7 @@ Pour reconnaitre la particule, un système de comparaison des particules potenti
 et leur luminosité est utilisé lorsque plus d'une particule sont dans la même zone. 
 La taille, soit le nombre de pixels au dessus d'un seuil fixé, y a un rôle prépondérant, mais la luminosité, soit 
 la moyenne d'intensité des pixels en question, a également un impact. Ces informations sont obtenues en centrant 
-l'image sur la particule d'intérêt et en appliquant la fonction DBSCAN pour regrouper les maximas en des entités
+l'image sur la particule d'intérêt et en appliquant la fonction \texttt{DBSCAN} pour regrouper les maximas en des entités
 qui correspondent aux particules. La luminosité et la taille obtenues sont alors comparées à la luminosité et la 
 taille de la première observation qui sert de référence. La première observation est obtenue comme les suivantes,
 avec comme seul différence que sa détection est faite par l'humain utilisant le système, qui clique initialement 
